@@ -2,7 +2,7 @@ spring:
   application:
     name: LeLa
   profiles:
-    active: ${APP_PROFILE:dev}
+    active: ${APP_PROFILE:prod}
   jpa:
     show-sql: true
     open-in-view: false
@@ -34,6 +34,6 @@ springdoc:
 app:
   jwt:
     issuer: yoedu-demo
-    secret: YOEDU_JWT_SECRET:yoedu-demo-secret-key-12345678901234567890
+    secret: ${YOEDU_JWT_SECRET:yoedu-demo-secret-key-12345678901234567890}
     access-token-ttl-minutes: 480
     refresh-token-ttl-days: 7

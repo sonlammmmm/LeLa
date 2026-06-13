@@ -55,13 +55,12 @@ public class JwtService {
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expiresAt))
                 .claim(TOKEN_TYPE_CLAIM, ACCESS_TOKEN_TYPE)
-                .claim("roles",    List.of(user.getRole().name()))
+                .claim("roles",    List.copyOf(user.getRoleCodes()))
                 .claim("userId",   user.getId())
                 .claim("fullName", user.getFullName())
                 .claim("email",    user.getEmail())
-                .claim("planId",   user.getPlan()       != null ? user.getPlan().getId()       : null)
-                .claim("nativeLangId", user.getNativeLang() != null ? user.getNativeLang().getId() : null)
-                .claim("targetLangId", user.getTargetLang() != null ? user.getTargetLang().getId() : null)
+                .claim("nativeLangId", user.getNativeLanguage() != null ? user.getNativeLanguage().getId() : null)
+                .claim("targetLangId", user.getTargetLanguage() != null ? user.getTargetLanguage().getId() : null)
                 .signWith(secretKey)
                 .compact();
     }

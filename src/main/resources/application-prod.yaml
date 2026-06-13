@@ -1,12 +1,12 @@
 #cau hinh mt production
 spring:
   datasource:
-    url: ${YOEDU_DB_URL:jdbc:mysql://localhost:3306/flashcard_platfom?createDatabaseIfNotExist=true}
-    username: ${YOEDU_DB_USER:root}
-    password: ${YOEDU_DB_PASSWORD:123456}
+    url: ${YOEDU_DB_URL:jdbc:mysql://gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com:4000/lela?sslMode=VERIFY_IDENTITY&enabledTLSProtocols=TLSv1.2}
+    username: ${YOEDU_DB_USER:2UNX3Nm928Dp9n7.root}
+    password: ${YOEDU_DB_PASSWORD:7FxLaC7qDvmVKoUv}
     driver-class-name: com.mysql.cj.jdbc.Driver
   flyway:
-    enabled: false
+    enabled: true
   jpa:
     hibernate:
       ddl-auto: none
