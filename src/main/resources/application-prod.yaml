@@ -1,9 +1,9 @@
-#cau hinh mt production
+#cau hinh moi truong prod
 spring:
   datasource:
-    url: ${YOEDU_DB_URL:jdbc:mysql://gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com:4000/lela?sslMode=VERIFY_IDENTITY&enabledTLSProtocols=TLSv1.2}
-    username: ${YOEDU_DB_USER:2UNX3Nm928Dp9n7.root}
-    password: ${YOEDU_DB_PASSWORD:7FxLaC7qDvmVKoUv}
+    url: ${YOEDU_DB_URL:jdbc:mysql://e4XQFMeuMbogRQK.root:uy5LwcYamnRwU8a1@gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com:4000/LeLa?sslMode=VERIFY_IDENTITY}
+    username: ${YOEDU_DB_USER:e4XQFMeuMbogRQK.root}
+    password: ${YOEDU_DB_PASSWORD:uy5LwcYamnRwU8a1}
     driver-class-name: com.mysql.cj.jdbc.Driver
   flyway:
     enabled: true
