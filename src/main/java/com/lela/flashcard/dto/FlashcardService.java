@@ -13,5 +13,7 @@ public interface FlashcardService {
     
     Page<FlashcardResponse> getFlashcardsByDeck(Long deckId, Pageable pageable);
     
+    Page<FlashcardResponse> getFlashcardsByTag(Long tagId, Pageable pageable);
+    
     void deleteFlashcard(Long id);
 }

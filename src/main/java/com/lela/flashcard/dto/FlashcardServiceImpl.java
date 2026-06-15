@@ -163,6 +163,18 @@ public class FlashcardServiceImpl implements FlashcardService {
                 });
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Page<FlashcardResponse> getFlashcardsByTag(Long tagId, Pageable pageable) {
+        return flashcardRepository.findByTagIdAndIsActiveTrue(tagId, pageable)
+                .map(flashcard -> {
+                    List<Long> tagIds = flashcardTagRepository.findByFlashcardId(flashcard.getId()).stream()
+                            .map(ft -> ft.getTag().getId())
+                            .collect(Collectors.toList());
+                    return FlashcardResponse.fromEntity(flashcard, tagIds);
+                });
+    }
+
     @Transactional
     @Override
     public void deleteFlashcard(Long id) {

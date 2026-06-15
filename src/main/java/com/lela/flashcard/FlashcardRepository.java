@@ -11,4 +11,7 @@ public interface FlashcardRepository extends JpaRepository<Flashcard, Long> {
     
     Page<Flashcard> findByDeckIdAndIsActiveTrue(Long deckId, Pageable pageable);
     
+    @org.springframework.data.jpa.repository.Query("SELECT ft.flashcard FROM FlashcardTag ft WHERE ft.tag.id = :tagId AND ft.flashcard.isActive = true")
+    Page<Flashcard> findByTagIdAndIsActiveTrue(@org.springframework.data.repository.query.Param("tagId") Long tagId, Pageable pageable);
+    
 }

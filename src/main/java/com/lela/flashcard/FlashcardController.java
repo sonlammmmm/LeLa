@@ -41,6 +41,12 @@ public class FlashcardController {
         return ResponseEntity.ok(responses);
     }
 
+    @GetMapping("/tag/{tagId}")
+    public ResponseEntity<Page<FlashcardResponse>> getFlashcardsByTag(@PathVariable Long tagId, Pageable pageable) {
+        Page<FlashcardResponse> responses = flashcardService.getFlashcardsByTag(tagId, pageable);
+        return ResponseEntity.ok(responses);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFlashcard(@PathVariable Long id) {
         flashcardService.deleteFlashcard(id);
