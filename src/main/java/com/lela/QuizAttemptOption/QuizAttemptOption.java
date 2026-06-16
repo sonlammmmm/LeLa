@@ -1,6 +1,8 @@
-package com.lela.domain.entity;
+package com.lela.QuizAttemptOption;
 
+import com.lela.QuizAttemptQuestion.QuizAttemptQuestion;
 import com.lela.domain.BaseEnity;
+import com.lela.domain.entity.QuizQuestionOption;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

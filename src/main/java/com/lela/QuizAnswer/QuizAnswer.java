@@ -1,6 +1,9 @@
-package com.lela.domain.entity;
+package com.lela.QuizAnswer;
 
 import com.lela.domain.AuditableEntity;
+import com.lela.QuizAttempt.QuizAttempt;
+import com.lela.QuizAttemptOption.QuizAttemptOption;
+import com.lela.QuizAttemptQuestion.QuizAttemptQuestion;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

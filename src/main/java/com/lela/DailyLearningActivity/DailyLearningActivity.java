@@ -1,6 +1,7 @@
-package com.lela.domain.entity;
+package com.lela.DailyLearningActivity;
 
 import com.lela.domain.AuditableEntity;
+import com.lela.domain.entity.Users;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

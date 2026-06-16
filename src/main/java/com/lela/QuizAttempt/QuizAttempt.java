@@ -1,6 +1,8 @@
-package com.lela.domain.entity;
+package com.lela.QuizAttempt;
 
 import com.lela.domain.AuditableEntity;
+import com.lela.domain.entity.Quiz;
+import com.lela.domain.entity.Users;
 import com.lela.domain.enums.QuizAttemptStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

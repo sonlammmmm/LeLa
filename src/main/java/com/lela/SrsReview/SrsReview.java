@@ -1,6 +1,9 @@
-package com.lela.domain.entity;
+package com.lela.SrsReview;
 
 import com.lela.domain.BaseEnity;
+import com.lela.domain.entity.Flashcard;
+import com.lela.ReviewSession.ReviewSession;
+import com.lela.domain.entity.Users;
 import com.lela.domain.enums.ReviewableCardState;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
