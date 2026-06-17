@@ -1,16 +1,40 @@
-package com.lela.domain.entity;
+package com.lela.notification;
 
 import com.lela.domain.AuditableEntity;
 import com.lela.domain.enums.NotificationChannel;
 import com.lela.domain.enums.NotificationStatus;
 import com.lela.domain.enums.NotificationType;
+import com.lela.domain.entity.Users;
+import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.usersubscription.UserSubscription;
 import jakarta.persistence.Column;
+import com.lela.domain.entity.Users;
+import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.usersubscription.UserSubscription;
 import jakarta.persistence.Entity;
+import com.lela.domain.entity.Users;
+import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.usersubscription.UserSubscription;
 import jakarta.persistence.EnumType;
+import com.lela.domain.entity.Users;
+import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.usersubscription.UserSubscription;
 import jakarta.persistence.Enumerated;
+import com.lela.domain.entity.Users;
+import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.usersubscription.UserSubscription;
 import jakarta.persistence.FetchType;
+import com.lela.domain.entity.Users;
+import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.usersubscription.UserSubscription;
 import jakarta.persistence.JoinColumn;
+import com.lela.domain.entity.Users;
+import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.usersubscription.UserSubscription;
 import jakarta.persistence.ManyToOne;
+import com.lela.domain.entity.Users;
+import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.usersubscription.UserSubscription;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -76,3 +100,4 @@ public class Notification extends AuditableEntity {
     @Column(name = "failure_reason", length = 500)
     private String failureReason; // Lý do gửi thất bại.
 }
+

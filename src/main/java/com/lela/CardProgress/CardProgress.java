@@ -1,4 +1,4 @@
-package com.lela.CardProgress;
+package com.lela.cardprogress;
 
 import com.lela.domain.AuditableEntity;
 import com.lela.domain.entity.Flashcard;

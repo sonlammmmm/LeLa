@@ -1,10 +1,11 @@
 #cau hinh moi truong dev
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/flascard_db?createDatabaseIfNotExist=true
-    username: ${YOEDU_DB_USER:2UNX3Nm928Dp9n7.root}
-    password:
     driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/flascard_db?createDatabaseIfNotExist=true
+    username: root
+    password:
+
   flyway:
     enabled: true
   jpa:

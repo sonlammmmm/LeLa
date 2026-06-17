@@ -1,4 +1,4 @@
-package com.lela.DeckEnrollment;
+package com.lela.deckenrollment;
 
 import com.lela.domain.AuditableEntity;
 import com.lela.domain.entity.Deck;

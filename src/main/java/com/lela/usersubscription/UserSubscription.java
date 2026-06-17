@@ -1,15 +1,42 @@
-package com.lela.domain.entity;
+package com.lela.usersubscription;
 
 import com.lela.domain.AuditableEntity;
 import com.lela.domain.enums.UserSubscriptionStatus;
+import com.lela.domain.entity.Users;
+import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.usersubscription.UserSubscription;
 import jakarta.persistence.Column;
+import com.lela.domain.entity.Users;
+import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.usersubscription.UserSubscription;
 import jakarta.persistence.Entity;
+import com.lela.domain.entity.Users;
+import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.usersubscription.UserSubscription;
 import jakarta.persistence.EnumType;
+import com.lela.domain.entity.Users;
+import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.usersubscription.UserSubscription;
 import jakarta.persistence.Enumerated;
+import com.lela.domain.entity.Users;
+import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.usersubscription.UserSubscription;
 import jakarta.persistence.FetchType;
+import com.lela.domain.entity.Users;
+import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.usersubscription.UserSubscription;
 import jakarta.persistence.JoinColumn;
+import com.lela.domain.entity.Users;
+import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.usersubscription.UserSubscription;
 import jakarta.persistence.ManyToOne;
+import com.lela.domain.entity.Users;
+import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.usersubscription.UserSubscription;
 import jakarta.persistence.Table;
+import com.lela.domain.entity.Users;
+import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.usersubscription.UserSubscription;
 import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
@@ -60,3 +87,4 @@ public class UserSubscription extends AuditableEntity {
     @Column(nullable = false)
     private Long version = 0L; // Phiên bản dùng cho optimistic locking.
 }
+

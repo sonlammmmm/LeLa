@@ -1,4 +1,4 @@
-package com.lela.DailyLearningActivity;
+package com.lela.dailylearningactivity;
 
 import com.lela.domain.AuditableEntity;
 import com.lela.domain.entity.Users;

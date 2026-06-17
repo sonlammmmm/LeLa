@@ -1,4 +1,4 @@
-package com.lela.ReviewSession;
+package com.lela.reviewsession;
 
 import com.lela.domain.AuditableEntity;
 import com.lela.domain.entity.Deck;
