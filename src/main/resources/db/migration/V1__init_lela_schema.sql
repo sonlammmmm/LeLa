@@ -1312,12 +1312,8 @@ INSERT INTO languages (
     flag_url,
     is_active
 ) VALUES
-    ('en', 'Tiáº¿ng Anh',   'English',    'flags/en.svg', TRUE),
-    ('ja', 'Tiáº¿ng Nháº­t',  'æ—¥æœ¬èªž',     'flags/ja.svg', TRUE),
-    ('ko', 'Tiáº¿ng HÃ n',   'í•œêµ­ì–´',     'flags/ko.svg', TRUE),
-    ('fr', 'Tiáº¿ng PhÃ¡p',  'FranÃ§ais',   'flags/fr.svg', TRUE),
-    ('zh', 'Tiáº¿ng Trung', 'ä¸­æ–‡',       'flags/zh.svg', TRUE),
-    ('vi', 'Tiáº¿ng Viá»‡t',  'Tiáº¿ng Viá»‡t', 'flags/vi.svg', TRUE);
+    ('en', 'Tiếng Anh',   'English',    'flags/en.svg', TRUE),
+    ('vi', 'Tiếng Việt',  'Tiếng Việt', 'flags/vi.svg', TRUE);
 
 INSERT INTO roles (
     role_code,
@@ -1325,10 +1321,10 @@ INSERT INTO roles (
     description,
     is_active
 ) VALUES
-    ('ADMIN', 'Quáº£n trá»‹ viÃªn', 'ToÃ n quyá»n quáº£n trá»‹ há»‡ thá»‘ng', TRUE),
-    ('LEARNER', 'NgÆ°á»i há»c', 'Há»c deck, review SRS vÃ  lÃ m quiz', TRUE),
-    ('CONTENT_CREATOR', 'NgÆ°á»i táº¡o ná»™i dung', 'Táº¡o vÃ  quáº£n lÃ½ ná»™i dung cá»§a mÃ¬nh', TRUE),
-    ('MODERATOR', 'Kiá»ƒm duyá»‡t viÃªn', 'Kiá»ƒm duyá»‡t ná»™i dung vÃ  há»— trá»£ quáº£n lÃ½ ngÆ°á»i dÃ¹ng', TRUE);
+    ('ADMIN', 'Quản trị viên', 'Toàn quyền quản trị hệ thống', TRUE),
+    ('LEARNER', 'Người học', 'Học deck, ôn tập SRS và làm quiz', TRUE),
+    ('CONTENT_CREATOR', 'Người tạo nội dung', 'Tạo và quản lý nội dung học của mình', TRUE),
+    ('MODERATOR', 'Kiểm duyệt viên', 'Kiểm duyệt nội dung và hỗ trợ quản lý người dùng', TRUE);
 
 INSERT INTO subscription_plans (
     plan_code,
@@ -1349,8 +1345,8 @@ INSERT INTO subscription_plans (
 ) VALUES
     (
         'FREE',
-        'GÃ³i Miá»…n PhÃ­',
-        'CÃ¡c tÃ­nh nÄƒng há»c cÆ¡ báº£n',
+        'Gói Miễn Phí',
+        'Các tính năng học cơ bản',
         0,
         'VND',
         'FREE',
@@ -1366,8 +1362,8 @@ INSERT INTO subscription_plans (
     ),
     (
         'PLUS',
-        'GÃ³i Plus',
-        'Quiz, leaderboard vÃ  giá»›i háº¡n ná»™i dung cao hÆ¡n',
+        'Gói Plus',
+        'Quiz, bảng xếp hạng và giới hạn nội dung cao hơn',
         79000,
         'VND',
         'MONTHLY',
@@ -1383,8 +1379,8 @@ INSERT INTO subscription_plans (
     ),
     (
         'PREMIUM',
-        'GÃ³i Premium',
-        'ToÃ n bá»™ tÃ­nh nÄƒng hiá»‡n cÃ³',
+        'Gói Premium',
+        'Toàn bộ tính năng hiện có',
         149000,
         'VND',
         'MONTHLY',
