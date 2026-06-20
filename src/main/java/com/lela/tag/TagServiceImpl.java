@@ -2,7 +2,7 @@ package com.lela.tag;
 
 import com.lela.common.exception.ConflictException;
 import com.lela.common.exception.NotFoundExeception;
-import com.lela.domain.entity.Tag;
+import com.lela.tag.domain.Tag;
 import com.lela.tag.dto.TagRequest;
 import com.lela.tag.dto.TagResponse;
 import lombok.RequiredArgsConstructor;
@@ -75,11 +75,11 @@ public class TagServiceImpl implements TagService {
     @Transactional
     @Override
     public void deleteTag(Long id) {
-        if (!tagRepository.existsById(id)) {
-            throw new NotFoundExeception("Không tìm thấy Tag với id: " + id);
-        }
+        Tag tag = tagRepository.findById(id)
+                .orElseThrow(() -> new NotFoundExeception("Không tìm thấy Tag với id: " + id));
         // TODO: Cần kiểm tra xem Tag này có đang được gắn vào Flashcard/Quiz nào không trước khi xóa
-        tagRepository.deleteById(id);
+        tag.setIsActive(false);
+        tagRepository.save(tag);
     }
 
     private String generateSlug(String input) {

@@ -1,6 +1,6 @@
 package com.lela.flashcard.dto;
 
-import com.lela.domain.entity.Flashcard;
+import com.lela.flashcard.domain.Flashcard;
 import lombok.Data;
 
 import java.time.LocalDateTime;

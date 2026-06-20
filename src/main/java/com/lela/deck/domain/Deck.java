@@ -1,9 +1,8 @@
-package com.lela.domain.entity;
+package com.lela.deck.domain;
 
 import com.lela.domain.AuditableEntity;
-import com.lela.domain.enums.DeckDifficulty;
-import com.lela.domain.enums.DeckStatus;
-import com.lela.domain.enums.DeckVisibility;
+import com.lela.domain.entity.Language;
+import com.lela.domain.entity.Users;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,6 +16,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Setter
@@ -92,9 +94,13 @@ public class Deck extends AuditableEntity {
     private LocalDateTime publishedAt; // Thời điểm xuất bản deck.
 
     @Column(name = "deleted_at")
-    private LocalDateTime deletedAt; // Thời điểm xóa mềm deck.
+    private LocalDateTime deletedAt; // Thời điểm xóa mềm deck (Cột cũ).
+
+    @Column(name = "is_active", nullable = false)
+    public boolean isActive = true; // Trạng thái hoạt động (xoá mềm mới).
 
     @Version
     @Column(nullable = false)
     private Long version = 0L; // Phiên bản dùng cho optimistic locking.
+
 }

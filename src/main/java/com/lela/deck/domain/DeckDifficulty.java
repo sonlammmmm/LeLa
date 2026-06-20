@@ -1,4 +1,4 @@
-package com.lela.domain.enums;
+package com.lela.deck.domain;
 
 // Enum độ khó của deck.
 public enum DeckDifficulty {

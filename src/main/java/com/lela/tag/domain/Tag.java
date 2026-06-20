@@ -1,4 +1,4 @@
-package com.lela.domain.entity;
+package com.lela.tag.domain;
 
 import com.lela.domain.BaseEnity;
 import jakarta.persistence.Column;
@@ -9,6 +9,9 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Setter
@@ -26,4 +29,7 @@ public class Tag extends BaseEnity {
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt; // Thời điểm tạo tag.
+
+    @Column(name = "is_active", nullable = false)
+    public boolean isActive = true; // Trạng thái hoạt động (xoá mềm).
 }

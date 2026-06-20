@@ -1,4 +1,4 @@
-package com.lela.domain.enums;
+package com.lela.deck.domain;
 
 // Enum phạm vi hiển thị của deck.
 public enum DeckVisibility {

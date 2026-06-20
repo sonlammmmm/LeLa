@@ -2,6 +2,7 @@ package com.lela.domain.entity;
 
 import com.lela.domain.AuditableEntity;
 import com.lela.domain.enums.QuestionType;
+import com.lela.flashcard.domain.Flashcard;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

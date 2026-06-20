@@ -1,5 +1,6 @@
 package com.lela.domain.entity;
 
+import com.lela.deck.domain.Deck;
 import com.lela.domain.AuditableEntity;
 import com.lela.domain.enums.ReviewSessionStatus;
 import com.lela.domain.enums.ReviewSessionType;

@@ -1,7 +1,7 @@
 package com.lela.flashcard;
 
-import com.lela.domain.entity.FlashcardTag;
-import com.lela.domain.entity.FlashcardTagId;
+import com.lela.flashcard.domain.FlashcardTag;
+import com.lela.flashcard.domain.FlashcardTagId;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

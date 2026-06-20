@@ -2,10 +2,10 @@ package com.lela.deck;
 
 import com.lela.deck.dto.DeckRequest;
 import com.lela.deck.dto.DeckResponse;
-import com.lela.domain.entity.Deck;
+import com.lela.deck.domain.Deck;
 import com.lela.domain.entity.Language;
 import com.lela.domain.entity.Users;
-import com.lela.domain.enums.DeckStatus;
+import com.lela.deck.domain.DeckStatus;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -122,7 +122,7 @@ public class DeckServiceImpl implements DeckService {
                 .orElseThrow(() -> new RuntimeException("Deck not found"));
         
         // Soft delete
-        deck.setDeletedAt(LocalDateTime.now());
+        deck.setIsActive(false);
         deckRepository.save(deck);
     }
 }

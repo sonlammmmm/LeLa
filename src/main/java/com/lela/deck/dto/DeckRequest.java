@@ -1,7 +1,7 @@
 package com.lela.deck.dto;
 
-import com.lela.domain.enums.DeckDifficulty;
-import com.lela.domain.enums.DeckVisibility;
+import com.lela.deck.domain.DeckDifficulty;
+import com.lela.deck.domain.DeckVisibility;
 import lombok.Data;
 
 @Data

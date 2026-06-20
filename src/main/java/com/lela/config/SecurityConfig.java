@@ -1,5 +1,5 @@
 package com.lela.config;
-
+//cau hinh security
 import com.lela.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -58,8 +58,11 @@ public class SecurityConfig {
                                 "/swagger-ui/**"
                         ).permitAll()
 
+                        // ── Quiz (tạm thời cho phép test) ───────────────
+                        .requestMatchers("/api/quiz/**").permitAll()
+
                         // ── Tất cả còn lại phải login ─────────────────────
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

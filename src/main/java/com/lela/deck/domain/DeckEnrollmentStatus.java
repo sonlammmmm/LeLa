@@ -1,4 +1,4 @@
-package com.lela.domain.enums;
+package com.lela.deck.domain;
 
 // Enum trạng thái đăng ký học một deck.
 public enum DeckEnrollmentStatus {

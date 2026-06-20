@@ -1,4 +1,4 @@
-package com.lela.domain.enums;
+package com.lela.deck.domain;
 
 // Enum trạng thái kiểm duyệt và vòng đời của deck.
 public enum DeckStatus {

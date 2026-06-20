@@ -1,9 +1,9 @@
 package com.lela.deck.dto;
 
-import com.lela.domain.entity.Deck;
-import com.lela.domain.enums.DeckDifficulty;
-import com.lela.domain.enums.DeckStatus;
-import com.lela.domain.enums.DeckVisibility;
+import com.lela.deck.domain.Deck;
+import com.lela.deck.domain.DeckDifficulty;
+import com.lela.deck.domain.DeckStatus;
+import com.lela.deck.domain.DeckVisibility;
 import lombok.Data;
 
 import java.time.LocalDateTime;

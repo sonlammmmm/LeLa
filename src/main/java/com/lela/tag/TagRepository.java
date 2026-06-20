@@ -1,6 +1,6 @@
 package com.lela.tag;
 
-import com.lela.domain.entity.Tag;
+import com.lela.tag.domain.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

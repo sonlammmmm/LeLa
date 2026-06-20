@@ -1,4 +1,4 @@
-package com.lela.domain.entity;
+package com.lela.flashcard.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

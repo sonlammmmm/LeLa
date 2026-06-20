@@ -1,5 +1,6 @@
-package com.lela.domain.entity;
+package com.lela.flashcard.domain;
 
+import com.lela.tag.domain.Tag;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;

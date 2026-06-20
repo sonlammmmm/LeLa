@@ -1,6 +1,6 @@
 package com.lela.tag.dto;
 
-import com.lela.domain.entity.Tag;
+import com.lela.tag.domain.Tag;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

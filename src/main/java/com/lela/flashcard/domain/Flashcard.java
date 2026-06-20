@@ -1,6 +1,8 @@
-package com.lela.domain.entity;
+package com.lela.flashcard.domain;
 
 import com.lela.domain.AuditableEntity;
+import com.lela.deck.domain.Deck;
+import com.lela.domain.entity.Users;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,6 +14,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Setter
@@ -58,7 +63,7 @@ public class Flashcard extends AuditableEntity {
     private Integer cardOrder = 0; // Thứ tự thẻ trong deck.
 
     @Column(name = "is_active", nullable = false)
-    private Boolean isActive = true; // Thẻ còn được sử dụng hay không.
+    public boolean isActive = true; // Thẻ còn được sử dụng hay không.
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)

@@ -1,6 +1,6 @@
 package com.lela.deck;
 
-import com.lela.domain.entity.Deck;
+import com.lela.deck.domain.Deck;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
