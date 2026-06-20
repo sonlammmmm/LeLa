@@ -11,16 +11,21 @@ import com.lela.users.dto.UsersCreateRequest;
 import com.lela.users.dto.UsersPatchRequest;
 import com.lela.users.dto.UsersResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 @RequiredArgsConstructor
+@Transactional
 @SuppressWarnings("null")
 public class UsersServiceImpl implements UsersService {
     private final UsersRepository repository;
     private final LanguageRepository languageRepository;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<UsersResponse> findAll() {
@@ -42,6 +47,14 @@ public class UsersServiceImpl implements UsersService {
     public UsersResponse create(UsersCreateRequest request) {
         // Ánh xạ dữ liệu từ request DTO sang thực thể người dùng (Users)
         Users entity = modelMapper.map(request, Users.class);
+        
+        // Hash password
+        entity.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        
+        // Default values for progression
+        entity.setXpTotal(0L);
+        entity.setStreakCurrent(0);
+        entity.setStreakLongest(0);
 
         // Nếu request có truyền nativeLanguageId, tiến hành kiểm tra tồn tại và gán vào
         // entity
@@ -80,8 +93,8 @@ public class UsersServiceImpl implements UsersService {
             entity.setUsername(request.getUsername());
         if (request.getEmail() != null)
             entity.setEmail(request.getEmail());
-        if (request.getPasswordHash() != null)
-            entity.setPasswordHash(request.getPasswordHash());
+        if (request.getPassword() != null)
+            entity.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         if (request.getFullName() != null)
             entity.setFullName(request.getFullName());
         if (request.getAvatarUrl() != null)
@@ -92,20 +105,6 @@ public class UsersServiceImpl implements UsersService {
             entity.setTimezone(request.getTimezone());
         if (request.getDailyGoalCards() != null)
             entity.setDailyGoalCards(request.getDailyGoalCards());
-        if (request.getXpTotal() != null)
-            entity.setXpTotal(request.getXpTotal());
-        if (request.getStreakCurrent() != null)
-            entity.setStreakCurrent(request.getStreakCurrent());
-        if (request.getStreakLongest() != null)
-            entity.setStreakLongest(request.getStreakLongest());
-        if (request.getLastActivityDate() != null)
-            entity.setLastActivityDate(request.getLastActivityDate());
-        if (request.getLastActiveAt() != null)
-            entity.setLastActiveAt(request.getLastActiveAt());
-        if (request.getEmailVerifiedAt() != null)
-            entity.setEmailVerifiedAt(request.getEmailVerifiedAt());
-        if (request.getDeletedAt() != null)
-            entity.setDeletedAt(request.getDeletedAt());
 
         // Kiểm tra và cập nhật thông tin Ngôn ngữ mẹ đẻ nếu có sự thay đổi
         if (request.getNativeLanguageId() != null) {

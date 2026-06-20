@@ -15,46 +15,49 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lela.common.ApiResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 @RestController
-@RequestMapping("/api/roles")
+@RequestMapping("/roles")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class RoleController {
     private final RoleService service;
 
     // API lấy danh sách toàn bộ vai trò.
     @GetMapping
-    public List<RoleResponse> findAll() {
-        return service.findAll();
+    public ResponseEntity<ApiResponse<List<RoleResponse>>> findAll() {
+        return ResponseEntity.ok(ApiResponse.success(service.findAll(), "Lấy danh sách thành công"));
     }
 
     // API tìm kiếm vai trò theo ID.
     @GetMapping("/{id}")
-    public ResponseEntity<RoleResponse> findById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<RoleResponse>> findById(@PathVariable Long id) {
         return service.findById(id)
-                .map(ResponseEntity::ok)
+                .map(response -> ResponseEntity.ok(ApiResponse.success(response, "Tìm thấy vai trò")))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     // API tạo mới vai trò.
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public RoleResponse create(@Valid @RequestBody RoleCreateRequest request) {
-        return service.create(request);
+    public ResponseEntity<ApiResponse<RoleResponse>> create(@Valid @RequestBody RoleCreateRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(service.create(request), "Tạo vai trò thành công"));
     }
 
     // API cập nhật một phần thông tin vai trò (PATCH).
     @PatchMapping("/{id}")
-    public RoleResponse patch(@PathVariable Long id, @Valid @RequestBody RolePatchRequest request) {
-        return service.patch(id, request);
+    public ResponseEntity<ApiResponse<RoleResponse>> patch(@PathVariable Long id, @Valid @RequestBody RolePatchRequest request) {
+        return ResponseEntity.ok(ApiResponse.success(service.patch(id, request), "Cập nhật thành công"));
     }
 
     // API xóa vai trò theo ID.
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteById(@PathVariable Long id) {
         service.deleteById(id);
+        return ResponseEntity.ok(ApiResponse.successMessage("Xóa thành công"));
     }
 }

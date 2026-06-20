@@ -11,7 +11,6 @@ public class UsersResponse {
     private Long id;
     private String username;
     private String email;
-    private String passwordHash;
     private String fullName;
     private String avatarUrl;
     private LanguageResponse nativeLanguage;

@@ -1,15 +1,13 @@
 package com.lela.users.dto;
 
 import com.lela.users.UserStatus;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
 public class UsersPatchRequest {
     private String username;
     private String email;
-    private String passwordHash;
+    private String password;
     private String fullName;
     private String avatarUrl;
     private Long nativeLanguageId;
@@ -17,11 +15,4 @@ public class UsersPatchRequest {
     private UserStatus status;
     private String timezone;
     private Integer dailyGoalCards;
-    private Long xpTotal;
-    private Integer streakCurrent;
-    private Integer streakLongest;
-    private LocalDate lastActivityDate;
-    private LocalDateTime lastActiveAt;
-    private LocalDateTime emailVerifiedAt;
-    private LocalDateTime deletedAt;
 }

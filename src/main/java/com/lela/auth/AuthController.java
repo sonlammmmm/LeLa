@@ -46,7 +46,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 @Tag(name = "Authentication", description = "Các API xác thực: đăng ký, đăng nhập, đăng xuất, và làm mới token")
 @SuppressWarnings("null")
@@ -236,6 +236,7 @@ public class AuthController {
     }
 
     @GetMapping("/profile")
+    @Transactional(readOnly = true)
     @Operation(summary = "Lấy thông tin cá nhân", description = "Lấy thông tin tài khoản đang đăng nhập hiện tại (yêu cầu access token hợp lệ).")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Lấy thông tin cá nhân thành công"),

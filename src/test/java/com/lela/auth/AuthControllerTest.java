@@ -84,7 +84,7 @@ public class AuthControllerTest {
                 .fullName(testFullName)
                 .build();
 
-        mockMvc.perform(post("/api/auth/register")
+        mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -117,7 +117,7 @@ public class AuthControllerTest {
                 .fullName(testFullName)
                 .build();
 
-        mockMvc.perform(post("/api/auth/register")
+        mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDupUser)))
                 .andExpect(status().isBadRequest())
@@ -132,7 +132,7 @@ public class AuthControllerTest {
                 .fullName(testFullName)
                 .build();
 
-        mockMvc.perform(post("/api/auth/register")
+        mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDupEmail)))
                 .andExpect(status().isBadRequest())
@@ -171,7 +171,7 @@ public class AuthControllerTest {
                 .password(testPassword)
                 .build();
 
-        mockMvc.perform(post("/api/auth/login")
+        mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
@@ -203,7 +203,7 @@ public class AuthControllerTest {
                 .password("wrongpassword")
                 .build();
 
-        mockMvc.perform(post("/api/auth/login")
+        mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isUnauthorized())
@@ -242,7 +242,7 @@ public class AuthControllerTest {
                 .build();
 
         // Perform login to obtain a real refresh token
-        String responseBody = mockMvc.perform(post("/api/auth/login")
+        String responseBody = mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
@@ -254,7 +254,7 @@ public class AuthControllerTest {
                 .refreshToken(refreshToken)
                 .build();
 
-        mockMvc.perform(post("/api/auth/refresh-token")
+        mockMvc.perform(post("/auth/refresh-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(refreshRequest)))
                 .andExpect(status().isOk())
@@ -269,7 +269,7 @@ public class AuthControllerTest {
                 .refreshToken("invalid_token_format")
                 .build();
 
-        mockMvc.perform(post("/api/auth/refresh-token")
+        mockMvc.perform(post("/auth/refresh-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest());
@@ -307,7 +307,7 @@ public class AuthControllerTest {
                 .build();
 
         // Login to get access token
-        String responseBody = mockMvc.perform(post("/api/auth/login")
+        String responseBody = mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
@@ -316,7 +316,7 @@ public class AuthControllerTest {
         String accessToken = objectMapper.readTree(responseBody).path("data").path("accessToken").asText();
 
         // Call profile API with Authorization Header
-        mockMvc.perform(get("/api/auth/profile")
+        mockMvc.perform(get("/auth/profile")
                         .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)))
@@ -326,7 +326,7 @@ public class AuthControllerTest {
     @Test
     public void testCase8_CallProtectedApi_NoToken() throws Exception {
         // Call profile API without token -> 401 Unauthorized
-        mockMvc.perform(get("/api/auth/profile"))
+        mockMvc.perform(get("/auth/profile"))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -362,7 +362,7 @@ public class AuthControllerTest {
                 .build();
 
         // Login to get access token
-        String responseBody = mockMvc.perform(post("/api/auth/login")
+        String responseBody = mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
@@ -371,7 +371,7 @@ public class AuthControllerTest {
         String accessToken = objectMapper.readTree(responseBody).path("data").path("accessToken").asText();
 
         // Call admin only api -> 403 Forbidden
-        mockMvc.perform(get("/api/auth/admin-only")
+        mockMvc.perform(get("/auth/admin-only")
                         .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isForbidden());
     }
@@ -408,7 +408,7 @@ public class AuthControllerTest {
                 .build();
 
         // Login to get access token
-        String responseBody = mockMvc.perform(post("/api/auth/login")
+        String responseBody = mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
@@ -417,7 +417,7 @@ public class AuthControllerTest {
         String accessToken = objectMapper.readTree(responseBody).path("data").path("accessToken").asText();
 
         // Call admin only api -> 200 OK
-        mockMvc.perform(get("/api/auth/admin-only")
+        mockMvc.perform(get("/auth/admin-only")
                         .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)))

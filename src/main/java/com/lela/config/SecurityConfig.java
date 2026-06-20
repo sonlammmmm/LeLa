@@ -50,18 +50,18 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         // ── Auth ──────────────────────────────────────────
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/refresh-token").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/logout").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/refresh-token").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
 
                         // ── Public browse (guest có thể xem) ─────────────
-                        .requestMatchers(HttpMethod.GET, "/api/languages").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/subscription-plans").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/decks").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/decks/{id}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/leaderboard/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/languages").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/subscription-plans").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/decks").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/decks/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/leaderboard/**").permitAll()
 
                         // ── Swagger / error ───────────────────────────────
                         .requestMatchers("/error").permitAll()

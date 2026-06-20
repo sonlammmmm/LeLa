@@ -15,47 +15,52 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lela.common.ApiResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 @RestController
-@RequestMapping("/api/subscription-plans")
+@RequestMapping("/subscription-plans")
 @RequiredArgsConstructor
 public class SubscriptionPlanController {
     private final SubscriptionPlanService service;
 
     // API lấy danh sách toàn bộ gói đăng ký.
     @GetMapping
-    public List<SubscriptionPlanResponse> findAll() {
-        return service.findAll();
+    public ResponseEntity<ApiResponse<List<SubscriptionPlanResponse>>> findAll() {
+        return ResponseEntity.ok(ApiResponse.success(service.findAll(), "Lấy danh sách thành công"));
     }
 
     // API tìm kiếm gói đăng ký theo ID.
     @GetMapping("/{id}")
-    public ResponseEntity<SubscriptionPlanResponse> findById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<SubscriptionPlanResponse>> findById(@PathVariable Long id) {
         return service.findById(id)
-                .map(ResponseEntity::ok)
+                .map(response -> ResponseEntity.ok(ApiResponse.success(response, "Tìm thấy gói đăng ký")))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     // API tạo mới gói đăng ký.
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public SubscriptionPlanResponse create(@Valid @RequestBody SubscriptionPlanCreateRequest request) {
-        return service.create(request);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<SubscriptionPlanResponse>> create(@Valid @RequestBody SubscriptionPlanCreateRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(service.create(request), "Tạo gói đăng ký thành công"));
     }
 
     // API cập nhật một phần thông tin gói đăng ký (PATCH).
     @PatchMapping("/{id}")
-    public SubscriptionPlanResponse patch(@PathVariable Long id,
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<SubscriptionPlanResponse>> patch(@PathVariable Long id,
             @Valid @RequestBody SubscriptionPlanPatchRequest request) {
-        return service.patch(id, request);
+        return ResponseEntity.ok(ApiResponse.success(service.patch(id, request), "Cập nhật thành công"));
     }
 
     // API xóa gói đăng ký theo ID.
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable Long id) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> deleteById(@PathVariable Long id) {
         service.deleteById(id);
+        return ResponseEntity.ok(ApiResponse.successMessage("Xóa thành công"));
     }
 }

@@ -14,8 +14,11 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 @RequiredArgsConstructor
+@Transactional
 @SuppressWarnings("null")
 public class UserRoleAssignmentServiceImpl implements UserRoleAssignmentService {
     private final UserRoleAssignmentRepository repository;
