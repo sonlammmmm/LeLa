@@ -3,6 +3,7 @@ package com.lela.Quiz;
 import com.lela.Quiz.dto.QuizRequest;
 import com.lela.Quiz.dto.QuizResponse;
 import com.lela.common.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/quiz")
+@RequestMapping("/api/quizs")
 
 public class QuizController {
     private final QuizService quizService;
@@ -35,18 +36,15 @@ public class QuizController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<QuizResponse>> save(@RequestBody QuizRequest req) {
-        return ResponseEntity.ok(ApiResponse.success(quizService.save(req)));
-    }
-
-    @PostMapping("/create")
-    public ResponseEntity<ApiResponse<QuizResponse>> create(@RequestBody @jakarta.validation.Valid QuizRequest req) {
+    public ResponseEntity<ApiResponse<QuizResponse>> create(@Valid @RequestBody QuizRequest req) {
         return ResponseEntity.ok(ApiResponse.success(quizService.create(req)));
     }
 
+
+
     @PutMapping("/{id}")
    // @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<QuizResponse>> update(@PathVariable Long id, @RequestBody QuizRequest req) {
+    public ResponseEntity<ApiResponse<QuizResponse>> update(@PathVariable Long id,@Valid @RequestBody QuizRequest req) {
         return ResponseEntity.ok(ApiResponse.success(quizService.update(id, req)));
     }
 
