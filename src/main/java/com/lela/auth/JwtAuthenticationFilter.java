@@ -1,4 +1,4 @@
-package com.lela.security;
+package com.lela.auth;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -11,8 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.lang.NonNull;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -26,9 +26,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         String authHeader = request.getHeader(AUTHORIZATION_HEADER);
 
@@ -41,13 +41,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             if (!jwtService.isAccessToken(token)) {
-                writeUnauthorizedResponse(response, "Invalid access token");
+                writeUnauthorizedResponse(response, "Access token không hợp lệ");
                 return;
             }
 
             String username = jwtService.extractUsername(token);
 
-            // LeLa dùng ROLE enum: ADMIN, LEARNER, CONTENT_CREATOR, MODERATOR
+            // LeLa dùng các mã vai trò: ADMIN, LEARNER, CONTENT_CREATOR, MODERATOR
             List<SimpleGrantedAuthority> authorities = jwtService.extractRoles(token).stream()
                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                     .toList();
@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         } catch (JwtException | IllegalArgumentException ex) {
             SecurityContextHolder.clearContext();
-            writeUnauthorizedResponse(response, "Token is invalid or expired");
+            writeUnauthorizedResponse(response, "Token không hợp lệ hoặc đã hết hạn");
             return;
         }
 

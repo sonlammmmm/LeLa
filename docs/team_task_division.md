@@ -1,62 +1,105 @@
-# Kế hoạch chia Task cho 4 thành viên (Làm việc song song, giảm thiểu block)
+# Kế hoạch chia Task Fullstack cho 4 thành viên
 
-Dựa trên cấu trúc 9 nhóm chức năng trong `api_architecture.md`, vấn đề lớn nhất khiến các thành viên phải "đợi nhau" là **Sự phụ thuộc về Dữ liệu (Foreign Keys)**. Ví dụ: Để làm `Quiz` cần có `Deck`, để làm `DeckEnrollment` cần có `Users` và `Deck`.
+Nhóm đã quyết định chia lại các phần việc cho từng thành viên theo cấu trúc 4 nhóm Domain (A, B, C, D). Mỗi thành viên sẽ đảm nhận toàn bộ luồng **Fullstack (từ Database, Backend API đến giao diện Frontend React)** cho Domain của mình.
 
-Để 4 người làm việc song song hiệu quả nhất, chúng ta cần áp dụng chiến lược **API First** & **Chia Phase** kết hợp với **Phân chia theo Domain (Vertical Slicing)**.
+Chiến lược làm việc song song vẫn áp dụng **API First** & **Chia Phase** kết hợp với **Phân chia theo Domain (Vertical Slicing)** để giảm thiểu việc block nhau do phụ thuộc dữ liệu.
 
 ---
 
-## 🚀 Chiến lược để không phải đợi nhau
+## 🚀 Chiến lược để không phải đợi nhau (Backend & Frontend)
 
 1. **Phase 0 (1-2 ngày đầu - Cả team cùng làm):**
-   - **Chốt API Contract:** Viết file Swagger/OpenAPI hoặc Postman collection cho TẤT CẢ API.
-   - **Tạo Entity & Mock Data:** 1 người chịu trách nhiệm gen toàn bộ 31 Entity class (chỉ khai báo field và relationship, không viết logic) và push lên nhánh `main`. 
-   - *Kết quả:* Mọi người đều có đủ class `Users`, `Deck`, `Quiz`... để reference mà không bị lỗi biên dịch.
+   - **Backend:** 
+     - Chốt API Contract (Swagger/OpenAPI).
+     - Tạo toàn bộ các Entity class cơ bản lên nhánh `main` để tránh lỗi biên dịch khi các domain gọi chéo nhau.
+   - **Frontend:**
+     - Thiết lập project React 18 + TypeScript bằng Vite.
+     - Khởi tạo thư mục base, cài đặt các thư viện lõi (TailwindCSS, Framer Motion, React Query, React Router v6, Axios, Chart.js...).
+     - Setup Layout cơ bản (Header, Sidebar) để mọi người có thể gắn các màn hình và component của mình vào.
 
-2. **Giao tiếp qua Event / Interface thay vì gọi trực tiếp (Loosely Coupled):**
-   - Khi `Quiz` hoàn thành, thay vì gọi trực tiếp hàm cộng điểm, bắn ra `QuizCompletedEvent`. Thành viên làm Notification/Leaderboard chỉ cần lắng nghe event này.
+2. **Sử dụng Mock Data & Mock Function:**
+   - **Backend:** Các service gọi chéo nhau thông qua Event hoặc Interface để lỏng lẻo hóa liên kết.
+   - **Frontend:** Xây dựng component UI bằng dữ liệu cứng (Mock JSON) trước để test luồng và animation. Khi nào Backend API hoàn thiện thì mới cắm API vào bằng React Query.
 
 ---
 
-## 👥 Phân chia Task cho 4 Thành viên
+## 👥 Phân chia Task Fullstack (A, B, C, D)
 
-### 🧑‍💻 Thành viên 1: Core Foundation & Identity (Nền tảng & User)
-Đảm nhận các tính năng cốt lõi về người dùng, phân quyền và dòng tiền.
+### 🧑‍💻 Thành viên A: Auth/Core (Xác thực & Cốt lõi)
+Đảm nhận các tính năng cốt lõi về người dùng, phân quyền và cấu hình hệ thống.
 
-* **Nhóm 1:** Language, Role, Tag (Cơ sở)
-* **Nhóm 2:** Users, UserRoleAssignment, RefreshTokenSession (Auth, JWT, Đăng nhập/Đăng ký)
-* **Nhóm 3:** SubscriptionPlan, Payment, UserSubscription (Thanh toán, nâng cấp tài khoản)
-* **Không bị block vì:** Đây là các module gốc, không phụ thuộc vào các module khác. Có thể bắt đầu code ngay lập tức.
+**Backend (API & Database):**
+* Language
+* SubscriptionPlan
+* Users
+* Role
+* UserRoleAssignment
+* RefreshTokenSession
 
-### 🧑‍💻 Thành viên 2: Content Creator Domain (Quản lý Nội dung)
-Đảm nhận hệ thống tạo và quản lý nội dung học tập của Giảng viên / Người dùng.
+**Frontend (React 18 + TS):**
+* Xây dựng luồng UI Đăng nhập, Đăng ký, và Đăng xuất.
+* Xử lý logic xác thực toàn cục (AuthContext), lưu trữ và xoay vòng JWT (Refresh Token).
+* Phân quyền RBAC trên UI (chặn các route không được phép, ẩn/hiện menu admin theo Role).
 
-* **Nhóm 4:** Deck, Flashcard, FlashcardTag (Bộ thẻ và thẻ)
-* **Nhóm 5:** Quiz, QuizQuestion, QuizQuestionOption (Bộ câu hỏi)
-* **Không bị block vì:** Mặc dù phụ thuộc vào `Users` (owner), nhưng Thành viên 2 chỉ cần dùng `userId` (Long) để lưu trữ. Khi test, tự insert 1 record User ảo vào DB (Mock data). Không cần đợi Thành viên 1 code xong UI/Logic đăng nhập.
+### 🧑‍💻 Thành viên B: Content (Nội dung Học)
+Đảm nhận hệ thống tạo và quản lý thư viện bộ thẻ học (Deck/Card).
 
-### 🧑‍💻 Thành viên 3: Learner Experience & SRS (Trải nghiệm học & Thuật toán)
-Đảm nhận logic phức tạp nhất: Thuật toán lặp lại ngắt quãng (SRS) và làm bài kiểm tra.
+**Backend (API & Database):**
+* Deck
+* Flashcard
+* Tag
+* FlashcardTag
 
-* **Nhóm 6:** DeckEnrollment, CardProgress, ReviewSession, SrsReview, DailyLearningActivity (Học và tính toán ngày review tiếp theo)
-* **Nhóm 7:** QuizAttempt, QuizAttemptQuestion, QuizAttemptOption, QuizAnswer (Logic Snapshot câu hỏi, chấm điểm làm bài)
-* **Không bị block vì:** Chỉ cần Entity `Deck`, `Flashcard`, `Quiz` đã có ở Phase 0. Thành viên 3 tự viết script tạo sẵn vài Deck và Quiz mẫu trong DB để test logic SRS và Chấm điểm. Mọi tính toán diễn ra độc lập với cách tạo Deck ở Thành viên 2.
+**Frontend (React 18 + TS):**
+* **Trang thư viện Deck:** Giao diện hiển thị danh sách bộ từ với số lượng card, tiến độ và ngày ôn tiếp theo.
+* **Trang Admin:** Quản lý deck, card (CRUD) và thống kê các deck phổ biến.
+* **Component chính:** Xây dựng `DeckProgressBar` (Thanh tiến độ số card đã mastered trên tổng số card trong deck).
 
-### 🧑‍💻 Thành viên 4: System, Engagement & Background Jobs (Hệ thống & Tương tác)
-Đảm nhận các service chạy ngầm, thống kê, hệ thống thông báo và logs.
+### 🧑‍💻 Thành viên C: Quiz (Kiểm tra)
+Đảm nhận toàn bộ nghiệp vụ kiểm tra trắc nghiệm.
 
-* **Nhóm 8:** LeaderboardSnapshot, Notification (Xếp hạng, Gửi email/in-app notification)
-* **Nhóm 9:** AuditLog, OutboxEvent, IdempotencyRecord (Ghi log, xử lý sự kiện bất đồng bộ)
-* **Không bị block vì:** 
-  - Thành viên 4 sẽ thiết kế kiến trúc Event-Driven (ví dụ Kafka/RabbitMQ hoặc Spring ApplicationEvent). 
-  - Thay vì đợi các module kia hoàn thiện, Thành viên 4 tự viết các *Publisher giả (Mock Publisher)* để bắn event ảo (`UserRegisteredEvent`, `DeckReviewedEvent`) để test hệ thống Ghi log, Xếp hạng và Thông báo.
+**Backend (API & Database):**
+* Quiz
+* QuizQuestion
+* QuizQuestionOption
+* QuizAttempt
+* QuizAttemptQuestion
+* QuizAttemptOption
+* QuizAnswer
+
+**Frontend (React 18 + TS):**
+* **Trang Quiz:** Giao diện cho người học làm bài trắc nghiệm, hiển thị số điểm/nộp bài.
+* **Trang Admin:** Quản lý ngân hàng câu hỏi quiz.
+* **Component chính:** Xây dựng `QuizTimer` (Đồng hồ đếm ngược trực quan cho mỗi bài/câu hỏi quiz).
+
+### 🧑‍💻 Thành viên D: Learning (Học tập & Tương tác)
+Đảm nhận logic phức tạp nhất về Thuật toán SRS (lặp lại ngắt quãng), theo dõi tiến độ, bảng xếp hạng và các luồng liên quan tới dòng tiền/tương tác.
+
+**Backend (API & Database):**
+* DeckEnrollment
+* CardProgress
+* ReviewSession
+* SrsReview
+* DailyLearningActivity
+* LeaderboardSnapshot
+* Notification
+* Payment
+* UserSubscription
+
+**Frontend (React 18 + TS):**
+* **Trang học Flashcard:** Màn hình review thẻ cốt lõi.
+* **Trang tiến độ:** Dashboard hiển thị biểu đồ heatmap hoạt động học theo ngày (dùng Chart.js), và streak hiện tại.
+* **Trang bảng xếp hạng:** Top người học theo điểm quiz và streak.
+* **Component chính:**
+  - `FlashCard`: Component lật thẻ 3D mượt mà sử dụng Framer Motion (hiển thị mặt trước/sau).
+  - `ReviewRatingButtons`: Bộ bốn nút (Again/Hard/Good/Easy) với màu sắc phân biệt và tooltip.
+  - `StreakCalendar`: Lịch heatmap hiển thị chuỗi ngày hoạt động trong tháng.
+  - `LeaderboardTable`: Bảng xếp hạng vinh danh có avatar, điểm và thứ hạng.
 
 ---
 
 ## 🔄 Quy trình làm việc hàng ngày (Daily Workflow)
 
-1. **Pull nhánh `main`:** Để lấy các Entity / Interface mới nhất do team cập nhật.
-2. **Dùng Mock Dữ liệu:** Nếu cần test api `/api/v1/decks` mà chưa có User, hãy dùng 1 user cứng `ID = 1`.
-3. **Push Code theo từng PR nhỏ (Từng Entity):** Viết xong CRUD của Entity nào, review và merge ngay Entity đó để người khác có thể sử dụng service (ví dụ `DeckService`).
-
-Bằng cách phân chia theo **Lĩnh vực (Domain)** như trên, mỗi người sẽ ôm trọn từ Database -> Repository -> Service -> Controller cho phần của mình, tỷ lệ merge conflict file sẽ giảm xuống gần 0%.
+1. **Backend:** Viết xong API / Entity nào thì review và merge lên `main` ngay để các domain khác có thể tích hợp.
+2. **Frontend:** Code UI và logic state độc lập trước. Khi có API, viết API clients và React Query hook để kết nối.
+3. **Độc lập Test:** Mỗi thành viên phải tự lo phần Mock Data (ví dụ Thành viên B cần User id để tạo Deck, tự fake một User ID = 1 trong lúc đợi Thành viên A hoàn tất Auth). Bằng cách gom trọn theo Domain Fullstack, tỷ lệ merge conflict sẽ được giảm thiểu tối đa.

@@ -1,7 +1,7 @@
-package com.lela.security;
+package com.lela.auth;
 
 import com.lela.config.AppJwtProperties;
-import com.lela.domain.entity.Users;
+import com.lela.users.domain.Users;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
