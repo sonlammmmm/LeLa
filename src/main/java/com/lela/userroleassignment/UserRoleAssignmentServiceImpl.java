@@ -1,12 +1,13 @@
 package com.lela.userroleassignment;
 
 import com.lela.common.exception.NotFoundExeception;
-import com.lela.role.Role;
+import com.lela.role.domain.Role;
 import com.lela.role.RoleRepository;
+import com.lela.userroleassignment.domain.UserRoleAssignment;
 import com.lela.userroleassignment.dto.UserRoleAssignmentCreateRequest;
 import com.lela.userroleassignment.dto.UserRoleAssignmentId;
 import com.lela.userroleassignment.dto.UserRoleAssignmentResponse;
-import com.lela.users.Users;
+import com.lela.users.domain.Users;
 import com.lela.users.UsersRepository;
 import java.util.List;
 import java.util.stream.Collectors;

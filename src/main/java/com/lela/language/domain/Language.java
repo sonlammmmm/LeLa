@@ -1,4 +1,4 @@
-package com.lela.language;
+package com.lela.language.domain;
 
 import com.lela.domain.AuditableEntity;
 import jakarta.persistence.Entity;

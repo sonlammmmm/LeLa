@@ -1,8 +1,8 @@
-package com.lela.userroleassignment;
+package com.lela.userroleassignment.domain;
 
-import com.lela.role.Role;
+import com.lela.role.domain.Role;
 import com.lela.userroleassignment.dto.UserRoleAssignmentId;
-import com.lela.users.Users;
+import com.lela.users.domain.Users;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;

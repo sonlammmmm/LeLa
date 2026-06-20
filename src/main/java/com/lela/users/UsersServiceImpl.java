@@ -1,12 +1,13 @@
 package com.lela.users;
 
 import com.lela.common.exception.NotFoundExeception;
-import com.lela.language.Language;
+import com.lela.language.domain.Language;
 import com.lela.language.LanguageRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.lela.users.domain.Users;
 import com.lela.users.dto.UsersCreateRequest;
 import com.lela.users.dto.UsersPatchRequest;
 import com.lela.users.dto.UsersResponse;

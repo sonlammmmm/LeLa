@@ -1,17 +1,17 @@
 package com.lela.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lela.role.Role;
+import com.lela.role.domain.Role;
 import com.lela.role.RoleRepository;
 import com.lela.auth.dto.LoginRequest;
 import com.lela.auth.dto.RefreshTokenRequest;
 import com.lela.auth.dto.RegisterRequest;
-import com.lela.userroleassignment.UserRoleAssignment;
+import com.lela.userroleassignment.domain.UserRoleAssignment;
 import com.lela.userroleassignment.UserRoleAssignmentRepository;
 import com.lela.userroleassignment.dto.UserRoleAssignmentId;
-import com.lela.users.Users;
+import com.lela.users.domain.Users;
 import com.lela.users.UsersRepository;
-import com.lela.users.UserStatus;
+import com.lela.users.domain.UserStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

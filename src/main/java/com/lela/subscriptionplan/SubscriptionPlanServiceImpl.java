@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.lela.subscriptionplan.domain.SubscriptionPlan;
 import com.lela.subscriptionplan.dto.SubscriptionPlanCreateRequest;
 import com.lela.subscriptionplan.dto.SubscriptionPlanPatchRequest;
 import com.lela.subscriptionplan.dto.SubscriptionPlanResponse;

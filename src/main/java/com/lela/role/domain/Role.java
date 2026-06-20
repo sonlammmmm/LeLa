@@ -1,4 +1,4 @@
-package com.lela.role;
+package com.lela.role.domain;
 
 import com.lela.domain.AuditableEntity;
 import jakarta.persistence.Entity;

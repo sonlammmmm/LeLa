@@ -1,6 +1,6 @@
 package com.lela.auth;
 
-import com.lela.users.Users;
+import com.lela.users.domain.Users;
 import com.lela.users.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.lela.users.UserStatus;
+import com.lela.users.domain.UserStatus;
 import java.util.List;
 
 @Service

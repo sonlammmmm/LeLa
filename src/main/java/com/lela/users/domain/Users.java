@@ -1,8 +1,8 @@
-package com.lela.users;
+package com.lela.users.domain;
 
 import com.lela.domain.AuditableEntity;
-import com.lela.language.Language;
-import com.lela.role.Role;
+import com.lela.language.domain.Language;
+import com.lela.role.domain.Role;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.Collections;
 import java.util.stream.Collectors;
-import com.lela.userroleassignment.UserRoleAssignment;
+import com.lela.userroleassignment.domain.UserRoleAssignment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

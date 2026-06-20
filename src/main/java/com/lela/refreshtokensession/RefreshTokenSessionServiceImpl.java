@@ -1,10 +1,11 @@
 package com.lela.refreshtokensession;
 
 import com.lela.common.exception.NotFoundExeception;
+import com.lela.refreshtokensession.domain.RefreshTokenSession;
 import com.lela.refreshtokensession.dto.RefreshTokenSessionCreateRequest;
 import com.lela.refreshtokensession.dto.RefreshTokenSessionPatchRequest;
 import com.lela.refreshtokensession.dto.RefreshTokenSessionResponse;
-import com.lela.users.Users;
+import com.lela.users.domain.Users;
 import com.lela.users.UsersRepository;
 import java.util.List;
 import java.util.Optional;

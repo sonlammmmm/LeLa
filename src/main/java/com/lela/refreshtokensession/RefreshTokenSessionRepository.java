@@ -1,5 +1,6 @@
 package com.lela.refreshtokensession;
 
+import com.lela.refreshtokensession.domain.RefreshTokenSession;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 

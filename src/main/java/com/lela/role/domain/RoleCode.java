@@ -1,4 +1,4 @@
-package com.lela.role;
+package com.lela.role.domain;
 
 // Enum mã vai trò chuẩn trong hệ thống RBAC.
 public enum RoleCode {

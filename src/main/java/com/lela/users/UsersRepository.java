@@ -1,5 +1,6 @@
 package com.lela.users;
 
+import com.lela.users.domain.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 

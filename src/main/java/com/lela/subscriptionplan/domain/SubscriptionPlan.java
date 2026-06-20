@@ -1,4 +1,4 @@
-package com.lela.subscriptionplan;
+package com.lela.subscriptionplan.domain;
 
 import com.lela.domain.AuditableEntity;
 import jakarta.persistence.Entity;

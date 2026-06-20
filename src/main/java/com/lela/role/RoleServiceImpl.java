@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.lela.role.domain.Role;
 import com.lela.role.dto.RoleCreateRequest;
 import com.lela.role.dto.RolePatchRequest;
 import com.lela.role.dto.RoleResponse;

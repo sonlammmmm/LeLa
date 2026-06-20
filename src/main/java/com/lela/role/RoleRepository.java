@@ -1,5 +1,6 @@
 package com.lela.role;
 
+import com.lela.role.domain.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 

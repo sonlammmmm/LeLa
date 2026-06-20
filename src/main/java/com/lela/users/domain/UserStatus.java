@@ -1,4 +1,4 @@
-package com.lela.users;
+package com.lela.users.domain;
 
 // Enum trạng thái tài khoản người dùng.
 public enum UserStatus {

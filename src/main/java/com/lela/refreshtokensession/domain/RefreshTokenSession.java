@@ -1,7 +1,7 @@
-package com.lela.refreshtokensession;
+package com.lela.refreshtokensession.domain;
 
 import com.lela.domain.AuditableEntity;
-import com.lela.users.Users;
+import com.lela.users.domain.Users;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
