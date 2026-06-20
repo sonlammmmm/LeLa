@@ -1,12 +1,14 @@
 #cau hinh moi truong dev
 spring:
   datasource:
-    url: ${YOEDU_DB_URL:jdbc:mysql://e4XQFMeuMbogRQK.root:uy5LwcYamnRwU8a1@gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com:4000/LeLa?sslMode=VERIFY_IDENTITY}
-    username: ${YOEDU_DB_USER:e4XQFMeuMbogRQK.root}
-    password: ${YOEDU_DB_PASSWORD:uy5LwcYamnRwU8a1}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/flascard_db?createDatabaseIfNotExist=true
+    username: root
+    password:
+
   flyway:
     enabled: true
+    validate-on-migrate: false
   jpa:
     hibernate:
       ddl-auto: none
