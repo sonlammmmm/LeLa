@@ -1,6 +1,13 @@
 -- ===== V5: Seed LeLa data =====
 
 -- Clean up old test data nếu còn
+DELETE FROM quizzes        WHERE quiz_code IN ('Q-EN-OFFICE-01','Q-EN-TRAVEL-01');
+DELETE FROM flashcards     WHERE deck_id IN (SELECT id FROM decks WHERE deck_code IN ('DECK-EN-OFFICE','DECK-EN-TRAVEL','DECK-EN-BASIC','DECK-001','DECK-002'));
+DELETE FROM decks          WHERE deck_code IN ('DECK-EN-OFFICE','DECK-EN-TRAVEL','DECK-EN-BASIC','DECK-001','DECK-002');
+DELETE FROM user_roles     WHERE user_id IN (SELECT id FROM users WHERE username IN ('admin','learner1','learner2'));
+DELETE FROM payments       WHERE user_id IN (SELECT id FROM users WHERE username IN ('admin','learner1','learner2'));
+DELETE FROM user_subscriptions WHERE user_id IN (SELECT id FROM users WHERE username IN ('admin','learner1','learner2'));
+DELETE FROM users          WHERE username IN ('admin','learner1','learner2');
 DELETE FROM quizzes   WHERE quiz_code IN ('Q-EN-OFFICE-01','Q-EN-TRAVEL-01');
 DELETE FROM flashcards WHERE deck_id IN (SELECT id FROM decks WHERE deck_code IN ('DECK-EN-OFFICE','DECK-EN-TRAVEL','DECK-EN-BASIC','DECK-001','DECK-002'));
 DELETE FROM decks     WHERE deck_code IN ('DECK-EN-OFFICE','DECK-EN-TRAVEL','DECK-EN-BASIC','DECK-001','DECK-002');
