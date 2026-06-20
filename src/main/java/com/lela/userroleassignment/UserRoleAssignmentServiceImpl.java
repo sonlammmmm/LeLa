@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class UserRoleAssignmentServiceImpl implements UserRoleAssignmentService {
     private final UserRoleAssignmentRepository repository;
     private final UsersRepository usersRepository;

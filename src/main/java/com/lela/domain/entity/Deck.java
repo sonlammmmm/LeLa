@@ -4,6 +4,8 @@ import com.lela.domain.AuditableEntity;
 import com.lela.domain.enums.DeckDifficulty;
 import com.lela.domain.enums.DeckStatus;
 import com.lela.domain.enums.DeckVisibility;
+import com.lela.users.Users;
+import com.lela.language.Language;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

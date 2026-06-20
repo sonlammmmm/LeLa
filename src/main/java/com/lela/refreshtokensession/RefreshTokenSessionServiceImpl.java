@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class RefreshTokenSessionServiceImpl implements RefreshTokenSessionService {
     private final RefreshTokenSessionRepository repository;
     private final UsersRepository usersRepository;

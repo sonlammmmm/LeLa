@@ -4,6 +4,7 @@ import com.lela.domain.AuditableEntity;
 import com.lela.domain.enums.NotificationChannel;
 import com.lela.domain.enums.NotificationStatus;
 import com.lela.domain.enums.NotificationType;
+import com.lela.users.Users;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

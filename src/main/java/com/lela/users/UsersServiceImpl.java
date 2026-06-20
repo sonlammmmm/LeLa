@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class UsersServiceImpl implements UsersService {
     private final UsersRepository repository;
     private final LanguageRepository languageRepository;

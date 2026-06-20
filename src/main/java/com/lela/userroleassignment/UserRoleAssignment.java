@@ -16,6 +16,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
@@ -34,6 +36,8 @@ public class UserRoleAssignment {
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("userId")
     @JoinColumn(name = "user_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Users user;
 
     // Thực thể vai trò tương ứng (được liên kết thông qua roleId trong khóa
@@ -41,11 +45,15 @@ public class UserRoleAssignment {
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("roleId")
     @JoinColumn(name = "role_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Role role;
 
     // Người thực hiện gán vai trò này cho người dùng
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_by")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Users assignedBy;
 
     // Thời điểm gán vai trò

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class LanguageServiceImpl implements LanguageService {
     private final LanguageRepository repository;
     private final ModelMapper modelMapper;

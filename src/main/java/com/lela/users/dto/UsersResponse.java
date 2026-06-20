@@ -1,6 +1,6 @@
 package com.lela.users.dto;
 
-import com.lela.domain.enums.UserStatus;
+import com.lela.users.UserStatus;
 import com.lela.language.dto.LanguageResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository repository;
     private final ModelMapper modelMapper;

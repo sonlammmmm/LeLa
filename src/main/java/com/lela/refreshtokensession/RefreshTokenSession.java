@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "refresh_token_sessions")
@@ -25,6 +26,8 @@ public class RefreshTokenSession extends AuditableEntity {
     // Thông tin người dùng sở hữu session refresh token này
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Users user;
 
     // Mã băm (hash) của Refresh Token nhằm bảo mật
@@ -36,6 +39,8 @@ public class RefreshTokenSession extends AuditableEntity {
     // Phiên làm việc (token) thay thế cho token hiện tại
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "replaced_by_token_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private RefreshTokenSession replacedByToken;
 
     // Tên thiết bị đăng nhập của người dùng

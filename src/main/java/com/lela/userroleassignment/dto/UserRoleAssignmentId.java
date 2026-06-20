@@ -1,4 +1,4 @@
-﻿package com.lela.userroleassignment.dto;
+package com.lela.userroleassignment.dto;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;

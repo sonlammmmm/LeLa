@@ -1,6 +1,6 @@
 package com.lela.users.dto;
 
-import com.lela.domain.enums.UserStatus;
+import com.lela.users.UserStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;

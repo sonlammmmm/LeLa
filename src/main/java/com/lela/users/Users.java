@@ -1,23 +1,29 @@
 package com.lela.users;
 
 import com.lela.domain.AuditableEntity;
-import com.lela.domain.enums.UserStatus;
 import com.lela.language.Language;
+import com.lela.role.Role;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import com.lela.userroleassignment.UserRoleAssignment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "users")
@@ -45,11 +51,15 @@ public class Users extends AuditableEntity {
     // Ngôn ngữ mẹ đẻ của người dùng
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "native_language_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Language nativeLanguage;
 
     // Ngôn ngữ mục tiêu đang học
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_language_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Language targetLanguage;
 
     // Trạng thái tài khoản người dùng (PENDING, ACTIVE, SUSPENDED, DEACTIVATED)
@@ -86,4 +96,25 @@ public class Users extends AuditableEntity {
     // Phiên bản dữ liệu dùng để tối ưu khóa ghi (Optimistic Locking)
     @Version
     private Long version;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @Builder.Default
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<UserRoleAssignment> roleAssignments = new java.util.LinkedHashSet<>();
+
+    public Set<String> getRoleCodes() {
+        if (roleAssignments == null) {
+            return Collections.singleton("LEARNER");
+        }
+        Set<String> codes = roleAssignments.stream()
+                .map(UserRoleAssignment::getRole)
+                .filter(role -> role != null && Boolean.TRUE.equals(role.getIsActive()))
+                .map(Role::getRoleCode)
+                .collect(Collectors.toSet());
+        if (codes.isEmpty()) {
+            codes.add("LEARNER");
+        }
+        return codes;
+    }
 }
