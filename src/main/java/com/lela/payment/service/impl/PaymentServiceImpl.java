@@ -1,14 +1,19 @@
 package com.lela.payment.service.impl;
 
+import com.lela.common.exception.NotFoundExeception;
+import com.lela.domain.entity.Users;
+import com.lela.domain.enums.PaymentStatus;
 import com.lela.payment.Payment;
 import com.lela.payment.dto.PaymentRequest;
 import com.lela.payment.dto.PaymentResponse;
 import com.lela.payment.repository.PaymentRepository;
 import com.lela.payment.service.PaymentService;
-import com.lela.common.exception.NotFoundExeception;
+import com.lela.usersubscription.UserSubscription;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,35 +22,39 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository repository;
+    private final EntityManager entityManager;
+
+    private Long getCurrentUserId() {
+        return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<PaymentResponse> getAll(Pageable pageable) {
         return repository.findAll(pageable).map(this::mapToResponse);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PaymentResponse getById(Long id) {
         Payment entity = repository.findById(id)
-                .orElseThrow(() -> new NotFoundExeception("Payment not found with id: " + id));
+                .orElseThrow(() -> new NotFoundExeception("Không tìm thấy giao dịch với ID: " + id));
         return mapToResponse(entity);
     }
 
     @Override
     @Transactional
     public PaymentResponse create(PaymentRequest request) {
+        Long userId = getCurrentUserId();
         Payment entity = new Payment();
-        // TODO: Map relation 'user' using 'userId'. E.g. entity.setUser(repository.findById(request.getUserId()).orElseThrow());
-        // TODO: Map relation 'subscription' using 'subscriptionId'. E.g. entity.setSubscription(repository.findById(request.getSubscriptionId()).orElseThrow());
-        entity.setProvider(request.getProvider());
-        entity.setProviderTransactionId(request.getProviderTransactionId());
-        entity.setAmount(request.getAmount());
-        entity.setCurrencyCode(request.getCurrencyCode());
-        entity.setStatus(request.getStatus());
-        entity.setPaidAt(request.getPaidAt());
-        entity.setFailedAt(request.getFailedAt());
-        entity.setRefundedAt(request.getRefundedAt());
-        entity.setFailureReason(request.getFailureReason());
-        entity.setProviderPayload(request.getProviderPayload());
+
+        entity.setUser(entityManager.getReference(Users.class, userId));
+        if (request.getSubscriptionId() != null) {
+            entity.setSubscription(entityManager.getReference(UserSubscription.class, request.getSubscriptionId()));
+        }
+
+        updatePaymentFields(entity, request);
+
         return mapToResponse(repository.save(entity));
     }
 
@@ -53,39 +62,42 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public PaymentResponse update(Long id, PaymentRequest request) {
         Payment entity = repository.findById(id)
-                .orElseThrow(() -> new NotFoundExeception("Payment not found with id: " + id));
-        // TODO: Map relation 'user' using 'userId'. E.g. entity.setUser(repository.findById(request.getUserId()).orElseThrow());
-        // TODO: Map relation 'subscription' using 'subscriptionId'. E.g. entity.setSubscription(repository.findById(request.getSubscriptionId()).orElseThrow());
+                .orElseThrow(() -> new NotFoundExeception("Không tìm thấy giao dịch với ID: " + id));
+
+        updatePaymentFields(entity, request);
+        return mapToResponse(repository.save(entity));
+    }
+
+    private void updatePaymentFields(Payment entity, PaymentRequest request) {
         entity.setProvider(request.getProvider());
         entity.setProviderTransactionId(request.getProviderTransactionId());
         entity.setAmount(request.getAmount());
         entity.setCurrencyCode(request.getCurrencyCode());
-        entity.setStatus(request.getStatus());
+
+        entity.setStatus(request.getStatus() != null ? request.getStatus() : PaymentStatus.PENDING);
+
         entity.setPaidAt(request.getPaidAt());
         entity.setFailedAt(request.getFailedAt());
         entity.setRefundedAt(request.getRefundedAt());
         entity.setFailureReason(request.getFailureReason());
         entity.setProviderPayload(request.getProviderPayload());
-        return mapToResponse(repository.save(entity));
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
         if (!repository.existsById(id)) {
-            throw new NotFoundExeception("Payment not found with id: " + id);
+            throw new NotFoundExeception("Không tìm thấy giao dịch với ID: " + id);
         }
         repository.deleteById(id);
     }
 
     private PaymentResponse mapToResponse(Payment entity) {
         PaymentResponse response = new PaymentResponse();
-        if (entity.getUser() != null) {
-            response.setUserId(entity.getUser().getId());
-        }
-        if (entity.getSubscription() != null) {
-            response.setSubscriptionId(entity.getSubscription().getId());
-        }
+        response.setId(entity.getId());
+        if (entity.getUser() != null) response.setUserId(entity.getUser().getId());
+        if (entity.getSubscription() != null) response.setSubscriptionId(entity.getSubscription().getId());
+
         response.setProvider(entity.getProvider());
         response.setProviderTransactionId(entity.getProviderTransactionId());
         response.setAmount(entity.getAmount());
@@ -98,7 +110,6 @@ public class PaymentServiceImpl implements PaymentService {
         response.setProviderPayload(entity.getProviderPayload());
         response.setCreatedAt(entity.getCreatedAt());
         response.setUpdatedAt(entity.getUpdatedAt());
-        response.setId(entity.getId());
         return response;
     }
 }

@@ -1,14 +1,18 @@
 package com.lela.usersubscription.service.impl;
 
+import com.lela.common.exception.NotFoundExeception;
+import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.domain.entity.Users;
 import com.lela.usersubscription.UserSubscription;
 import com.lela.usersubscription.dto.UserSubscriptionRequest;
 import com.lela.usersubscription.dto.UserSubscriptionResponse;
 import com.lela.usersubscription.repository.UserSubscriptionRepository;
 import com.lela.usersubscription.service.UserSubscriptionService;
-import com.lela.common.exception.NotFoundExeception;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,33 +21,36 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserSubscriptionServiceImpl implements UserSubscriptionService {
 
     private final UserSubscriptionRepository repository;
+    private final EntityManager entityManager;
+
+    private Long getCurrentUserId() {
+        return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<UserSubscriptionResponse> getAll(Pageable pageable) {
         return repository.findAll(pageable).map(this::mapToResponse);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserSubscriptionResponse getById(Long id) {
         UserSubscription entity = repository.findById(id)
-                .orElseThrow(() -> new NotFoundExeception("UserSubscription not found with id: " + id));
+                .orElseThrow(() -> new NotFoundExeception("Không tìm thấy đăng ký gói với ID: " + id));
         return mapToResponse(entity);
     }
 
     @Override
     @Transactional
     public UserSubscriptionResponse create(UserSubscriptionRequest request) {
+        Long userId = getCurrentUserId();
         UserSubscription entity = new UserSubscription();
-        // TODO: Map relation 'user' using 'userId'. E.g. entity.setUser(repository.findById(request.getUserId()).orElseThrow());
-        // TODO: Map relation 'plan' using 'planId'. E.g. entity.setPlan(repository.findById(request.getPlanId()).orElseThrow());
-        entity.setStatus(request.getStatus());
-        entity.setStartedAt(request.getStartedAt());
-        entity.setExpiresAt(request.getExpiresAt());
-        entity.setTrialEndsAt(request.getTrialEndsAt());
-        entity.setCancelledAt(request.getCancelledAt());
-        entity.setAutoRenew(request.getAutoRenew());
-        entity.setProvider(request.getProvider());
-        entity.setProviderSubscriptionId(request.getProviderSubscriptionId());
+
+        entity.setUser(entityManager.getReference(Users.class, userId));
+        entity.setPlan(entityManager.getReference(SubscriptionPlan.class, request.getPlanId()));
+
+        updateSubscriptionFields(entity, request);
         return mapToResponse(repository.save(entity));
     }
 
@@ -51,37 +58,42 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
     @Transactional
     public UserSubscriptionResponse update(Long id, UserSubscriptionRequest request) {
         UserSubscription entity = repository.findById(id)
-                .orElseThrow(() -> new NotFoundExeception("UserSubscription not found with id: " + id));
-        // TODO: Map relation 'user' using 'userId'. E.g. entity.setUser(repository.findById(request.getUserId()).orElseThrow());
-        // TODO: Map relation 'plan' using 'planId'. E.g. entity.setPlan(repository.findById(request.getPlanId()).orElseThrow());
+                .orElseThrow(() -> new NotFoundExeception("Không tìm thấy đăng ký gói với ID: " + id));
+
+        if (request.getPlanId() != null) {
+            entity.setPlan(entityManager.getReference(SubscriptionPlan.class, request.getPlanId()));
+        }
+
+        updateSubscriptionFields(entity, request);
+        return mapToResponse(repository.save(entity));
+    }
+
+    private void updateSubscriptionFields(UserSubscription entity, UserSubscriptionRequest request) {
         entity.setStatus(request.getStatus());
         entity.setStartedAt(request.getStartedAt());
         entity.setExpiresAt(request.getExpiresAt());
         entity.setTrialEndsAt(request.getTrialEndsAt());
         entity.setCancelledAt(request.getCancelledAt());
-        entity.setAutoRenew(request.getAutoRenew());
+        entity.setAutoRenew(request.getAutoRenew() != null ? request.getAutoRenew() : false);
         entity.setProvider(request.getProvider());
         entity.setProviderSubscriptionId(request.getProviderSubscriptionId());
-        return mapToResponse(repository.save(entity));
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
         if (!repository.existsById(id)) {
-            throw new NotFoundExeception("UserSubscription not found with id: " + id);
+            throw new NotFoundExeception("Không tìm thấy đăng ký gói với ID: " + id);
         }
         repository.deleteById(id);
     }
 
     private UserSubscriptionResponse mapToResponse(UserSubscription entity) {
         UserSubscriptionResponse response = new UserSubscriptionResponse();
-        if (entity.getUser() != null) {
-            response.setUserId(entity.getUser().getId());
-        }
-        if (entity.getPlan() != null) {
-            response.setPlanId(entity.getPlan().getId());
-        }
+        response.setId(entity.getId());
+        if (entity.getUser() != null) response.setUserId(entity.getUser().getId());
+        if (entity.getPlan() != null) response.setPlanId(entity.getPlan().getId());
+
         response.setStatus(entity.getStatus());
         response.setStartedAt(entity.getStartedAt());
         response.setExpiresAt(entity.getExpiresAt());
@@ -92,7 +104,6 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
         response.setProviderSubscriptionId(entity.getProviderSubscriptionId());
         response.setCreatedAt(entity.getCreatedAt());
         response.setUpdatedAt(entity.getUpdatedAt());
-        response.setId(entity.getId());
         return response;
     }
 }
