@@ -62,13 +62,6 @@ public class Quiz extends AuditableEntity {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true; // Quiz còn được sử dụng hay không.
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", nullable = false)
-    private Users createdBy; // Người tạo quiz.
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "updated_by")
-    private Users updatedBy; // Người cập nhật quiz gần nhất.
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt; // Thời điểm xóa mềm quiz.
