@@ -8,6 +8,11 @@ DELETE FROM user_roles     WHERE user_id IN (SELECT id FROM users WHERE username
 DELETE FROM payments       WHERE user_id IN (SELECT id FROM users WHERE username IN ('admin','learner1','learner2'));
 DELETE FROM user_subscriptions WHERE user_id IN (SELECT id FROM users WHERE username IN ('admin','learner1','learner2'));
 DELETE FROM users          WHERE username IN ('admin','learner1','learner2');
+DELETE FROM quizzes   WHERE quiz_code IN ('Q-EN-OFFICE-01','Q-EN-TRAVEL-01');
+DELETE FROM flashcards WHERE deck_id IN (SELECT id FROM decks WHERE deck_code IN ('DECK-EN-OFFICE','DECK-EN-TRAVEL','DECK-EN-BASIC','DECK-001','DECK-002'));
+DELETE FROM decks     WHERE deck_code IN ('DECK-EN-OFFICE','DECK-EN-TRAVEL','DECK-EN-BASIC','DECK-001','DECK-002');
+DELETE FROM user_roles WHERE user_id IN (SELECT id FROM users WHERE username IN ('admin','learner1','learner2'));
+DELETE FROM users     WHERE username IN ('admin','learner1','learner2');
 
 -- 1. Users
 INSERT INTO users (username, email, password_hash, full_name, status, timezone, version) VALUES
@@ -53,6 +58,6 @@ INSERT INTO flashcards (deck_id, front_text, back_text, card_order, is_active, c
 ((SELECT id FROM decks WHERE deck_code='DECK-EN-TRAVEL'), 'Turn left / Turn right', 'Rẽ trái / Rẽ phải',      5, TRUE, (SELECT id FROM users WHERE username='admin'), 0);
 
 -- 6. Quizzes
-INSERT INTO quizzes (deck_id, quiz_code, title, description, quiz_type, time_limit_seconds, pass_score, max_attempts, shuffle_questions, shuffle_options, total_questions, is_active, version) VALUES
-((SELECT id FROM decks WHERE deck_code='DECK-EN-OFFICE'), 'Q-EN-OFFICE-01', 'Quiz tiếng Anh công sở', 'Kiểm tra nhanh các mẫu câu công sở thường gặp.',           'MULTIPLE_CHOICE', 300, 60.00, 3, TRUE, TRUE, 4, TRUE, 0),
-((SELECT id FROM decks WHERE deck_code='DECK-EN-TRAVEL'), 'Q-EN-TRAVEL-01', 'Quiz tiếng Anh du lịch', 'Ôn mẫu câu hỏi đường, nhận phòng, gọi món và mua sắm.',    'MULTIPLE_CHOICE', 240, 60.00, 3, TRUE, TRUE, 4, TRUE, 0);
+INSERT INTO quizzes (deck_id, quiz_code, title, description, quiz_type, time_limit_seconds, pass_score, max_attempts, shuffle_questions, shuffle_options, total_questions, is_active, created_by, version) VALUES
+((SELECT id FROM decks WHERE deck_code='DECK-EN-OFFICE'), 'Q-EN-OFFICE-01', 'Quiz tiếng Anh công sở', 'Kiểm tra nhanh các mẫu câu công sở thường gặp.',           'MULTIPLE_CHOICE', 300, 60.00, 3, TRUE, TRUE, 4, TRUE, (SELECT id FROM users WHERE username='admin'), 0),
+((SELECT id FROM decks WHERE deck_code='DECK-EN-TRAVEL'), 'Q-EN-TRAVEL-01', 'Quiz tiếng Anh du lịch', 'Ôn mẫu câu hỏi đường, nhận phòng, gọi món và mua sắm.',    'MULTIPLE_CHOICE', 240, 60.00, 3, TRUE, TRUE, 4, TRUE, (SELECT id FROM users WHERE username='admin'), 0);
