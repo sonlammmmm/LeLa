@@ -1,16 +1,21 @@
 package com.lela.leaderboardsnapshot.service.impl;
 
-import com.lela.leaderboardsnapshot.LeaderboardSnapshot;
-import com.lela.leaderboardsnapshot.dto.LeaderboardSnapshotRequest;
 import com.lela.leaderboardsnapshot.dto.LeaderboardSnapshotResponse;
 import com.lela.leaderboardsnapshot.repository.LeaderboardSnapshotRepository;
 import com.lela.leaderboardsnapshot.service.LeaderboardSnapshotService;
-import com.lela.common.exception.NotFoundExeception;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,76 +23,75 @@ public class LeaderboardSnapshotServiceImpl implements LeaderboardSnapshotServic
 
     private final LeaderboardSnapshotRepository repository;
 
-    @Override
-    public Page<LeaderboardSnapshotResponse> getAll(Pageable pageable) {
-        return repository.findAll(pageable).map(this::mapToResponse);
+    private Long getCurrentUserId() {
+        return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
     @Override
-    public LeaderboardSnapshotResponse getById(Long id) {
-        LeaderboardSnapshot entity = repository.findById(id)
-                .orElseThrow(() -> new NotFoundExeception("LeaderboardSnapshot not found with id: " + id));
-        return mapToResponse(entity);
+    @Transactional(readOnly = true)
+    public Page<LeaderboardSnapshotResponse> getTopRanking(Pageable pageable) {
+        return getWeeklyRanking(pageable);
     }
 
     @Override
-    @Transactional
-    public LeaderboardSnapshotResponse create(LeaderboardSnapshotRequest request) {
-        LeaderboardSnapshot entity = new LeaderboardSnapshot();
-        // TODO: Map relation 'user' using 'userId'. E.g. entity.setUser(repository.findById(request.getUserId()).orElseThrow());
-        entity.setPeriodType(request.getPeriodType());
-        entity.setPeriodStart(request.getPeriodStart());
-        entity.setPeriodEnd(request.getPeriodEnd());
-        entity.setXpScore(request.getXpScore());
-        entity.setQuizScore(request.getQuizScore());
-        entity.setStreakDays(request.getStreakDays());
-        entity.setCardsMastered(request.getCardsMastered());
-        entity.setTotalScore(request.getTotalScore());
-        return mapToResponse(repository.save(entity));
+    @Transactional(readOnly = true)
+    public Page<LeaderboardSnapshotResponse> getDailyRanking(Pageable pageable) {
+        LocalDate today = LocalDate.now();
+        return getRealTimePage(today, today, pageable);
     }
 
     @Override
-    @Transactional
-    public LeaderboardSnapshotResponse update(Long id, LeaderboardSnapshotRequest request) {
-        LeaderboardSnapshot entity = repository.findById(id)
-                .orElseThrow(() -> new NotFoundExeception("LeaderboardSnapshot not found with id: " + id));
-        // TODO: Map relation 'user' using 'userId'. E.g. entity.setUser(repository.findById(request.getUserId()).orElseThrow());
-        entity.setPeriodType(request.getPeriodType());
-        entity.setPeriodStart(request.getPeriodStart());
-        entity.setPeriodEnd(request.getPeriodEnd());
-        entity.setXpScore(request.getXpScore());
-        entity.setQuizScore(request.getQuizScore());
-        entity.setStreakDays(request.getStreakDays());
-        entity.setCardsMastered(request.getCardsMastered());
-        entity.setTotalScore(request.getTotalScore());
-        return mapToResponse(repository.save(entity));
+    @Transactional(readOnly = true)
+    public Page<LeaderboardSnapshotResponse> getWeeklyRanking(Pageable pageable) {
+        LocalDate today = LocalDate.now();
+        LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate endOfWeek = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+        return getRealTimePage(startOfWeek, endOfWeek, pageable);
     }
 
     @Override
-    @Transactional
-    public void delete(Long id) {
-        if (!repository.existsById(id)) {
-            throw new NotFoundExeception("LeaderboardSnapshot not found with id: " + id);
-        }
-        repository.deleteById(id);
+    @Transactional(readOnly = true)
+    public Page<LeaderboardSnapshotResponse> getMonthlyRanking(Pageable pageable) {
+        LocalDate today = LocalDate.now();
+        LocalDate startOfMonth = today.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate endOfMonth = today.with(TemporalAdjusters.lastDayOfMonth());
+        return getRealTimePage(startOfMonth, endOfMonth, pageable);
     }
 
-    private LeaderboardSnapshotResponse mapToResponse(LeaderboardSnapshot entity) {
+    @Override
+    @Transactional(readOnly = true)
+    public LeaderboardSnapshotResponse getUserRanking(Long userId) {
+        Long targetUserId = (userId != null) ? userId : getCurrentUserId();
+        LocalDate today = LocalDate.now();
+        LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate endOfWeek = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+
+        Long currentRank = repository.findUserRealTimeRank(targetUserId, startOfWeek, endOfWeek).orElse(1L);
+        Long totalXp = repository.findUserTotalXpInPeriod(targetUserId, startOfWeek, endOfWeek);
+
         LeaderboardSnapshotResponse response = new LeaderboardSnapshotResponse();
-        if (entity.getUser() != null) {
-            response.setUserId(entity.getUser().getId());
-        }
-        response.setPeriodType(entity.getPeriodType());
-        response.setPeriodStart(entity.getPeriodStart());
-        response.setPeriodEnd(entity.getPeriodEnd());
-        response.setXpScore(entity.getXpScore());
-        response.setQuizScore(entity.getQuizScore());
-        response.setStreakDays(entity.getStreakDays());
-        response.setCardsMastered(entity.getCardsMastered());
-        response.setTotalScore(entity.getTotalScore());
-        response.setCreatedAt(entity.getCreatedAt());
-        response.setUpdatedAt(entity.getUpdatedAt());
-        response.setId(entity.getId());
+        response.setUserId(targetUserId);
+        response.setTotalScore(totalXp);
+        response.setXpScore(totalXp);
+        response.setId(currentRank);
         return response;
+    }
+
+    private Page<LeaderboardSnapshotResponse> getRealTimePage(LocalDate start, LocalDate end, Pageable pageable) {
+        Page<Object[]> rawData = repository.findRealTimeRankings(start, end, pageable);
+        List<LeaderboardSnapshotResponse> dtoList = new ArrayList<>();
+
+        for (Object[] row : rawData.getContent()) {
+            LeaderboardSnapshotResponse res = new LeaderboardSnapshotResponse();
+            res.setUserId((Long) row[0]);
+            res.setXpScore((Long) row[1]);
+            res.setTotalScore((Long) row[1]);
+            res.setQuizScore((Long) row[2]);
+            res.setCardsMastered(((Long) row[3]).intValue());
+            res.setPeriodStart(start);
+            res.setPeriodEnd(end);
+            dtoList.add(res);
+        }
+        return new PageImpl<>(dtoList, pageable, rawData.getTotalElements());
     }
 }

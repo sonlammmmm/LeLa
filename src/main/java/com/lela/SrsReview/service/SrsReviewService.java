@@ -6,11 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface SrsReviewService {
-    Page<SrsReviewResponse> getAll(Pageable pageable);
-    SrsReviewResponse getById(Long id);
-    SrsReviewResponse create(SrsReviewRequest request);
-    SrsReviewResponse update(Long id, SrsReviewRequest request);
-    void delete(Long id);
-    SrsReviewResponse submitReview(SrsReviewRequest request);
+    SrsReviewResponse reviewCard(SrsReviewRequest request);
+    Page<SrsReviewResponse> getReviewHistory(Long userId, Pageable pageable);
+    Object getReviewStatistics(Long userId);
 }
-

@@ -3,44 +3,43 @@ package com.lela.cardprogress.controller;
 import com.lela.cardprogress.dto.CardProgressRequest;
 import com.lela.cardprogress.dto.CardProgressResponse;
 import com.lela.cardprogress.service.CardProgressService;
-import com.lela.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/cardprogresss")
+@RequestMapping("/api/v1/card-progress")
 @RequiredArgsConstructor
 public class CardProgressController {
 
-    private final CardProgressService service;
+    private final CardProgressService cardProgressService;
 
-    @GetMapping
-    public ApiResponse<Page<CardProgressResponse>> getAll(Pageable pageable) {
-        return ApiResponse.success(service.getAll(pageable));
+    @GetMapping("/deck/{deckId}")
+    public ResponseEntity<Page<CardProgressResponse>> getProgressByDeck(@PathVariable Long deckId, Pageable pageable) {
+        return ResponseEntity.ok(cardProgressService.getProgressByDeck(deckId, pageable));
     }
 
-    @GetMapping("/{id}")
-    public ApiResponse<CardProgressResponse> getById(@PathVariable Long id) {
-        return ApiResponse.success(service.getById(id));
+    @GetMapping("/deck/{deckId}/review")
+    public ResponseEntity<Page<CardProgressResponse>> getReviewCards(@PathVariable Long deckId, Pageable pageable) {
+        return ResponseEntity.ok(cardProgressService.getReviewCards(deckId, pageable));
     }
 
-    @PostMapping
-    public ApiResponse<CardProgressResponse> create(@RequestBody CardProgressRequest request) {
-        return ApiResponse.success(service.create(request), "Created");
+    @GetMapping("/deck/{deckId}/new")
+    public ResponseEntity<Page<CardProgressResponse>> getNewCards(@PathVariable Long deckId, Pageable pageable) {
+        return ResponseEntity.ok(cardProgressService.getNewCards(deckId, pageable));
     }
 
-    @PutMapping("/{id}")
-    public ApiResponse<CardProgressResponse> update(@PathVariable Long id, @RequestBody CardProgressRequest request) {
-        return ApiResponse.success(service.update(id, request), "Updated");
+    @PostMapping("/suspend")
+    public ResponseEntity<Void> suspendCards(@RequestBody CardProgressRequest request) {
+        cardProgressService.suspendCards(request);
+        return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ApiResponse<Void> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ApiResponse.successMessage("Deleted");
+    @PostMapping("/reset")
+    public ResponseEntity<Void> resetProgress(@RequestBody CardProgressRequest request) {
+        cardProgressService.resetProgress(request);
+        return ResponseEntity.ok().build();
     }
 }
-

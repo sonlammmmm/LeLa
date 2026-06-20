@@ -6,9 +6,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface CardProgressService {
-    Page<CardProgressResponse> getAll(Pageable pageable);
-    CardProgressResponse getById(Long id);
-    CardProgressResponse create(CardProgressRequest request);
-    CardProgressResponse update(Long id, CardProgressRequest request);
-    void delete(Long id);
+    Page<CardProgressResponse> getProgressByDeck(Long deckId, Pageable pageable);
+    Page<CardProgressResponse> getReviewCards(Long deckId, Pageable pageable);
+    Page<CardProgressResponse> getNewCards(Long deckId, Pageable pageable);
+    void suspendCards(CardProgressRequest request);
+    void resetProgress(CardProgressRequest request);
 }

@@ -1,46 +1,64 @@
 package com.lela.reviewsession.controller;
 
+import com.lela.common.ApiResponse;
 import com.lela.reviewsession.dto.ReviewSessionRequest;
 import com.lela.reviewsession.dto.ReviewSessionResponse;
 import com.lela.reviewsession.service.ReviewSessionService;
-import com.lela.common.ApiResponse;
+import com.lela.srsreview.dto.SyncReviewRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
-@RequestMapping("/api/v1/reviewsessions")
+@RequestMapping("/api/v1/review-sessions")
 @RequiredArgsConstructor
 public class ReviewSessionController {
 
-    private final ReviewSessionService service;
+    private final ReviewSessionService reviewSessionService;
 
-    @GetMapping
-    public ApiResponse<Page<ReviewSessionResponse>> getAll(Pageable pageable) {
-        return ApiResponse.success(service.getAll(pageable));
+    private static final String MSG_START_SUCCESS = "Khởi tạo phiên ôn tập thành công.";
+    private static final String MSG_SYNC_SUCCESS = "Đồng bộ dữ liệu phiên ôn tập thành công.";
+    private static final String MSG_FETCH_SUCCESS = "Tải thông tin phiên ôn tập thành công.";
+    private static final String MSG_ABANDON_SUCCESS = "Đã huỷ phiên ôn tập thành công.";
+    private static final String MSG_STATS_SUCCESS = "Tải số liệu thống kê thành công.";
+
+    @PostMapping("/start")
+    public ResponseEntity<ApiResponse<ReviewSessionResponse>> startSession(@RequestBody ReviewSessionRequest request) {
+        ReviewSessionResponse response = reviewSessionService.startSession(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(response, MSG_START_SUCCESS));
     }
 
-    @GetMapping("/{id}")
-    public ApiResponse<ReviewSessionResponse> getById(@PathVariable Long id) {
-        return ApiResponse.success(service.getById(id));
+    @PostMapping("/sync")
+    public ResponseEntity<ApiResponse<Void>> syncOfflineReviews(@RequestBody SyncReviewRequest request) {
+        reviewSessionService.syncOfflineReviews(request);
+        return ResponseEntity.ok(ApiResponse.successMessage(MSG_SYNC_SUCCESS));
     }
 
-    @PostMapping
-    public ApiResponse<ReviewSessionResponse> create(@RequestBody ReviewSessionRequest request) {
-        return ApiResponse.success(service.create(request), "Created");
+    @GetMapping("/current")
+    public ResponseEntity<ApiResponse<ReviewSessionResponse>> getCurrentSession() {
+        ReviewSessionResponse response = reviewSessionService.getCurrentSession();
+        return ResponseEntity.ok(ApiResponse.success(response, MSG_FETCH_SUCCESS));
     }
 
-    @PutMapping("/{id}")
-    public ApiResponse<ReviewSessionResponse> update(@PathVariable Long id, @RequestBody ReviewSessionRequest request) {
-        return ApiResponse.success(service.update(id, request), "Updated");
+    @PostMapping("/{publicId}/abandon")
+    public ResponseEntity<ApiResponse<Void>> abandonSession(@PathVariable String publicId) {
+        reviewSessionService.abandonSession(publicId);
+        return ResponseEntity.ok(ApiResponse.successMessage(MSG_ABANDON_SUCCESS));
     }
 
-    @DeleteMapping("/{id}")
-    public ApiResponse<Void> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ApiResponse.successMessage("Deleted");
+    @GetMapping("/stats/today")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getTodayStats() {
+        Map<String, Object> stats = reviewSessionService.getTodayStats();
+        return ResponseEntity.ok(ApiResponse.success(stats, MSG_STATS_SUCCESS));
+    }
+
+    @GetMapping("/stats/weekly")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getWeeklyStats() {
+        Map<String, Object> stats = reviewSessionService.getWeeklyStats();
+        return ResponseEntity.ok(ApiResponse.success(stats, MSG_STATS_SUCCESS));
     }
 }
-

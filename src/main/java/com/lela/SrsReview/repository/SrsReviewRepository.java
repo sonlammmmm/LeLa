@@ -2,8 +2,16 @@ package com.lela.srsreview.repository;
 
 import com.lela.srsreview.SrsReview;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import java.time.LocalDateTime;
 
-@Repository
 public interface SrsReviewRepository extends JpaRepository<SrsReview, Long> {
+
+    boolean existsByClientEventId(String clientEventId);
+
+    @Query("SELECT COUNT(r) FROM SrsReview r WHERE r.user.id = :userId AND r.serverReceivedAt BETWEEN :startTime AND :endTime")
+    long countReviewsInPeriod(@Param("userId") Long userId,
+                              @Param("startTime") LocalDateTime startTime,
+                              @Param("endTime") LocalDateTime endTime);
 }

@@ -1,16 +1,18 @@
 package com.lela.notification.service.impl;
 
+import com.lela.common.exception.NotFoundExeception;
 import com.lela.notification.Notification;
-import com.lela.notification.dto.NotificationRequest;
 import com.lela.notification.dto.NotificationResponse;
 import com.lela.notification.repository.NotificationRepository;
 import com.lela.notification.service.NotificationService;
-import com.lela.common.exception.NotFoundExeception;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -18,79 +20,51 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationRepository repository;
 
-    @Override
+    private Long getCurrentUserId() {
+        return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+
+    @Transactional(readOnly = true)
     public Page<NotificationResponse> getAll(Pageable pageable) {
-        return repository.findAll(pageable).map(this::mapToResponse);
+        Long userId = getCurrentUserId();
+        return repository.findAllByUserId(userId, pageable).map(this::mapToResponse);
     }
 
-    @Override
-    public NotificationResponse getById(Long id) {
-        Notification entity = repository.findById(id)
-                .orElseThrow(() -> new NotFoundExeception("Notification not found with id: " + id));
-        return mapToResponse(entity);
-    }
-
-    @Override
-    @Transactional
-    public NotificationResponse create(NotificationRequest request) {
-        Notification entity = new Notification();
-        // TODO: Map relation 'user' using 'userId'. E.g. entity.setUser(repository.findById(request.getUserId()).orElseThrow());
-        entity.setType(request.getType());
-        entity.setChannel(request.getChannel());
-        entity.setStatus(request.getStatus());
-        entity.setTitle(request.getTitle());
-        entity.setMessage(request.getMessage());
-        entity.setActionUrl(request.getActionUrl());
-        entity.setRelatedEntityType(request.getRelatedEntityType());
-        entity.setRelatedEntityId(request.getRelatedEntityId());
-        entity.setDeduplicationKey(request.getDeduplicationKey());
-        entity.setIsRead(request.getIsRead());
-        entity.setReadAt(request.getReadAt());
-        entity.setScheduledAt(request.getScheduledAt());
-        entity.setDeliveredAt(request.getDeliveredAt());
-        entity.setFailedAt(request.getFailedAt());
-        entity.setFailureReason(request.getFailureReason());
-        return mapToResponse(repository.save(entity));
+    @Transactional(readOnly = true)
+    public Page<NotificationResponse> getUnread(Pageable pageable) {
+        Long userId = getCurrentUserId();
+        return repository.findUnreadByUserId(userId, pageable).map(this::mapToResponse);
     }
 
     @Override
     @Transactional
-    public NotificationResponse update(Long id, NotificationRequest request) {
-        Notification entity = repository.findById(id)
-                .orElseThrow(() -> new NotFoundExeception("Notification not found with id: " + id));
-        // TODO: Map relation 'user' using 'userId'. E.g. entity.setUser(repository.findById(request.getUserId()).orElseThrow());
-        entity.setType(request.getType());
-        entity.setChannel(request.getChannel());
-        entity.setStatus(request.getStatus());
-        entity.setTitle(request.getTitle());
-        entity.setMessage(request.getMessage());
-        entity.setActionUrl(request.getActionUrl());
-        entity.setRelatedEntityType(request.getRelatedEntityType());
-        entity.setRelatedEntityId(request.getRelatedEntityId());
-        entity.setDeduplicationKey(request.getDeduplicationKey());
-        entity.setIsRead(request.getIsRead());
-        entity.setReadAt(request.getReadAt());
-        entity.setScheduledAt(request.getScheduledAt());
-        entity.setDeliveredAt(request.getDeliveredAt());
-        entity.setFailedAt(request.getFailedAt());
-        entity.setFailureReason(request.getFailureReason());
-        return mapToResponse(repository.save(entity));
-    }
+    public void markAsRead(Long id) {
+        Long userId = getCurrentUserId();
 
-    @Override
-    @Transactional
-    public void delete(Long id) {
-        if (!repository.existsById(id)) {
-            throw new NotFoundExeception("Notification not found with id: " + id);
+        // BẢO MẬT: Ngăn chặn tuyệt đối việc UserA truyền ID thông báo của UserB lên để ép đọc hộ
+        Notification notification = repository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new NotFoundExeception("Không tìm thấy thông tin thông báo hoặc bạn không có quyền sở hữu."));
+
+        if (!notification.getIsRead()) {
+            notification.setIsRead(true);
+            notification.setReadAt(LocalDateTime.now());
+            repository.save(notification);
         }
-        repository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void markAllAsRead() {
+        Long userId = getCurrentUserId();
+        repository.markAllAllAsReadByUserId(userId, LocalDateTime.now());
     }
 
     private NotificationResponse mapToResponse(Notification entity) {
+        if (entity == null) return null;
+
         NotificationResponse response = new NotificationResponse();
-        if (entity.getUser() != null) {
-            response.setUserId(entity.getUser().getId());
-        }
+        response.setId(entity.getId());
+        response.setUserId(entity.getUser() != null ? entity.getUser().getId() : null);
         response.setType(entity.getType());
         response.setChannel(entity.getChannel());
         response.setStatus(entity.getStatus());
@@ -108,7 +82,6 @@ public class NotificationServiceImpl implements NotificationService {
         response.setFailureReason(entity.getFailureReason());
         response.setCreatedAt(entity.getCreatedAt());
         response.setUpdatedAt(entity.getUpdatedAt());
-        response.setId(entity.getId());
         return response;
     }
 }

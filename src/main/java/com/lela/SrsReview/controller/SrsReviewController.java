@@ -7,46 +7,27 @@ import com.lela.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/srsreviews")
+@RequestMapping("/api/v1/srs-reviews")
 @RequiredArgsConstructor
 public class SrsReviewController {
 
     private final SrsReviewService service;
 
-    @GetMapping
-    public ApiResponse<Page<SrsReviewResponse>> getAll(Pageable pageable) {
-        return ApiResponse.success(service.getAll(pageable));
-    }
-
-    @GetMapping("/{id}")
-    public ApiResponse<SrsReviewResponse> getById(@PathVariable Long id) {
-        return ApiResponse.success(service.getById(id));
-    }
-
     @PostMapping
-    public ApiResponse<SrsReviewResponse> create(@RequestBody SrsReviewRequest request) {
-        return ApiResponse.success(service.create(request), "Created");
+    public ApiResponse<SrsReviewResponse> reviewCard(@RequestBody SrsReviewRequest request) {
+        return ApiResponse.success(service.reviewCard(request), "Review submitted");
     }
 
-    @PutMapping("/{id}")
-    public ApiResponse<SrsReviewResponse> update(@PathVariable Long id, @RequestBody SrsReviewRequest request) {
-        return ApiResponse.success(service.update(id, request), "Updated");
+    @GetMapping("/history")
+    public ApiResponse<Page<SrsReviewResponse>> getReviewHistory(@RequestParam Long userId, Pageable pageable) {
+        return ApiResponse.success(service.getReviewHistory(userId, pageable));
     }
 
-    @PostMapping("/submit")
-    public ApiResponse<SrsReviewResponse> submitReview(@RequestBody SrsReviewRequest request) {
-        return ApiResponse.success(service.submitReview(request), "Review submitted successfully");
-    }
-
-    @DeleteMapping("/{id}")
-    public ApiResponse<Void> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ApiResponse.successMessage("Deleted");
+    @GetMapping("/statistics")
+    public ApiResponse<Object> getReviewStatistics(@RequestParam Long userId) {
+        return ApiResponse.success(service.getReviewStatistics(userId));
     }
 }
-
-

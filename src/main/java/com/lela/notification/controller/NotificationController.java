@@ -1,13 +1,12 @@
 package com.lela.notification.controller;
 
-import com.lela.notification.dto.NotificationRequest;
+import com.lela.common.ApiResponse;
 import com.lela.notification.dto.NotificationResponse;
 import com.lela.notification.service.NotificationService;
-import com.lela.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,32 +14,34 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class NotificationController {
 
-    private final NotificationService service;
+    private final NotificationService notificationService;
+
+    private static final String MSG_FETCH_ALL_SUCCESS = "Tải danh sách tất cả thông báo thành công.";
+    private static final String MSG_FETCH_UNREAD_SUCCESS = "Tải danh sách thông báo chưa đọc thành công.";
+    private static final String MSG_MARK_READ_SUCCESS = "Đã đánh dấu đọc thông báo thành công.";
+    private static final String MSG_MARK_ALL_READ_SUCCESS = "Đã đánh dấu đọc toàn bộ thông báo thành công.";
 
     @GetMapping
-    public ApiResponse<Page<NotificationResponse>> getAll(Pageable pageable) {
-        return ApiResponse.success(service.getAll(pageable));
+    public ResponseEntity<ApiResponse<Page<NotificationResponse>>> getAll(Pageable pageable) {
+        Page<NotificationResponse> data = notificationService.getAll(pageable);
+        return ResponseEntity.ok(ApiResponse.success(data, MSG_FETCH_ALL_SUCCESS));
     }
 
-    @GetMapping("/{id}")
-    public ApiResponse<NotificationResponse> getById(@PathVariable Long id) {
-        return ApiResponse.success(service.getById(id));
+    @GetMapping("/unread")
+    public ResponseEntity<ApiResponse<Page<NotificationResponse>>> getUnread(Pageable pageable) {
+        Page<NotificationResponse> data = notificationService.getUnread(pageable);
+        return ResponseEntity.ok(ApiResponse.success(data, MSG_FETCH_UNREAD_SUCCESS));
     }
 
-    @PostMapping
-    public ApiResponse<NotificationResponse> create(@RequestBody NotificationRequest request) {
-        return ApiResponse.success(service.create(request), "Created");
+    @PatchMapping("/{id}/read")
+    public ResponseEntity<ApiResponse<Void>> markAsRead(@PathVariable Long id) {
+        notificationService.markAsRead(id);
+        return ResponseEntity.ok(ApiResponse.successMessage(MSG_MARK_READ_SUCCESS));
     }
 
-    @PutMapping("/{id}")
-    public ApiResponse<NotificationResponse> update(@PathVariable Long id, @RequestBody NotificationRequest request) {
-        return ApiResponse.success(service.update(id, request), "Updated");
-    }
-
-    @DeleteMapping("/{id}")
-    public ApiResponse<Void> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ApiResponse.successMessage("Deleted");
+    @PatchMapping("/read-all")
+    public ResponseEntity<ApiResponse<Void>> markAllAsRead() {
+        notificationService.markAllAsRead();
+        return ResponseEntity.ok(ApiResponse.successMessage(MSG_MARK_ALL_READ_SUCCESS));
     }
 }
-

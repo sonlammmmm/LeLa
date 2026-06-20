@@ -5,42 +5,28 @@ import com.lela.dailylearningactivity.dto.DailyLearningActivityResponse;
 import com.lela.dailylearningactivity.service.DailyLearningActivityService;
 import com.lela.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/dailylearningactivitys")
+@RequestMapping("/api/v1/daily-activities")
 @RequiredArgsConstructor
 public class DailyLearningActivityController {
 
     private final DailyLearningActivityService service;
 
-    @GetMapping
-    public ApiResponse<Page<DailyLearningActivityResponse>> getAll(Pageable pageable) {
-        return ApiResponse.success(service.getAll(pageable));
+    private static final String MSG_LOG_SUCCESS = "Ghi nhận tiến độ học tập thành công.";
+    private static final String MSG_FETCH_SUCCESS = "Tải tiến độ học tập hôm nay thành công.";
+
+    @PostMapping("/log")
+    public ResponseEntity<ApiResponse<DailyLearningActivityResponse>> logActivity(@RequestBody DailyLearningActivityRequest request) {
+        DailyLearningActivityResponse response = service.logActivity(request);
+        return ResponseEntity.ok(ApiResponse.success(response, MSG_LOG_SUCCESS));
     }
 
-    @GetMapping("/{id}")
-    public ApiResponse<DailyLearningActivityResponse> getById(@PathVariable Long id) {
-        return ApiResponse.success(service.getById(id));
-    }
-
-    @PostMapping
-    public ApiResponse<DailyLearningActivityResponse> create(@RequestBody DailyLearningActivityRequest request) {
-        return ApiResponse.success(service.create(request), "Created");
-    }
-
-    @PutMapping("/{id}")
-    public ApiResponse<DailyLearningActivityResponse> update(@PathVariable Long id, @RequestBody DailyLearningActivityRequest request) {
-        return ApiResponse.success(service.update(id, request), "Updated");
-    }
-
-    @DeleteMapping("/{id}")
-    public ApiResponse<Void> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ApiResponse.successMessage("Deleted");
+    @GetMapping("/today")
+    public ResponseEntity<ApiResponse<DailyLearningActivityResponse>> getTodayActivity() {
+        DailyLearningActivityResponse response = service.getTodayActivity();
+        return ResponseEntity.ok(ApiResponse.success(response, MSG_FETCH_SUCCESS));
     }
 }
-

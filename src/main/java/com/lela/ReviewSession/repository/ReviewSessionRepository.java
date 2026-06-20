@@ -1,9 +1,17 @@
 package com.lela.reviewsession.repository;
 
 import com.lela.reviewsession.ReviewSession;
+import com.lela.domain.enums.ReviewSessionStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import java.util.List;
+import java.util.Optional;
 
-@Repository
 public interface ReviewSessionRepository extends JpaRepository<ReviewSession, Long> {
+
+    Optional<ReviewSession> findByPublicId(String publicId);
+
+    @Query("SELECT s FROM ReviewSession s WHERE s.user.id = :userId AND s.status = :status ORDER BY s.startedAt DESC")
+    List<ReviewSession> findActiveSessions(@Param("userId") Long userId, @Param("status") ReviewSessionStatus status);
 }

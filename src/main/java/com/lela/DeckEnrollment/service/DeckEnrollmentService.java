@@ -6,9 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface DeckEnrollmentService {
-    Page<DeckEnrollmentResponse> getAll(Pageable pageable);
-    DeckEnrollmentResponse getById(Long id);
-    DeckEnrollmentResponse create(DeckEnrollmentRequest request);
-    DeckEnrollmentResponse update(Long id, DeckEnrollmentRequest request);
-    void delete(Long id);
+
+    DeckEnrollmentResponse enrollDeck(DeckEnrollmentRequest request);
+
+    DeckEnrollmentResponse updateStatus(DeckEnrollmentRequest request);
+
+    Page<DeckEnrollmentResponse> getUserEnrollList(Pageable pageable);
+
+    Page<DeckEnrollmentResponse> getReviewToday(Pageable pageable);
+    void syncEnrollmentProgress(Long deckId);
 }

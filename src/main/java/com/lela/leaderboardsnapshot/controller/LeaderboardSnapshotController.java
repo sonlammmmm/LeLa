@@ -1,46 +1,51 @@
 package com.lela.leaderboardsnapshot.controller;
 
-import com.lela.leaderboardsnapshot.dto.LeaderboardSnapshotRequest;
+import com.lela.common.ApiResponse;
 import com.lela.leaderboardsnapshot.dto.LeaderboardSnapshotResponse;
 import com.lela.leaderboardsnapshot.service.LeaderboardSnapshotService;
-import com.lela.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/leaderboardsnapshots")
+@RequestMapping("/api/v1/leaderboards")
 @RequiredArgsConstructor
 public class LeaderboardSnapshotController {
 
-    private final LeaderboardSnapshotService service;
+    private final LeaderboardSnapshotService leaderboardService;
 
-    @GetMapping
-    public ApiResponse<Page<LeaderboardSnapshotResponse>> getAll(Pageable pageable) {
-        return ApiResponse.success(service.getAll(pageable));
+    private static final String MSG_GET_RANK_SUCCESS = "Tải danh sách bảng xếp hạng thành công.";
+    private static final String MSG_GET_MY_RANK_SUCCESS = "Tải thứ hạng cá nhân thành công.";
+
+    @GetMapping("/top")
+    public ResponseEntity<ApiResponse<Page<LeaderboardSnapshotResponse>>> getTopRanking(Pageable pageable) {
+        Page<LeaderboardSnapshotResponse> data = leaderboardService.getTopRanking(pageable);
+        return ResponseEntity.ok(ApiResponse.success(data, MSG_GET_RANK_SUCCESS));
     }
 
-    @GetMapping("/{id}")
-    public ApiResponse<LeaderboardSnapshotResponse> getById(@PathVariable Long id) {
-        return ApiResponse.success(service.getById(id));
+    @GetMapping("/daily")
+    public ResponseEntity<ApiResponse<Page<LeaderboardSnapshotResponse>>> getDailyRanking(Pageable pageable) {
+        Page<LeaderboardSnapshotResponse> data = leaderboardService.getDailyRanking(pageable);
+        return ResponseEntity.ok(ApiResponse.success(data, MSG_GET_RANK_SUCCESS));
     }
 
-    @PostMapping
-    public ApiResponse<LeaderboardSnapshotResponse> create(@RequestBody LeaderboardSnapshotRequest request) {
-        return ApiResponse.success(service.create(request), "Created");
+    @GetMapping("/weekly")
+    public ResponseEntity<ApiResponse<Page<LeaderboardSnapshotResponse>>> getWeeklyRanking(Pageable pageable) {
+        Page<LeaderboardSnapshotResponse> data = leaderboardService.getWeeklyRanking(pageable);
+        return ResponseEntity.ok(ApiResponse.success(data, MSG_GET_RANK_SUCCESS));
     }
 
-    @PutMapping("/{id}")
-    public ApiResponse<LeaderboardSnapshotResponse> update(@PathVariable Long id, @RequestBody LeaderboardSnapshotRequest request) {
-        return ApiResponse.success(service.update(id, request), "Updated");
+    @GetMapping("/monthly")
+    public ResponseEntity<ApiResponse<Page<LeaderboardSnapshotResponse>>> getMonthlyRanking(Pageable pageable) {
+        Page<LeaderboardSnapshotResponse> data = leaderboardService.getMonthlyRanking(pageable);
+        return ResponseEntity.ok(ApiResponse.success(data, MSG_GET_RANK_SUCCESS));
     }
 
-    @DeleteMapping("/{id}")
-    public ApiResponse<Void> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ApiResponse.successMessage("Deleted");
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<LeaderboardSnapshotResponse>> getMyRanking() {
+        LeaderboardSnapshotResponse data = leaderboardService.getUserRanking(null);
+        return ResponseEntity.ok(ApiResponse.success(data, MSG_GET_MY_RANK_SUCCESS));
     }
 }
-

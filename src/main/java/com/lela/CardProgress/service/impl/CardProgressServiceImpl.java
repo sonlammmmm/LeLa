@@ -5,12 +5,18 @@ import com.lela.cardprogress.dto.CardProgressRequest;
 import com.lela.cardprogress.dto.CardProgressResponse;
 import com.lela.cardprogress.repository.CardProgressRepository;
 import com.lela.cardprogress.service.CardProgressService;
+import com.lela.domain.enums.CardProgressState;
+import com.lela.domain.enums.ReviewableCardState;
 import com.lela.common.exception.NotFoundExeception;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -18,92 +24,86 @@ public class CardProgressServiceImpl implements CardProgressService {
 
     private final CardProgressRepository repository;
 
-    @Override
-    public Page<CardProgressResponse> getAll(Pageable pageable) {
-        return repository.findAll(pageable).map(this::mapToResponse);
+
+    private Long getCurrentUserId() {
+        return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
     @Override
-    public CardProgressResponse getById(Long id) {
-        CardProgress entity = repository.findById(id)
-                .orElseThrow(() -> new NotFoundExeception("CardProgress not found with id: " + id));
-        return mapToResponse(entity);
+    @Transactional(readOnly = true)
+    public Page<CardProgressResponse> getProgressByDeck(Long deckId, Pageable pageable) {
+        Long userId = getCurrentUserId();
+        return repository.findByUserIdAndDeckId(userId, deckId, pageable).map(this::mapToResponse);
     }
 
     @Override
-    @Transactional
-    public CardProgressResponse create(CardProgressRequest request) {
-        CardProgress entity = new CardProgress();
-        // TODO: Map relation 'user' using 'userId'. E.g. entity.setUser(repository.findById(request.getUserId()).orElseThrow());
-        // TODO: Map relation 'card' using 'cardId'. E.g. entity.setCard(repository.findById(request.getCardId()).orElseThrow());
-        entity.setState(request.getState());
-        entity.setSuspendedFromState(request.getSuspendedFromState());
-        entity.setEaseFactor(request.getEaseFactor());
-        entity.setIntervalDays(request.getIntervalDays());
-        entity.setRepetitions(request.getRepetitions());
-        entity.setLapseCount(request.getLapseCount());
-        entity.setLearningStep(request.getLearningStep());
-        entity.setScheduledDays(request.getScheduledDays());
-        entity.setElapsedDays(request.getElapsedDays());
-        entity.setDueAt(request.getDueAt());
-        entity.setLastReviewedAt(request.getLastReviewedAt());
-        entity.setLastRating(request.getLastRating());
-        entity.setAlgorithmVersion(request.getAlgorithmVersion());
-        entity.setTotalReviews(request.getTotalReviews());
-        entity.setCorrectCount(request.getCorrectCount());
-        entity.setAgainCount(request.getAgainCount());
-        entity.setHardCount(request.getHardCount());
-        entity.setGoodCount(request.getGoodCount());
-        entity.setEasyCount(request.getEasyCount());
-        return mapToResponse(repository.save(entity));
+    @Transactional(readOnly = true)
+    public Page<CardProgressResponse> getReviewCards(Long deckId, Pageable pageable) {
+        Long userId = getCurrentUserId();
+        return repository.findReviewCards(userId, deckId, LocalDateTime.now(), pageable).map(this::mapToResponse);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<CardProgressResponse> getNewCards(Long deckId, Pageable pageable) {
+        Long userId = getCurrentUserId();
+        return repository.findNewCards(userId, deckId, CardProgressState.NEW, pageable).map(this::mapToResponse);
     }
 
     @Override
     @Transactional
-    public CardProgressResponse update(Long id, CardProgressRequest request) {
-        CardProgress entity = repository.findById(id)
-                .orElseThrow(() -> new NotFoundExeception("CardProgress not found with id: " + id));
-        // TODO: Map relation 'user' using 'userId'. E.g. entity.setUser(repository.findById(request.getUserId()).orElseThrow());
-        // TODO: Map relation 'card' using 'cardId'. E.g. entity.setCard(repository.findById(request.getCardId()).orElseThrow());
-        entity.setState(request.getState());
-        entity.setSuspendedFromState(request.getSuspendedFromState());
-        entity.setEaseFactor(request.getEaseFactor());
-        entity.setIntervalDays(request.getIntervalDays());
-        entity.setRepetitions(request.getRepetitions());
-        entity.setLapseCount(request.getLapseCount());
-        entity.setLearningStep(request.getLearningStep());
-        entity.setScheduledDays(request.getScheduledDays());
-        entity.setElapsedDays(request.getElapsedDays());
-        entity.setDueAt(request.getDueAt());
-        entity.setLastReviewedAt(request.getLastReviewedAt());
-        entity.setLastRating(request.getLastRating());
-        entity.setAlgorithmVersion(request.getAlgorithmVersion());
-        entity.setTotalReviews(request.getTotalReviews());
-        entity.setCorrectCount(request.getCorrectCount());
-        entity.setAgainCount(request.getAgainCount());
-        entity.setHardCount(request.getHardCount());
-        entity.setGoodCount(request.getGoodCount());
-        entity.setEasyCount(request.getEasyCount());
-        return mapToResponse(repository.save(entity));
-    }
+    public void suspendCards(CardProgressRequest request) {
+        Long userId = getCurrentUserId();
 
-    @Override
-    @Transactional
-    public void delete(Long id) {
-        if (!repository.existsById(id)) {
-            throw new NotFoundExeception("CardProgress not found with id: " + id);
+        CardProgress progress = repository.findByUserIdAndCardId(userId, request.getCardId())
+                .orElseThrow(() -> new NotFoundExeception("Không tìm thấy dữ liệu tiến độ thẻ bài của người dùng."));
+
+        if (progress.getState() != null) {
+            try {
+                progress.setSuspendedFromState(ReviewableCardState.valueOf(progress.getState().name()));
+            } catch (IllegalArgumentException e) {
+                progress.setSuspendedFromState(ReviewableCardState.REVIEW);
+            }
         }
-        repository.deleteById(id);
+
+        progress.setIntervalDays(9999);
+        repository.save(progress);
+    }
+
+    @Override
+    @Transactional
+    public void resetProgress(CardProgressRequest request) {
+        Long userId = getCurrentUserId();
+
+        CardProgress progress = repository.findByUserIdAndCardId(userId, request.getCardId())
+                .orElseThrow(() -> new NotFoundExeception("Không tìm thấy dữ liệu tiến độ thẻ bài của người dùng."));
+
+        progress.setState(CardProgressState.NEW);
+        progress.setEaseFactor(new BigDecimal("2.50"));
+        progress.setIntervalDays(0);
+        progress.setRepetitions(0);
+        progress.setLapseCount(0);
+        progress.setLearningStep(0);
+        progress.setScheduledDays(0);
+        progress.setElapsedDays(0);
+        progress.setDueAt(null);
+        progress.setLastReviewedAt(null);
+        progress.setLastRating(null);
+        progress.setTotalReviews(0);
+        progress.setCorrectCount(0);
+        progress.setAgainCount(0);
+        progress.setHardCount(0);
+        progress.setGoodCount(0);
+        progress.setEasyCount(0);
+
+        repository.save(progress);
     }
 
     private CardProgressResponse mapToResponse(CardProgress entity) {
         CardProgressResponse response = new CardProgressResponse();
-        if (entity.getUser() != null) {
-            response.setUserId(entity.getUser().getId());
-        }
-        if (entity.getCard() != null) {
-            response.setCardId(entity.getCard().getId());
-        }
+        response.setId(entity.getId());
+        response.setUserId(entity.getUser().getId());
+        response.setCardId(entity.getCard().getId());
         response.setState(entity.getState());
         response.setSuspendedFromState(entity.getSuspendedFromState());
         response.setEaseFactor(entity.getEaseFactor());
@@ -125,7 +125,6 @@ public class CardProgressServiceImpl implements CardProgressService {
         response.setEasyCount(entity.getEasyCount());
         response.setCreatedAt(entity.getCreatedAt());
         response.setUpdatedAt(entity.getUpdatedAt());
-        response.setId(entity.getId());
         return response;
     }
 }
