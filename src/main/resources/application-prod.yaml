@@ -5,8 +5,10 @@ spring:
     username: ${YOEDU_DB_USER:e4XQFMeuMbogRQK.root}
     password: ${YOEDU_DB_PASSWORD:uy5LwcYamnRwU8a1}
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   flyway:
-    enabled: true
+    validate-on-migrate: false
+
   jpa:
     hibernate:
       ddl-auto: none
