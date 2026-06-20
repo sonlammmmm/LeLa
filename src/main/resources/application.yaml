@@ -2,20 +2,12 @@ spring:
   application:
     name: LeLa
   profiles:
-    active: ${APP_PROFILE:dev}
-<<<<<<< HEAD
-=======
-  datasource:
-    url: ${YOEDU_DB_URL:jdbc:mysql://gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com:4000/lela?sslMode=VERIFY_IDENTITY&enabledTLSProtocols=TLSv1.2&useServerPrepStmts=false&cachePrepStmts=false}
-    username: ${YOEDU_DB_USER:2UNX3Nm928Dp9n7.root}
-    password: ${YOEDU_DB_PASSWORD:7FxLaC7qDvmVKoUv}
-    driver-class-name: com.mysql.cj.jdbc.Driver
->>>>>>> duy
+    active: ${APP_PROFILE:prod}
   jpa:
     show-sql: true
     open-in-view: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true
@@ -23,7 +15,6 @@ spring:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
-    repair-on-migrate: true
   sql:
     init:
       mode: never
@@ -40,7 +31,6 @@ springdoc:
     disable-swagger-default-url: true
     operations-sorter: alpha
     tags-sorter: alpha
-
 app:
   jwt:
     issuer: yoedu-demo

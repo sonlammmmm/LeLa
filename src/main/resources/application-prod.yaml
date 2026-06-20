@@ -1,4 +1,4 @@
-#cau hinh mt production
+#cau hinh moi truong prod
 spring:
   datasource:
     url: ${YOEDU_DB_URL:jdbc:mysql://e4XQFMeuMbogRQK.root:uy5LwcYamnRwU8a1@gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com:4000/LeLa?sslMode=VERIFY_IDENTITY}
