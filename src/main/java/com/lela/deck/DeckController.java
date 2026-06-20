@@ -2,7 +2,6 @@ package com.lela.deck;
 
 import com.lela.deck.dto.DeckRequest;
 import com.lela.deck.dto.DeckResponse;
-import com.lela.deck.dto.DeckService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

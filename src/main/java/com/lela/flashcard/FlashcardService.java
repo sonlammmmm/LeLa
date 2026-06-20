@@ -1,5 +1,7 @@
-package com.lela.flashcard.dto;
+package com.lela.flashcard;
 
+import com.lela.flashcard.dto.FlashcardRequest;
+import com.lela.flashcard.dto.FlashcardResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -1,6 +1,7 @@
-package com.lela.deck.dto;
+package com.lela.deck;
 
-import com.lela.deck.DeckRepository;
+import com.lela.deck.dto.DeckRequest;
+import com.lela.deck.dto.DeckResponse;
 import com.lela.domain.entity.Deck;
 import com.lela.domain.entity.Language;
 import com.lela.domain.entity.Users;

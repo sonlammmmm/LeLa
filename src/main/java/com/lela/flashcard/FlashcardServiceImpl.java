@@ -1,4 +1,4 @@
-package com.lela.flashcard.dto;
+package com.lela.flashcard;
 
 import com.lela.domain.entity.Deck;
 import com.lela.domain.entity.Flashcard;
@@ -6,8 +6,8 @@ import com.lela.domain.entity.FlashcardTag;
 import com.lela.domain.entity.FlashcardTagId;
 import com.lela.domain.entity.Tag;
 import com.lela.domain.entity.Users;
-import com.lela.flashcard.FlashcardRepository;
-import com.lela.flashcard.FlashcardTagRepository;
+import com.lela.flashcard.dto.FlashcardRequest;
+import com.lela.flashcard.dto.FlashcardResponse;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

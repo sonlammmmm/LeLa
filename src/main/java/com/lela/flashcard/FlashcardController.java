@@ -2,7 +2,6 @@ package com.lela.flashcard;
 
 import com.lela.flashcard.dto.FlashcardRequest;
 import com.lela.flashcard.dto.FlashcardResponse;
-import com.lela.flashcard.dto.FlashcardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

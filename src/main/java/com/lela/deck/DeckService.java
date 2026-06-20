@@ -1,5 +1,7 @@
-package com.lela.deck.dto;
+package com.lela.deck;
 
+import com.lela.deck.dto.DeckRequest;
+import com.lela.deck.dto.DeckResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
