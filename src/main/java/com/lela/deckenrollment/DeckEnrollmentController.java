@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/enrollments")
+@RequestMapping("/enrollments")
 @RequiredArgsConstructor
 public class DeckEnrollmentController {
 
@@ -21,7 +21,7 @@ public class DeckEnrollmentController {
     private static final String MSG_FETCH_LIST_SUCCESS = "Tải danh sách đăng ký học thành công.";
     private static final String MSG_FETCH_REVIEW_SUCCESS = "Tải danh sách lịch hẹn ôn tập hôm nay thành công.";
 
-    @PostMapping("/enroll")
+    @PostMapping(value = "/enroll")
     public ResponseEntity<ApiResponse<DeckEnrollmentResponse>> enrollDeck(@RequestBody DeckEnrollmentRequest request) {
         DeckEnrollmentResponse response = deckEnrollmentService.enrollDeck(request);
         return ResponseEntity.ok(ApiResponse.success(response, MSG_ENROLL_SUCCESS));
