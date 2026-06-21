@@ -1,6 +1,7 @@
 package com.lela.Quiz.dto;
 
-import com.lela.domain.enums.QuizType;
+
+import com.lela.Quiz.domain.QuizType;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
