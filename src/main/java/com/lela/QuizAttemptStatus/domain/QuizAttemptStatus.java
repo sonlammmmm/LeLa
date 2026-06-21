@@ -1,4 +1,4 @@
-package com.lela.enums;
+package com.lela.QuizAttemptStatus.domain;
 
 // Enum trạng thái lần làm quiz.
 public enum QuizAttemptStatus {

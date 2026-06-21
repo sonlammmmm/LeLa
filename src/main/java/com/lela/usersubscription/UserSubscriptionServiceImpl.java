@@ -8,6 +8,7 @@ import com.lela.usersubscription.dto.UserSubscriptionRequest;
 import com.lela.usersubscription.dto.UserSubscriptionResponse;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +21,7 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
 
     private final UserSubscriptionRepository repository;
     private final EntityManager entityManager;
+    private final ModelMapper modelMapper;
 
     private Long getCurrentUserId() {
         return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -36,16 +38,18 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
     public UserSubscriptionResponse getById(Long id) {
         UserSubscription entity = repository.findById(id)
                 .orElseThrow(() -> new NotFoundExeception("Không tìm thấy đăng ký gói với ID: " + id));
+
+        if (!entity.getUser().getId().equals(getCurrentUserId())) {
+            throw new RuntimeException("Bạn không có quyền truy cập thông tin này.");
+        }
         return mapToResponse(entity);
     }
 
     @Override
     @Transactional
     public UserSubscriptionResponse create(UserSubscriptionRequest request) {
-        Long userId = getCurrentUserId();
         UserSubscription entity = new UserSubscription();
-
-        entity.setUser(entityManager.getReference(Users.class, userId));
+        entity.setUser(entityManager.getReference(Users.class, getCurrentUserId()));
         entity.setPlan(entityManager.getReference(SubscriptionPlan.class, request.getPlanId()));
 
         updateSubscriptionFields(entity, request);
@@ -56,7 +60,12 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
     @Transactional
     public UserSubscriptionResponse update(Long id, UserSubscriptionRequest request) {
         UserSubscription entity = repository.findById(id)
-                .orElseThrow(() -> new NotFoundExeception("Không tìm thấy đăng ký gói với ID: " + id));
+                .orElseThrow(() -> new NotFoundExeception("Không tìm thấy đăng ký với ID: " + id));
+
+        // Bảo mật: Kiểm tra quyền sở hữu
+        if (!entity.getUser().getId().equals(getCurrentUserId())) {
+            throw new RuntimeException("Bạn không có quyền chỉnh sửa gói đăng ký này.");
+        }
 
         if (request.getPlanId() != null) {
             entity.setPlan(entityManager.getReference(SubscriptionPlan.class, request.getPlanId()));
@@ -64,6 +73,18 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
 
         updateSubscriptionFields(entity, request);
         return mapToResponse(repository.save(entity));
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        UserSubscription entity = repository.findById(id)
+                .orElseThrow(() -> new NotFoundExeception("Không tìm thấy đăng ký để xóa."));
+
+        if (!entity.getUser().getId().equals(getCurrentUserId())) {
+            throw new RuntimeException("Bạn không có quyền xóa gói đăng ký này.");
+        }
+        repository.delete(entity);
     }
 
     private void updateSubscriptionFields(UserSubscription entity, UserSubscriptionRequest request) {
@@ -77,31 +98,10 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
         entity.setProviderSubscriptionId(request.getProviderSubscriptionId());
     }
 
-    @Override
-    @Transactional
-    public void delete(Long id) {
-        if (!repository.existsById(id)) {
-            throw new NotFoundExeception("Không tìm thấy đăng ký gói với ID: " + id);
-        }
-        repository.deleteById(id);
-    }
-
     private UserSubscriptionResponse mapToResponse(UserSubscription entity) {
-        UserSubscriptionResponse response = new UserSubscriptionResponse();
-        response.setId(entity.getId());
+        UserSubscriptionResponse response = modelMapper.map(entity, UserSubscriptionResponse.class);
         if (entity.getUser() != null) response.setUserId(entity.getUser().getId());
         if (entity.getPlan() != null) response.setPlanId(entity.getPlan().getId());
-
-        response.setStatus(entity.getStatus());
-        response.setStartedAt(entity.getStartedAt());
-        response.setExpiresAt(entity.getExpiresAt());
-        response.setTrialEndsAt(entity.getTrialEndsAt());
-        response.setCancelledAt(entity.getCancelledAt());
-        response.setAutoRenew(entity.getAutoRenew());
-        response.setProvider(entity.getProvider());
-        response.setProviderSubscriptionId(entity.getProviderSubscriptionId());
-        response.setCreatedAt(entity.getCreatedAt());
-        response.setUpdatedAt(entity.getUpdatedAt());
         return response;
     }
 }

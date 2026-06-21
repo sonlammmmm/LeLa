@@ -1,6 +1,6 @@
 package com.lela.reviewsession;
 
-import com.lela.domain.enums.ReviewSessionStatus;
+import com.lela.reviewsession.domain.ReviewSessionStatus;
 import com.lela.reviewsession.domain.ReviewSession;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

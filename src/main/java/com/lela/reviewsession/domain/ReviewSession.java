@@ -1,10 +1,10 @@
 package com.lela.reviewsession.domain;
 
 import com.lela.domain.AuditableEntity;
-import com.lela.domain.entity.Deck;
-import com.lela.domain.entity.Users;
-import com.lela.domain.enums.ReviewSessionStatus;
-import com.lela.domain.enums.ReviewSessionType;
+import com.lela.deck.domain.Deck;
+import com.lela.users.domain.Users;
+import com.lela.reviewsession.domain.ReviewSessionStatus;
+import com.lela.reviewsession.domain.ReviewSessionType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

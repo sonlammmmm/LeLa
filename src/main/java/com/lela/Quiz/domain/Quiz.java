@@ -1,7 +1,7 @@
 package com.lela.Quiz.domain;
 
+import com.lela.deck.domain.Deck;
 import com.lela.domain.AuditableEntity;
-import com.lela.Deck.domain.Deck;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

@@ -1,14 +1,14 @@
 package com.lela.payment.domain;
 
 import com.lela.domain.AuditableEntity;
-import com.lela.domain.enums.PaymentStatus;
+import com.lela.payment.domain.PaymentStatus;
 import com.lela.usersubscription.domain.UserSubscription;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.subscriptionplan.domain.SubscriptionPlan;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import com.lela.domain.entity.Users;
+import com.lela.users.domain.Users;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;

@@ -1,12 +1,12 @@
 package com.lela.usersubscription.domain;
 
 import com.lela.domain.AuditableEntity;
-import com.lela.domain.enums.UserSubscriptionStatus;
+import com.lela.usersubscription.domain.UserSubscriptionStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import com.lela.domain.entity.SubscriptionPlan;
+import com.lela.subscriptionplan.domain.SubscriptionPlan;
 import jakarta.persistence.EnumType;
-import com.lela.domain.entity.Users;
+import com.lela.users.domain.Users;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;

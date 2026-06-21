@@ -1,8 +1,9 @@
 package com.lela.deck.domain;
 
 import com.lela.domain.AuditableEntity;
-import com.lela.domain.entity.Language;
-import com.lela.domain.entity.Users;
+
+import com.lela.language.domain.Language;
+import com.lela.users.domain.Users;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

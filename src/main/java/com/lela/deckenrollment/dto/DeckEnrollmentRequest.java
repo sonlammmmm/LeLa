@@ -1,5 +1,6 @@
 package com.lela.deckenrollment.dto;
 
+import com.lela.deckenrollment.domain.DeckEnrollmentStatus;
 import lombok.Getter;
 import lombok.Setter;
 

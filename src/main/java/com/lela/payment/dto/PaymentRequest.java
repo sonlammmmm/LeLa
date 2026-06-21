@@ -1,12 +1,12 @@
 package com.lela.payment.dto;
 
+import com.lela.payment.domain.PaymentStatus;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.math.BigDecimal;
-import com.lela.domain.enums.*;
 
 @Getter
 @Setter
