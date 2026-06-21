@@ -3,6 +3,7 @@ package com.lela.QuizAttempt.domain;
 import com.lela.Quiz.domain.Quiz;
 import com.lela.domain.AuditableEntity;
 import com.lela.QuizAttemptStatus.domain.QuizAttemptStatus;
+import com.lela.users.domain.Users;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,7 +18,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import com.lela.Users.domain.Users;
+
 
 
 @Getter

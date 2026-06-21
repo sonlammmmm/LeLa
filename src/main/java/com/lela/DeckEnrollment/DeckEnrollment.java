@@ -1,9 +1,10 @@
-package com.lela.deckenrollment;
+package com.lela.DeckEnrollment;
 
+import com.lela.deck.domain.Deck;
+import com.lela.deck.domain.DeckEnrollmentStatus;
 import com.lela.domain.AuditableEntity;
-import com.lela.domain.entity.Deck;
-import com.lela.domain.entity.Users;
-import com.lela.domain.enums.DeckEnrollmentStatus;
+
+import com.lela.users.domain.Users;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
