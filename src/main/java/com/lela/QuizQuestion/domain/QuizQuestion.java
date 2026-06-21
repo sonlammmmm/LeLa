@@ -2,7 +2,7 @@ package com.lela.QuizQuestion.domain;
 
 import com.lela.Quiz.domain.Quiz;
 import com.lela.domain.AuditableEntity;
-import com.lela.QuestionType.domain.QuestionType;
+import com.lela.flashcard.domain.Flashcard;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,7 +14,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
-import com.lela.Flashcard.domain.Flashcard;
 
 
 @Getter

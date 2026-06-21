@@ -5,7 +5,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.math.BigDecimal;
-import com.lela.domain.enums.*;
+
 
 @Getter
 @Setter

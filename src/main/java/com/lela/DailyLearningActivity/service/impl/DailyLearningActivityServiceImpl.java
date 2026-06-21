@@ -8,10 +8,9 @@ import com.lela.dailylearningactivity.repository.DailyLearningActivityRepository
 import com.lela.dailylearningactivity.service.DailyLearningActivityService;
 import com.lela.notification.Notification;
 import com.lela.notification.repository.NotificationRepository;
-import com.lela.domain.entity.Users;
-import com.lela.domain.enums.NotificationType;
-import com.lela.domain.enums.NotificationChannel;
-import com.lela.domain.enums.NotificationStatus;
+
+
+import com.lela.users.domain.Users;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
