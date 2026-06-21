@@ -1,7 +1,7 @@
 package com.lela.QuizAttemptQuestion.domain;
 
+import com.lela.QuizQuestion.domain.QuestionType;
 import com.lela.domain.BaseEnity;
-import com.lela.QuestionType.domain.QuestionType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
