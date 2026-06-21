@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/quizs")
+@RequestMapping("/quizs")
 
 public class QuizController {
     private final QuizService quizService;

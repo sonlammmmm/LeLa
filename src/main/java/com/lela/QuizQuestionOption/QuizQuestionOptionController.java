@@ -14,7 +14,7 @@ import com.lela.QuizQuestionOption.domain.QuizQuestionOption;
 
 
 @RestController
-@RequestMapping("/api/quiz-question-option")
+@RequestMapping("/quiz-question-option")
 @RequiredArgsConstructor
 public class QuizQuestionOptionController {
 
