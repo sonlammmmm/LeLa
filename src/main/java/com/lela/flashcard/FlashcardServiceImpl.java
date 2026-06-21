@@ -5,9 +5,10 @@ import com.lela.flashcard.domain.Flashcard;
 import com.lela.flashcard.domain.FlashcardTag;
 import com.lela.flashcard.domain.FlashcardTagId;
 import com.lela.tag.domain.Tag;
-import com.lela.domain.entity.Users;
+
 import com.lela.flashcard.dto.FlashcardRequest;
 import com.lela.flashcard.dto.FlashcardResponse;
+import com.lela.users.domain.Users;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

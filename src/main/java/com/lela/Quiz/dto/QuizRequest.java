@@ -1,6 +1,5 @@
 package com.lela.Quiz.dto;
 
-
 import com.lela.Quiz.domain.QuizType;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -25,17 +24,22 @@ public class QuizRequest {
 
     private String description;
 
+    @Builder.Default
     private QuizType quizType = QuizType.MULTIPLE_CHOICE;
 
     @Min(value = 1, message = "Thời gian tối thiểu 1 giây")
     private Integer timeLimitSeconds;
 
     @Min(value = 1, message = "Số lần làm bài tối thiểu 1")
+    @Builder.Default
     private Integer maxAttempts = 3;
 
+    @Builder.Default
     private Boolean shuffleQuestions = true;
 
+    @Builder.Default
     private Boolean shuffleOptions = true;
 
+    @Builder.Default
     private Boolean isActive = true;
 }

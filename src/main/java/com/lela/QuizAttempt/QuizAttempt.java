@@ -1,9 +1,9 @@
 package com.lela.QuizAttempt;
 
+import com.lela.Quiz.domain.Quiz;
+import com.lela.QuizAttemptStatus.domain.QuizAttemptStatus;
 import com.lela.domain.AuditableEntity;
-import com.lela.domain.entity.Quiz;
-import com.lela.domain.entity.Users;
-import com.lela.domain.enums.QuizAttemptStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.userdetails.User;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -35,7 +36,7 @@ public class QuizAttempt extends AuditableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private Users user; // Người dùng làm quiz.
+    private User user; // Người dùng làm quiz.
 
     @Column(name = "attempt_number", nullable = false)
     private Integer attemptNumber; // Số thứ tự lần làm bài.

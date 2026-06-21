@@ -1,12 +1,13 @@
 package com.lela.Quiz;
 
+import com.lela.Quiz.domain.Quiz;
 import com.lela.Quiz.dto.QuizRequest;
 import com.lela.Quiz.dto.QuizResponse;
 import com.lela.common.exception.BadRequestException;
 import com.lela.common.exception.NotFoundExeception;
-import com.lela.domain.entity.Deck;
-import com.lela.domain.entity.Quiz;
-import com.lela.domain.entity.Users;
+
+import com.lela.deck.DeckRepository;
+import com.lela.deck.domain.Deck;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
