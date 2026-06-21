@@ -2,7 +2,7 @@ package com.lela.Quiz;
 
 import com.lela.Quiz.dto.QuizRequest;
 import com.lela.Quiz.dto.QuizResponse;
-import com.lela.domain.entity.Quiz;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
