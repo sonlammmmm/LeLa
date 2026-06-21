@@ -1,10 +1,9 @@
 package com.lela.cardprogress;
 
 import com.lela.domain.AuditableEntity;
-import com.lela.domain.entity.Flashcard;
-import com.lela.domain.entity.Users;
-import com.lela.domain.enums.CardProgressState;
-import com.lela.domain.enums.ReviewableCardState;
+
+import com.lela.flashcard.domain.Flashcard;
+import com.lela.users.domain.Users;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
