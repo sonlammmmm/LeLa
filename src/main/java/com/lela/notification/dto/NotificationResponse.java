@@ -1,11 +1,11 @@
 package com.lela.notification.dto;
 
+import com.lela.notification.domain.NotificationChannel;
+import com.lela.notification.domain.NotificationStatus;
+import com.lela.notification.domain.NotificationType;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
-import java.time.LocalDate;
-import java.math.BigDecimal;
-import com.lela.domain.enums.*;
 
 @Getter
 @Setter
