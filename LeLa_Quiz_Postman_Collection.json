@@ -1,0 +1,1031 @@
+{
+  "info": {
+    "name": "LeLa Quiz APIs",
+    "description": "Generated CRUD APIs for Quiz module",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Quiz",
+      "item": [
+        {
+          "name": "Get All Quizs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Quiz by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Quiz",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deckId\": 100,\n  \"quizCode\": \"string_value\",\n  \"title\": \"string_value\",\n  \"description\": \"string_value\",\n  \"quizType\": \"sample_QuizType\",\n  \"timeLimitSeconds\": 1,\n  \"maxAttempts\": 1,\n  \"shuffleQuestions\": true,\n  \"shuffleOptions\": true,\n  \"isActive\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update Quiz",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deckId\": 100,\n  \"quizCode\": \"string_value\",\n  \"title\": \"string_value\",\n  \"description\": \"string_value\",\n  \"quizType\": \"sample_QuizType\",\n  \"timeLimitSeconds\": 1,\n  \"maxAttempts\": 1,\n  \"shuffleQuestions\": true,\n  \"shuffleOptions\": true,\n  \"isActive\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete Quiz",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "QuizAnswer",
+      "item": [
+        {
+          "name": "Get All QuizAnswers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-answer",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-answer"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get QuizAnswer by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-answer/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-answer",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create QuizAnswer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-answer",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-answer"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answerText\": \"string_value\",\n  \"normalizedAnswerText\": \"string_value\",\n  \"isCorrect\": true,\n  \"pointsAwarded\": 1,\n  \"timeTakenSeconds\": 1,\n  \"answeredAt\": \"2026-06-20T10:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update QuizAnswer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-answer/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-answer",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answerText\": \"string_value\",\n  \"normalizedAnswerText\": \"string_value\",\n  \"isCorrect\": true,\n  \"pointsAwarded\": 1,\n  \"timeTakenSeconds\": 1,\n  \"answeredAt\": \"2026-06-20T10:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete QuizAnswer",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-answer/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-answer",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "QuizAttempt",
+      "item": [
+        {
+          "name": "Get All QuizAttempts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-attempt",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-attempt"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get QuizAttempt by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-attempt/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-attempt",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create QuizAttempt",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-attempt",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-attempt"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quizPublicId\": \"string_value\",\n  \"startIdempotencyKey\": \"string_value\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update QuizAttempt",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-attempt/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-attempt",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quizPublicId\": \"string_value\",\n  \"startIdempotencyKey\": \"string_value\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete QuizAttempt",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-attempt/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-attempt",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "QuizAttemptOption",
+      "item": [
+        {
+          "name": "Get All QuizAttemptOptions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-attempt-option",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-attempt-option"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get QuizAttemptOption by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-attempt-option/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-attempt-option",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create QuizAttemptOption",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-attempt-option",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-attempt-option"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"optionKey\": \"string_value\",\n  \"optionText\": \"string_value\",\n  \"normalizedText\": \"string_value\",\n  \"isCorrect\": true,\n  \"displayOrder\": 1,\n  \"createdAt\": \"2026-06-20T10:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update QuizAttemptOption",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-attempt-option/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-attempt-option",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"optionKey\": \"string_value\",\n  \"optionText\": \"string_value\",\n  \"normalizedText\": \"string_value\",\n  \"isCorrect\": true,\n  \"displayOrder\": 1,\n  \"createdAt\": \"2026-06-20T10:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete QuizAttemptOption",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-attempt-option/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-attempt-option",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "QuizAttemptQuestion",
+      "item": [
+        {
+          "name": "Get All QuizAttemptQuestions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-attempt-question",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-attempt-question"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get QuizAttemptQuestion by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-attempt-question/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-attempt-question",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create QuizAttemptQuestion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-attempt-question",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-attempt-question"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"questionText\": \"string_value\",\n  \"questionImageUrl\": \"string_value\",\n  \"questionType\": \"sample_QuestionType\",\n  \"explanation\": \"string_value\",\n  \"points\": 1,\n  \"questionTimeLimitSeconds\": 1,\n  \"displayOrder\": 1,\n  \"createdAt\": \"2026-06-20T10:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update QuizAttemptQuestion",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-attempt-question/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-attempt-question",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"questionText\": \"string_value\",\n  \"questionImageUrl\": \"string_value\",\n  \"questionType\": \"sample_QuestionType\",\n  \"explanation\": \"string_value\",\n  \"points\": 1,\n  \"questionTimeLimitSeconds\": 1,\n  \"displayOrder\": 1,\n  \"createdAt\": \"2026-06-20T10:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete QuizAttemptQuestion",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-attempt-question/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-attempt-question",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "QuizQuestion",
+      "item": [
+        {
+          "name": "Get All QuizQuestions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-question",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-question"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get QuizQuestion by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-question/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-question",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create QuizQuestion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-question",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-question"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"questionText\": \"string_value\",\n  \"questionImageUrl\": \"string_value\",\n  \"questionType\": \"sample_QuestionType\",\n  \"explanation\": \"string_value\",\n  \"points\": 1,\n  \"questionTimeLimitSeconds\": 1,\n  \"displayOrder\": 1,\n  \"isActive\": true,\n  \"version\": 100\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update QuizQuestion",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-question/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-question",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"questionText\": \"string_value\",\n  \"questionImageUrl\": \"string_value\",\n  \"questionType\": \"sample_QuestionType\",\n  \"explanation\": \"string_value\",\n  \"points\": 1,\n  \"questionTimeLimitSeconds\": 1,\n  \"displayOrder\": 1,\n  \"isActive\": true,\n  \"version\": 100\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete QuizQuestion",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-question/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-question",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "QuizQuestionOption",
+      "item": [
+        {
+          "name": "Get All QuizQuestionOptions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-question-option",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-question-option"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get QuizQuestionOption by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-question-option/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-question-option",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create QuizQuestionOption",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-question-option",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-question-option"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"optionKey\": \"string_value\",\n  \"optionText\": \"string_value\",\n  \"normalizedText\": \"string_value\",\n  \"isCorrect\": true,\n  \"displayOrder\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update QuizQuestionOption",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-question-option/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-question-option",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"optionKey\": \"string_value\",\n  \"optionText\": \"string_value\",\n  \"normalizedText\": \"string_value\",\n  \"isCorrect\": true,\n  \"displayOrder\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete QuizQuestionOption",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/quiz-question-option/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "quiz-question-option",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
