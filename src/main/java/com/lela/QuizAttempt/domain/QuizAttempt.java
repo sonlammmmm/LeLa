@@ -2,7 +2,7 @@ package com.lela.QuizAttempt.domain;
 
 import com.lela.Quiz.domain.Quiz;
 import com.lela.domain.AuditableEntity;
-import com.lela.QuizAttemptStatus.domain.QuizAttemptStatus;
+import com.lela.QuizAttemptQuestion.domain.QuizAttemptStatus;
 import com.lela.users.domain.Users;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -122,7 +122,7 @@ public class DeckServiceImpl implements DeckService {
                 .orElseThrow(() -> new RuntimeException("Deck not found"));
         
         // Soft delete
-        deck.setIsActive(false);
+        deck.setActive(false);
         deckRepository.save(deck);
     }
 }

@@ -2,9 +2,6 @@ package com.lela.QuizAttemptOption.dto;
 
 import lombok.Data;
 import java.time.LocalDateTime;
-import java.math.BigDecimal;
-import com.lela.QuizAttemptStatus.domain.QuizAttemptStatus;
-import com.lela.QuizAttemptOption.domain.QuizAttemptOption;
 
 
 @Data
