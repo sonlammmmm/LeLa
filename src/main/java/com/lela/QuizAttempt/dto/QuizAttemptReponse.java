@@ -1,12 +1,11 @@
 package com.lela.QuizAttempt.dto;
 
-import com.lela.QuizAttemptStatus.domain.QuizAttemptStatus;
+import com.lela.QuizAttemptQuestion.domain.QuizAttemptStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import lombok.Data;
-import com.lela.QuizAttempt.domain.QuizAttempt;
 
 
 @Data

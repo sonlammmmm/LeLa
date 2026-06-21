@@ -49,7 +49,7 @@ public class FlashcardResponse {
         response.setFrontAudioUrl(flashcard.getFrontAudioUrl());
         response.setBackAudioUrl(flashcard.getBackAudioUrl());
         response.setCardOrder(flashcard.getCardOrder());
-        response.setIsActive(flashcard.getIsActive());
+        response.setIsActive(flashcard.getDeck().isActive());
         
         if (flashcard.getCreatedBy() != null) {
             response.setCreatedById(flashcard.getCreatedBy().getId());

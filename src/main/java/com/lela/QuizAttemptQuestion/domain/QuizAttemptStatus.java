@@ -1,4 +1,4 @@
-package com.lela.QuizAttemptStatus.domain;
+package com.lela.QuizAttemptQuestion.domain;
 
 // Enum trạng thái lần làm quiz.
 public enum QuizAttemptStatus {

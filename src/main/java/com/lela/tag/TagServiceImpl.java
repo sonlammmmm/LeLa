@@ -78,7 +78,7 @@ public class TagServiceImpl implements TagService {
         Tag tag = tagRepository.findById(id)
                 .orElseThrow(() -> new NotFoundExeception("Không tìm thấy Tag với id: " + id));
         // TODO: Cần kiểm tra xem Tag này có đang được gắn vào Flashcard/Quiz nào không trước khi xóa
-        tag.setIsActive(false);
+        tag.setActive(false);
         tagRepository.save(tag);
     }
 

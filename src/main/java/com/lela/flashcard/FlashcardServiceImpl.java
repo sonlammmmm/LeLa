@@ -5,9 +5,9 @@ import com.lela.flashcard.domain.Flashcard;
 import com.lela.flashcard.domain.FlashcardTag;
 import com.lela.flashcard.domain.FlashcardTagId;
 import com.lela.tag.domain.Tag;
-import com.lela.domain.entity.Users;
 import com.lela.flashcard.dto.FlashcardRequest;
 import com.lela.flashcard.dto.FlashcardResponse;
+import com.lela.users.domain.Users;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -48,7 +48,7 @@ public class FlashcardServiceImpl implements FlashcardService {
             flashcard.setCardOrder(request.getCardOrder());
         }
         
-        flashcard.setIsActive(true);
+        flashcard.setActive(true);
 
         if (request.getDeckId() != null) {
             Deck deck = entityManager.getReference(Deck.class, request.getDeckId());
@@ -181,7 +181,7 @@ public class FlashcardServiceImpl implements FlashcardService {
         Flashcard flashcard = flashcardRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Flashcard not found"));
         
-        flashcard.setIsActive(false);
+        flashcard.setActive(false);
         flashcard.setDeletedAt(LocalDateTime.now());
         flashcardRepository.save(flashcard);
     }
