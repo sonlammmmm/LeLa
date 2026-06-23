@@ -27,7 +27,7 @@ public class DeckEnrollmentController {
         return ResponseEntity.ok(ApiResponse.success(response, MSG_ENROLL_SUCCESS));
     }
 
-    @PutMapping("/status")
+    @PatchMapping("/status")
     public ResponseEntity<ApiResponse<DeckEnrollmentResponse>> updateStatus(@RequestBody DeckEnrollmentRequest request) {
         DeckEnrollmentResponse response = deckEnrollmentService.updateStatus(request);
         return ResponseEntity.ok(ApiResponse.success(response, MSG_UPDATE_SUCCESS));
