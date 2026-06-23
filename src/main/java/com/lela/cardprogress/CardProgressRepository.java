@@ -21,7 +21,7 @@ public interface CardProgressRepository extends JpaRepository<CardProgress, Long
     @Query("SELECT cp FROM CardProgress cp WHERE cp.user.id = :userId AND cp.card.deck.id = :deckId")
     Page<CardProgress> findByUserIdAndDeckId(@Param("userId") Long userId, @Param("deckId") Long deckId, Pageable pageable);
 
-    @Query("SELECT cp FROM CardProgress cp WHERE cp.user.id = :userId AND cp.card.deck.id = :deckId AND cp.dueAt <= :now")
+    @Query("SELECT cp FROM CardProgress cp WHERE cp.user.id = :userId AND cp.card.deck.id = :deckId AND (cp.dueAt IS NULL OR cp.dueAt <= :now)")
     Page<CardProgress> findReviewCards(@Param("userId") Long userId, @Param("deckId") Long deckId, @Param("now") LocalDateTime now, Pageable pageable);
 
     @Query("SELECT cp FROM CardProgress cp WHERE cp.user.id = :userId AND cp.card.deck.id = :deckId AND cp.state = :state")

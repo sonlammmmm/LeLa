@@ -6,12 +6,14 @@ import com.lela.deckenrollment.domain.DeckEnrollment;
 import com.lela.deckenrollment.domain.DeckEnrollmentStatus;
 import com.lela.deckenrollment.dto.DeckEnrollmentRequest;
 import com.lela.deckenrollment.dto.DeckEnrollmentResponse;
+import com.lela.users.UsersRepository;
 import com.lela.users.domain.Users;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,11 +25,22 @@ import java.time.LocalDateTime;
 public class DeckEnrollmentServiceImpl implements DeckEnrollmentService {
 
     private final DeckEnrollmentRepository repository;
+    private final UsersRepository usersRepository; // Inject để tự lấy ID từ Username
     private final EntityManager entityManager;
     private final ModelMapper modelMapper;
 
+
     private Long getCurrentUserId() {
-        return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+            throw new RuntimeException("Bạn cần đăng nhập để thực hiện hành động này.");
+        }
+
+        // Nhóm lưu username trong token, ta dùng username để tìm ID trong DB
+        String username = auth.getName();
+        return usersRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng: " + username))
+                .getId();
     }
 
     @Override
@@ -35,69 +48,27 @@ public class DeckEnrollmentServiceImpl implements DeckEnrollmentService {
     public DeckEnrollmentResponse enrollDeck(DeckEnrollmentRequest request) {
         Long userId = getCurrentUserId();
 
-        boolean isNewEnrollment = !repository.findByUserIdAndDeckId(userId, request.getDeckId()).isPresent();
-
+        // 1. Kiểm tra tồn tại
         DeckEnrollment enrollment = repository.findByUserIdAndDeckId(userId, request.getDeckId())
-                .orElseGet(() -> {
-                    DeckEnrollment newEnrollment = new DeckEnrollment();
-                    newEnrollment.setUser(entityManager.getReference(Users.class, userId));
-                    newEnrollment.setDeck(entityManager.getReference(Deck.class, request.getDeckId()));
-                    newEnrollment.setEnrolledAt(LocalDateTime.now());
-                    newEnrollment.setStatus(DeckEnrollmentStatus.ACTIVE);
-                    return newEnrollment;
-                });
+                .orElse(null);
 
-        if (!DeckEnrollmentStatus.ACTIVE.equals(enrollment.getStatus())) {
+        boolean isNewEnrollment = (enrollment == null);
+
+        // 2. Nếu mới thì tạo, nếu cũ mà bị DROPPED/PAUSED thì kích hoạt lại
+        if (isNewEnrollment) {
+            enrollment = new DeckEnrollment();
+            enrollment.setUser(entityManager.getReference(Users.class, userId));
+            enrollment.setDeck(entityManager.getReference(Deck.class, request.getDeckId()));
+            enrollment.setEnrolledAt(LocalDateTime.now());
+            enrollment.setStatus(DeckEnrollmentStatus.ACTIVE);
+
+            // Khởi tạo tiến độ cho lần học đầu tiên
+            initializeCardProgressForEnrolledDeck(userId, request.getDeckId());
+        } else if (!DeckEnrollmentStatus.ACTIVE.equals(enrollment.getStatus())) {
             enrollment.setStatus(DeckEnrollmentStatus.ACTIVE);
         }
 
-        enrollment = repository.save(enrollment);
-
-        if (isNewEnrollment) {
-            initializeCardProgressForEnrolledDeck(userId, request.getDeckId());
-        }
-
-        return mapToResponse(enrollment);
-    }
-
-    private void initializeCardProgressForEnrolledDeck(Long userId, Long deckId) {
-        String sql = "INSERT INTO card_progress (user_id, card_id, state, ease_factor, interval_days, repetitions, total_reviews, created_at, updated_at) " +
-                "SELECT :userId, c.id, 'NEW', 2.50, 0, 0, 0, NOW(), NOW() " +
-                "FROM cards c WHERE c.deck_id = :deckId " +
-                "ON DUPLICATE KEY UPDATE updated_at = NOW()";
-
-        entityManager.createNativeQuery(sql)
-                .setParameter("userId", userId)
-                .setParameter("deckId", deckId)
-                .executeUpdate();
-    }
-
-    @Transactional
-    public void syncEnrollmentProgress(Long deckId) {
-        Long userId = getCurrentUserId();
-
-        DeckEnrollment enrollment = repository.findByUserIdAndDeckId(userId, deckId)
-                .orElseThrow(() -> new NotFoundExeception("Không tìm thấy thông tin đăng ký bộ thẻ cần đồng bộ."));
-
-        String countMasteredSql = "SELECT COUNT(*) FROM card_progress WHERE user_id = :userId AND card_id IN (SELECT id FROM cards WHERE deck_id = :deckId) AND state = 'GRADUATED'";
-        Number masteredCount = (Number) entityManager.createNativeQuery(countMasteredSql)
-                .setParameter("userId", userId)
-                .setParameter("deckId", deckId)
-                .getSingleResult();
-
-        String findNextReviewSql = "SELECT MIN(due_at) FROM card_progress WHERE user_id = :userId AND card_id IN (SELECT id FROM cards WHERE deck_id = :deckId) AND due_at IS NOT NULL";
-        Object nextReviewResult = entityManager.createNativeQuery(findNextReviewSql)
-                .setParameter("userId", userId)
-                .setParameter("deckId", deckId)
-                .getSingleResult();
-
-        enrollment.setMasteredCards(masteredCount.intValue());
-        if (nextReviewResult != null) {
-            enrollment.setNextReviewAt(((java.sql.Timestamp) nextReviewResult).toLocalDateTime());
-        }
-        enrollment.setLastStudiedAt(LocalDateTime.now());
-
-        repository.save(enrollment);
+        return mapToResponse(repository.save(enrollment));
     }
 
     @Override
@@ -110,37 +81,44 @@ public class DeckEnrollmentServiceImpl implements DeckEnrollmentService {
 
         if (request.getStatus() != null) {
             enrollment.setStatus(request.getStatus());
-            if (DeckEnrollmentStatus.PAUSED.equals(request.getStatus())) {
-                enrollment.setPausedAt(LocalDateTime.now());
-            } else if (DeckEnrollmentStatus.COMPLETED.equals(request.getStatus())) {
-                enrollment.setCompletedAt(LocalDateTime.now());
-            } else if (DeckEnrollmentStatus.DROPPED.equals(request.getStatus())) {
-                enrollment.setDroppedAt(LocalDateTime.now());
+            switch (request.getStatus()) {
+                case PAUSED -> enrollment.setPausedAt(LocalDateTime.now());
+                case COMPLETED -> enrollment.setCompletedAt(LocalDateTime.now());
+                case DROPPED -> enrollment.setDroppedAt(LocalDateTime.now());
             }
         }
-
         return mapToResponse(repository.save(enrollment));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<DeckEnrollmentResponse> getUserEnrollList(Pageable pageable) {
-        Long userId = getCurrentUserId();
-        return repository.findByUserId(userId, pageable).map(this::mapToResponse);
+        return repository.findByUserId(getCurrentUserId(), pageable).map(this::mapToResponse);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<DeckEnrollmentResponse> getReviewToday(Pageable pageable) {
-        Long userId = getCurrentUserId();
-        return repository.findByUserIdAndNextReviewAtLessThanEqual(userId, LocalDateTime.now(), pageable)
+        return repository.findByUserIdAndNextReviewAtLessThanEqual(getCurrentUserId(), LocalDateTime.now(), pageable)
                 .map(this::mapToResponse);
+    }
+
+    private void initializeCardProgressForEnrolledDeck(Long userId, Long deckId) {
+        String sql = "INSERT INTO card_progress (user_id, card_id, state, ease_factor, interval_days, repetitions, total_reviews, created_at, updated_at) " +
+                "SELECT :userId, f.id, 'NEW', 2.50, 0, 0, 0, NOW(), NOW() " +
+                "FROM flashcards f WHERE f.deck_id = :deckId " +
+                "ON DUPLICATE KEY UPDATE updated_at = NOW()";
+
+        entityManager.createNativeQuery(sql)
+                .setParameter("userId", userId)
+                .setParameter("deckId", deckId)
+                .executeUpdate();
     }
 
     private DeckEnrollmentResponse mapToResponse(DeckEnrollment entity) {
         DeckEnrollmentResponse response = modelMapper.map(entity, DeckEnrollmentResponse.class);
-        response.setUserId(entity.getUser().getId());
-        response.setDeckId(entity.getDeck().getId());
+        if (entity.getUser() != null) response.setUserId(entity.getUser().getId());
+        if (entity.getDeck() != null) response.setDeckId(entity.getDeck().getId());
         return response;
     }
 }

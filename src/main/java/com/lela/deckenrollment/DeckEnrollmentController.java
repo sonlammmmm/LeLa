@@ -21,13 +21,13 @@ public class DeckEnrollmentController {
     private static final String MSG_FETCH_LIST_SUCCESS = "Tải danh sách đăng ký học thành công.";
     private static final String MSG_FETCH_REVIEW_SUCCESS = "Tải danh sách lịch hẹn ôn tập hôm nay thành công.";
 
-    @PostMapping("/enroll")
+    @PostMapping(value = "/enroll")
     public ResponseEntity<ApiResponse<DeckEnrollmentResponse>> enrollDeck(@RequestBody DeckEnrollmentRequest request) {
         DeckEnrollmentResponse response = deckEnrollmentService.enrollDeck(request);
         return ResponseEntity.ok(ApiResponse.success(response, MSG_ENROLL_SUCCESS));
     }
 
-    @PutMapping("/status")
+    @PatchMapping("/status")
     public ResponseEntity<ApiResponse<DeckEnrollmentResponse>> updateStatus(@RequestBody DeckEnrollmentRequest request) {
         DeckEnrollmentResponse response = deckEnrollmentService.updateStatus(request);
         return ResponseEntity.ok(ApiResponse.success(response, MSG_UPDATE_SUCCESS));
