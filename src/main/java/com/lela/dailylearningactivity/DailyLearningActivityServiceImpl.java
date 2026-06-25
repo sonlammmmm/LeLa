@@ -3,13 +3,16 @@ package com.lela.dailylearningactivity;
 import com.lela.dailylearningactivity.domain.DailyLearningActivity;
 import com.lela.dailylearningactivity.dto.DailyLearningActivityRequest;
 import com.lela.dailylearningactivity.dto.DailyLearningActivityResponse;
+import com.lela.users.UsersRepository;
 import com.lela.users.domain.Users;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 
@@ -20,9 +23,13 @@ public class DailyLearningActivityServiceImpl implements DailyLearningActivitySe
     private final DailyLearningActivityRepository repository;
     private final EntityManager entityManager;
     private final ModelMapper modelMapper;
+    private final UsersRepository usersRepository;
 
     private Long getCurrentUserId() {
-        return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return usersRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User không tồn tại"))
+                .getId();
     }
 
     @Override
@@ -46,7 +53,6 @@ public class DailyLearningActivityServiceImpl implements DailyLearningActivitySe
         activity.setMinutesSpent(activity.getMinutesSpent() + (request.getMinutesSpent() != null ? request.getMinutesSpent() : 0));
         activity.setXpEarned(activity.getXpEarned() + (request.getXpEarned() != null ? request.getXpEarned() : 0));
 
-
         if (request.getGoalMet() != null) {
             activity.setGoalMet(request.getGoalMet());
         }
@@ -60,12 +66,25 @@ public class DailyLearningActivityServiceImpl implements DailyLearningActivitySe
         Long userId = getCurrentUserId();
         return repository.findByUserIdAndActivityDate(userId, LocalDate.now())
                 .map(this::mapToResponse)
-                .orElse(null);
+                .orElseGet(() -> {
+                    DailyLearningActivityResponse empty = new DailyLearningActivityResponse();
+                    empty.setUserId(userId);
+                    empty.setActivityDate(LocalDate.now());
+                    empty.setReviewCount(0);
+                    empty.setCardsLearned(0);
+                    empty.setQuizCount(0);
+                    empty.setMinutesSpent(0);
+                    empty.setXpEarned(0);
+                    empty.setGoalMet(false);
+                    return empty;
+                });
     }
 
     private DailyLearningActivityResponse mapToResponse(DailyLearningActivity entity) {
         DailyLearningActivityResponse response = modelMapper.map(entity, DailyLearningActivityResponse.class);
-        response.setUserId(entity.getUser().getId());
+        if (entity.getUser() != null) {
+            response.setUserId(entity.getUser().getId());
+        }
         return response;
     }
 }

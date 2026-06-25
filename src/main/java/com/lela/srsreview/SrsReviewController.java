@@ -21,12 +21,14 @@ public class SrsReviewController {
     }
 
     @GetMapping("/history")
-    public ApiResponse<Page<SrsReviewResponse>> getReviewHistory(@RequestParam Long userId, Pageable pageable) {
+    public ApiResponse<Page<SrsReviewResponse>> getReviewHistory(
+            @RequestParam(required = false) Long userId,
+            Pageable pageable) {
         return ApiResponse.success(service.getReviewHistory(userId, pageable));
     }
 
     @GetMapping("/statistics")
-    public ApiResponse<Object> getReviewStatistics(@RequestParam Long userId) {
-        return ApiResponse.success(service.getReviewStatistics(userId));
+    public ApiResponse<Object> getReviewStatistics(@RequestParam(required = false) Long userId) {
+        return ApiResponse.success(service.getReviewStatistics(userId), "Tải số liệu thống kê thành công");
     }
 }

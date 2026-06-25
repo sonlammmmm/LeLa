@@ -1,19 +1,22 @@
 package com.lela.leaderboardsnapshot;
 
 import com.lela.leaderboardsnapshot.dto.LeaderboardSnapshotResponse;
+import com.lela.users.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +24,13 @@ public class LeaderboardSnapshotServiceImpl implements LeaderboardSnapshotServic
 
     private final LeaderboardSnapshotRepository repository;
 
+    private final UsersRepository usersRepository; // Inject vào class
+
     private Long getCurrentUserId() {
-        return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return usersRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User không tồn tại"))
+                .getId();
     }
 
     @Override
@@ -64,22 +72,21 @@ public class LeaderboardSnapshotServiceImpl implements LeaderboardSnapshotServic
         LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate endOfWeek = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
 
-        Long currentRank = repository.findUserRealTimeRank(targetUserId, startOfWeek, endOfWeek).orElse(1L);
+        Long currentRank = repository.findUserRealTimeRank(targetUserId, startOfWeek, endOfWeek).orElse(0L);
         Long totalXp = repository.findUserTotalXpInPeriod(targetUserId, startOfWeek, endOfWeek);
 
         LeaderboardSnapshotResponse response = new LeaderboardSnapshotResponse();
         response.setUserId(targetUserId);
-        response.setTotalScore(totalXp);
-        response.setXpScore(totalXp);
+        response.setXpScore(totalXp != null ? totalXp : 0L);
+        response.setTotalScore(response.getXpScore());
         response.setId(currentRank);
         return response;
     }
 
     private Page<LeaderboardSnapshotResponse> getRealTimePage(LocalDate start, LocalDate end, Pageable pageable) {
         Page<Object[]> rawData = repository.findRealTimeRankings(start, end, pageable);
-        List<LeaderboardSnapshotResponse> dtoList = new ArrayList<>();
 
-        for (Object[] row : rawData.getContent()) {
+        List<LeaderboardSnapshotResponse> dtoList = rawData.getContent().stream().map(row -> {
             LeaderboardSnapshotResponse res = new LeaderboardSnapshotResponse();
             res.setUserId((Long) row[0]);
             res.setXpScore((Long) row[1]);
@@ -88,8 +95,9 @@ public class LeaderboardSnapshotServiceImpl implements LeaderboardSnapshotServic
             res.setCardsMastered(((Long) row[3]).intValue());
             res.setPeriodStart(start);
             res.setPeriodEnd(end);
-            dtoList.add(res);
-        }
+            return res;
+        }).collect(Collectors.toList());
+
         return new PageImpl<>(dtoList, pageable, rawData.getTotalElements());
     }
 }
