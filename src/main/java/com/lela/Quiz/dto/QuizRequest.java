@@ -14,6 +14,11 @@ public class QuizRequest {
     @NotNull(message = "Deck ID không được để trống")
     private Long deckId;
 
+    @NotNull(message = "createdById không được để trống")
+    private Long createdById;
+
+    private Long updatedById;
+
     @NotBlank(message = "Quiz code không được để trống")
     @Size(max = 50, message = "Quiz code tối đa 50 ký tự")
     private String quizCode;

@@ -2,6 +2,7 @@ package com.lela.Quiz.domain;
 
 import com.lela.deck.domain.Deck;
 import com.lela.domain.AuditableEntity;
+import com.lela.users.domain.Users;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -62,6 +63,13 @@ public class Quiz extends AuditableEntity {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true; // Quiz còn được sử dụng hay không.
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", nullable = false)
+    private Users createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "updated_by")
+    private Users updatedBy;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt; // Thời điểm xóa mềm quiz.

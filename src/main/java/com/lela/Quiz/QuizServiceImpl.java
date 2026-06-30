@@ -3,14 +3,13 @@ package com.lela.Quiz;
 import com.lela.Quiz.domain.Quiz;
 import com.lela.Quiz.dto.QuizRequest;
 import com.lela.Quiz.dto.QuizResponse;
-import com.lela.common.exception.BadRequestException;
 import com.lela.common.exception.NotFoundExeception;
-
 import com.lela.deck.DeckRepository;
 import com.lela.deck.domain.Deck;
+import com.lela.users.UsersRepository;
+import com.lela.users.domain.Users;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +22,7 @@ import java.util.Optional;
 public class QuizServiceImpl implements QuizService {
     private final QuizRepository quizRepository;
     private final DeckRepository deckRepository;
+    private final UsersRepository usersRepository;
     private final ModelMapper mapper;
 
     @Transactional(readOnly = true)
@@ -47,8 +47,11 @@ public class QuizServiceImpl implements QuizService {
     public QuizResponse create(QuizRequest req) {
         Deck deck = deckRepository.findById(req.getDeckId())
                 .orElseThrow(() -> new NotFoundExeception("Deck not found: " + req.getDeckId()));
+        Users createdBy = usersRepository.findById(req.getCreatedById())
+                .orElseThrow(() -> new NotFoundExeception("User not found: " + req.getCreatedById()));
         Quiz quiz = mapper.map(req, Quiz.class);
         quiz.setDeck(deck);
+        quiz.setCreatedBy(createdBy);
         return toResponse(quizRepository.save(quiz));
     }
 
@@ -62,6 +65,11 @@ public class QuizServiceImpl implements QuizService {
                 .orElseThrow(() -> new NotFoundExeception("Deck not found: " + req.getDeckId()));
         mapper.map(req, existing);
         existing.setDeck(deck);
+        if (req.getUpdatedById() != null) {
+            Users updatedBy = usersRepository.findById(req.getUpdatedById())
+                    .orElseThrow(() -> new NotFoundExeception("User not found: " + req.getUpdatedById()));
+            existing.setUpdatedBy(updatedBy);
+        }
         return toResponse(quizRepository.save(existing));
     }
 
