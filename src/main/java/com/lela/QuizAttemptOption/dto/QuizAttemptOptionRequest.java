@@ -3,10 +3,13 @@ package com.lela.QuizAttemptOption.dto;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 @Data
 public class QuizAttemptOptionRequest {
+
+    @NotNull(message = "Attempt question ID is required")
+    private Long attemptQuestionId;
+
+    private Long sourceOptionId;
 
     @NotBlank(message = "Option key is required")
     @Size(max = 10, message = "Option key must not exceed 10 characters")
@@ -25,6 +28,4 @@ public class QuizAttemptOptionRequest {
     @NotNull(message = "Display order is required")
     @Min(value = 0, message = "Display order must be >= 0")
     private Integer displayOrder;
-
-    private LocalDateTime createdAt;
 }
