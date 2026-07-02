@@ -64,7 +64,7 @@ public class Quiz extends AuditableEntity {
     private Boolean isActive = true; // Quiz còn được sử dụng hay không.
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", nullable = false)
+    @JoinColumn(name = "created_by")
     private Users createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)

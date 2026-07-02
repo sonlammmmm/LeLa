@@ -2,7 +2,7 @@ spring:
   application:
     name: LeLa
   profiles:
-    active: ${APP_PROFILE:dev}
+    active: ${APP_PROFILE:prod}
   jpa:
     show-sql: true
     open-in-view: false

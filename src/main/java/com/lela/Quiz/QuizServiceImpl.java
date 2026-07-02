@@ -10,10 +10,11 @@ import com.lela.users.UsersRepository;
 import com.lela.users.domain.Users;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,24 +26,24 @@ public class QuizServiceImpl implements QuizService {
     private final UsersRepository usersRepository;
     private final ModelMapper mapper;
 
-    @Transactional(readOnly = true)
+
     @Override
-    public List<QuizResponse> findAll() {
-        return quizRepository.findAll()
-                .stream()
-                .map(this::toResponse)
-                .toList();
+    public Page<QuizResponse> findAll(Pageable pageable) {
+        return quizRepository.findAll(pageable)
+                .map(q -> mapper.map(q, QuizResponse.class));
     }
 
-    @Transactional(readOnly = true)
+
     @Override
-    public Optional<QuizResponse> findById(Long id) {
+    public QuizResponse findById(Long id) {
         return quizRepository.findById(id)
-                .map(this::toResponse);
+                .map(q-> mapper.map(q, QuizResponse.class))
+                .orElseThrow(()-> new NotFoundExeception("Quiz not found: " + id));
+
     }
 
 
-    @Transactional
+
     @Override
     public QuizResponse create(QuizRequest req) {
         Deck deck = deckRepository.findById(req.getDeckId())
@@ -52,7 +53,7 @@ public class QuizServiceImpl implements QuizService {
         Quiz quiz = mapper.map(req, Quiz.class);
         quiz.setDeck(deck);
         quiz.setCreatedBy(createdBy);
-        return toResponse(quizRepository.save(quiz));
+        return mapper.map(quizRepository.save(quiz), QuizResponse.class);
     }
 
 
@@ -64,13 +65,13 @@ public class QuizServiceImpl implements QuizService {
         Deck deck = deckRepository.findById(req.getDeckId())
                 .orElseThrow(() -> new NotFoundExeception("Deck not found: " + req.getDeckId()));
         mapper.map(req, existing);
-        existing.setDeck(deck);
+        existing.setDeck(deck);//luu update by
         if (req.getUpdatedById() != null) {
             Users updatedBy = usersRepository.findById(req.getUpdatedById())
                     .orElseThrow(() -> new NotFoundExeception("User not found: " + req.getUpdatedById()));
             existing.setUpdatedBy(updatedBy);
         }
-        return toResponse(quizRepository.save(existing));
+        return mapper.map(quizRepository.save(existing), QuizResponse.class);
     }
 
     @Transactional
@@ -81,11 +82,5 @@ public class QuizServiceImpl implements QuizService {
         }
         quizRepository.deleteById(id);
     }
-    private QuizResponse toResponse(Quiz quiz) {
-        QuizResponse res = mapper.map(quiz, QuizResponse.class);
-        if (quiz.getDeck() != null) {
-            res.setDeckId(quiz.getDeck().getId());
-        }
-        return res;
-    }
+
 }

@@ -4,10 +4,12 @@ import com.lela.QuizAnswer.dto.QuizAnswerRequest;
 import com.lela.QuizAnswer.dto.QuizAnswerResponse;
 import java.util.List;
 import com.lela.QuizAnswer.domain.QuizAnswer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 public interface QuizAnswerService {
-    List<QuizAnswerResponse> findAll();
+    Page<QuizAnswerResponse> findAll(Pageable pageable);
     QuizAnswerResponse findById(Long id);
     QuizAnswerResponse create(QuizAnswerRequest request);
     QuizAnswerResponse update(Long id, QuizAnswerRequest request);

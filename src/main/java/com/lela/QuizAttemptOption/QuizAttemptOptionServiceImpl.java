@@ -5,6 +5,8 @@ import com.lela.QuizAttemptOption.dto.QuizAttemptOptionResponse;
 import com.lela.QuizAttemptOption.domain.QuizAttemptOption;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +22,9 @@ public class QuizAttemptOptionServiceImpl implements QuizAttemptOptionService {
     private final ModelMapper mapper;
 
     @Override
-    public List<QuizAttemptOptionResponse> findAll() {
-        return repository.findAll()
-                .stream()
-                .map(e -> mapper.map(e, QuizAttemptOptionResponse.class))
-                .collect(Collectors.toList());
+    public Page<QuizAttemptOptionResponse> findAll(Pageable pageable) {
+        return repository.findAll(pageable)
+                .map(q -> mapper.map(q, QuizAttemptOptionResponse.class));
     }
 
     @Override
