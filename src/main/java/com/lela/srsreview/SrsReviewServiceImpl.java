@@ -3,12 +3,14 @@ package com.lela.srsreview;
 import com.lela.cardprogress.CardProgressRepository;
 import com.lela.cardprogress.domain.CardProgress;
 import com.lela.cardprogress.domain.CardProgressState;
-import com.lela.cardprogress.domain.ReviewableCardState;
+import com.lela.dailylearningactivity.DailyLearningActivityService;
+import com.lela.dailylearningactivity.dto.DailyLearningActivityRequest;
 import com.lela.flashcard.FlashcardRepository;
 import com.lela.flashcard.domain.Flashcard;
 import com.lela.reviewsession.ReviewSessionRepository;
 import com.lela.reviewsession.domain.ReviewSession;
 import com.lela.srsreview.domain.SrsReview;
+import com.lela.srsreview.dto.ReviewStatsResponse;
 import com.lela.srsreview.dto.SrsReviewRequest;
 import com.lela.srsreview.dto.SrsReviewResponse;
 import com.lela.users.UsersRepository;
@@ -18,10 +20,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -35,6 +39,14 @@ public class SrsReviewServiceImpl implements SrsReviewService {
     private final FlashcardRepository flashcardRepository;
     private final CardProgressRepository cardProgressRepository;
     private final ModelMapper modelMapper;
+    private final DailyLearningActivityService dailyLearningActivityService;
+
+    private Long getCurrentUserId() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return usersRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User không tồn tại"))
+                .getId();
+    }
 
     @Override
     @Transactional
@@ -46,7 +58,8 @@ public class SrsReviewServiceImpl implements SrsReviewService {
         ReviewSession session = reviewSessionRepository.findById(request.getReviewSessionId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Review session not found"));
 
-        Users user = usersRepository.findById(request.getUserId())
+        Long userId = getCurrentUserId();
+        Users user = usersRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         Flashcard card = flashcardRepository.findById(request.getCardId())
@@ -78,6 +91,13 @@ public class SrsReviewServiceImpl implements SrsReviewService {
         updateCardProgress(user, card, request, now);
 
         SrsReview saved = srsReviewRepository.save(review);
+
+        DailyLearningActivityRequest activityRequest = new DailyLearningActivityRequest();
+        activityRequest.setReviewCount(1);
+        activityRequest.setXpEarned(saved.getXpAwarded());
+        activityRequest.setActivityDate(LocalDate.now());
+        dailyLearningActivityService.logActivity(activityRequest);
+
         SrsReviewResponse response = modelMapper.map(saved, SrsReviewResponse.class);
         response.setReviewSessionId(session.getId());
         response.setUserId(user.getId());
@@ -95,14 +115,19 @@ public class SrsReviewServiceImpl implements SrsReviewService {
                     return cp;
                 });
 
-        ReviewableCardState newState = request.getNewState();
-        if (newState != null) {
-            progress.setState(CardProgressState.valueOf(newState.name()));
+        if (request.getNewState() != null) {
+            try {
+                progress.setState(CardProgressState.valueOf(request.getNewState().name()));
+            } catch (IllegalArgumentException e) {
+                progress.setState(CardProgressState.REVIEW);
+            }
         }
+
         if (request.getEaseAfter() != null) progress.setEaseFactor(request.getEaseAfter());
         if (request.getIntervalAfter() != null) progress.setIntervalDays(request.getIntervalAfter());
         if (request.getDueAfter() != null) progress.setDueAt(request.getDueAfter());
         if (request.getAlgorithmVersion() != null) progress.setAlgorithmVersion(request.getAlgorithmVersion());
+
         progress.setLastReviewedAt(now);
         progress.setLastRating(request.getRating());
         progress.setTotalReviews(progress.getTotalReviews() + 1);
@@ -120,21 +145,29 @@ public class SrsReviewServiceImpl implements SrsReviewService {
     @Override
     @Transactional(readOnly = true)
     public Page<SrsReviewResponse> getReviewHistory(Long userId, Pageable pageable) {
-        return srsReviewRepository.findAll(pageable).map(r -> {
+        Long targetUserId = (userId != null) ? userId : getCurrentUserId();
+
+        return srsReviewRepository.findAllByUserId(targetUserId, pageable).map(r -> {
             SrsReviewResponse resp = modelMapper.map(r, SrsReviewResponse.class);
-            resp.setReviewSessionId(r.getReviewSession().getId());
-            resp.setUserId(r.getUser().getId());
-            resp.setCardId(r.getCard().getId());
+            if (r.getReviewSession() != null) resp.setReviewSessionId(r.getReviewSession().getId());
+            if (r.getUser() != null) resp.setUserId(r.getUser().getId());
+            if (r.getCard() != null) resp.setCardId(r.getCard().getId());
             return resp;
         });
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Object getReviewStatistics(Long userId) {
+    public ReviewStatsResponse getReviewStatistics(Long userId) {
+        Long targetId = (userId != null) ? userId : getCurrentUserId();
         LocalDateTime now = LocalDateTime.now();
-        long todayCount = srsReviewRepository.countReviewsInPeriod(userId, now.toLocalDate().atStartOfDay(), now);
-        long weekCount = srsReviewRepository.countReviewsInPeriod(userId, now.minusDays(7), now);
-        return Map.of("todayReviews", todayCount, "last7DaysReviews", weekCount);
+
+        long todayCount = srsReviewRepository.countReviewsInPeriod(targetId, now.toLocalDate().atStartOfDay(), now);
+        long weekCount = srsReviewRepository.countReviewsInPeriod(targetId, now.minusDays(7), now);
+
+        ReviewStatsResponse stats = new ReviewStatsResponse();
+        stats.setTodayReviews(todayCount);
+        stats.setLast7DaysReviews(weekCount);
+        return stats;
     }
 }

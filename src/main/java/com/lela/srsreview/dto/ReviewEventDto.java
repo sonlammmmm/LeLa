@@ -1,8 +1,10 @@
 package com.lela.srsreview.dto;
 
+import com.lela.cardprogress.domain.ReviewableCardState;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.validation.constraints.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -13,18 +15,24 @@ public class ReviewEventDto {
     private Long cardId;
 
     @NotBlank(message = "Client Event ID không được để trống")
-    @Size(max = 36, message = "Client Event ID phải là chuỗi UUID hợp lệ")
     private String clientEventId;
 
-    @NotNull(message = "Đánh giá chất lượng (Rating) không được để trống")
-    @Min(value = 1, message = "Rating nhỏ nhất là 1 (AGAIN)")
-    @Max(value = 4, message = "Rating lớn nhất là 4 (EASY)")
+    @NotNull(message = "Rating không được để trống")
     private Integer rating;
 
-    @NotNull(message = "Thời gian phản hồi không được để trống")
-    @PositiveOrZero(message = "Thời gian phản hồi phản xạ phải từ 0ms trở lên")
     private Integer responseMs;
 
-    @NotNull(message = "Thời điểm ôn tập ở client không được để trống")
+    private ReviewableCardState previousState;
+    private ReviewableCardState newState;
+    private BigDecimal easeBefore;
+    private BigDecimal easeAfter;
+    private Integer intervalBefore;
+    private Integer intervalAfter;
+    private LocalDateTime dueBefore;
+    private LocalDateTime dueAfter;
+    private String algorithmVersion;
+    private Integer xpAwarded;
+
+    @NotNull(message = "Thời điểm ôn tập không được để trống")
     private LocalDateTime clientReviewedAt;
 }
