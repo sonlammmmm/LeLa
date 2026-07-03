@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class LeaderboardSnapshotServiceImpl implements LeaderboardSnapshotService {
 
     private final LeaderboardSnapshotRepository repository;

@@ -4,8 +4,6 @@ import com.lela.deckenrollment.domain.DeckEnrollmentStatus;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
-import java.time.LocalDate;
-import java.math.BigDecimal;
 
 @Getter
 @Setter

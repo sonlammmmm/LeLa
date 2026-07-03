@@ -1,16 +1,11 @@
 package com.lela.notification.domain;
 
 import com.lela.domain.AuditableEntity;
-import com.lela.notification.domain.NotificationChannel;
-import com.lela.notification.domain.NotificationStatus;
-import com.lela.notification.domain.NotificationType;
 import com.lela.users.domain.Users;
 import jakarta.persistence.Column;
-import com.lela.users.domain.Users;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import com.lela.subscriptionplan.domain.SubscriptionPlan;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;

@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
@@ -77,7 +78,7 @@ public class TagServiceImpl implements TagService {
     public void deleteTag(Long id) {
         Tag tag = tagRepository.findById(id)
                 .orElseThrow(() -> new NotFoundExeception("Không tìm thấy Tag với id: " + id));
-        // TODO: Cần kiểm tra xem Tag này có đang được gắn vào Flashcard/Quiz nào không trước khi xóa
+        // Xoá mềm (soft delete), tạm thời chưa check các ràng buộc với Flashcard/Quiz
         tag.setActive(false);
         tagRepository.save(tag);
     }

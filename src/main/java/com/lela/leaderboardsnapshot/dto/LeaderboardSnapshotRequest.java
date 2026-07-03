@@ -3,8 +3,6 @@ package com.lela.leaderboardsnapshot.dto;
 import com.lela.leaderboardsnapshot.domain.LeaderboardPeriodType;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.validation.constraints.*;
-import java.time.LocalDateTime;
 import java.time.LocalDate;
 
 

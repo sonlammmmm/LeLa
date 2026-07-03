@@ -18,8 +18,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Setter

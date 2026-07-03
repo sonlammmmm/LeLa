@@ -1,7 +1,6 @@
 package com.lela.usersubscription.domain;
 
 import com.lela.domain.AuditableEntity;
-import com.lela.usersubscription.domain.UserSubscriptionStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import com.lela.subscriptionplan.domain.SubscriptionPlan;

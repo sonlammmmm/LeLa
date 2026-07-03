@@ -2,10 +2,7 @@ package com.lela.dailylearningactivity.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.validation.constraints.*;
-import java.time.LocalDateTime;
 import java.time.LocalDate;
-import java.math.BigDecimal;
 
 @Getter
 @Setter
