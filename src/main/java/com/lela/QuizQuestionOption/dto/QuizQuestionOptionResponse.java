@@ -12,5 +12,4 @@ public class QuizQuestionOptionResponse {
     private Boolean isCorrect;
     private Integer displayOrder;
 
-    // TODO: Add foreign key response fields if needed
 }

@@ -3,25 +3,22 @@ package com.lela.Quiz;
 import com.lela.Quiz.dto.QuizRequest;
 import com.lela.Quiz.dto.QuizResponse;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface QuizService {
-    @Transactional(readOnly = true)
-    List<QuizResponse> findAll();
+    Page<QuizResponse> findAll(Pageable pageable);
 
-    @Transactional(readOnly = true)
-    Optional<QuizResponse> findById(Long id);
+    QuizResponse findById(Long id);
 
-    @Transactional
     QuizResponse create(QuizRequest req);
 
-    @Transactional
     QuizResponse update(Long id, QuizRequest req);
 
-    @Transactional
+    
     void delete(Long id);
 
 

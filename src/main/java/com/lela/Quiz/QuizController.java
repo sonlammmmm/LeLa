@@ -9,7 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 @RestController
@@ -20,19 +21,14 @@ public class QuizController {
     private final QuizService quizService;
 
     @GetMapping
-    //@PreAuthorize("hasAnyRole('ADMIN', 'ACADEMIC_STAFF')")
-    public ResponseEntity<ApiResponse<List<QuizResponse>>> findAll() {
-        return ResponseEntity.ok(ApiResponse.success(quizService.findAll()));
+    public ResponseEntity<ApiResponse<Page<QuizResponse>>> findAll(Pageable pageable) {
+        return ResponseEntity.ok(ApiResponse.success(quizService.findAll(pageable)));
     }
 
     @GetMapping("/{id}")
-   //@PreAuthorize("hasAnyRole('ADMIN', 'ACADEMIC_STAFF')")
+   @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<ApiResponse<QuizResponse>> findById(@PathVariable Long id) {
-        Optional<QuizResponse> result = quizService.findById(id);
-        if (result.isPresent()) {
-            return ResponseEntity.ok(ApiResponse.success(result.get()));
-        }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(ApiResponse.success(quizService.findById(id)));
     }
 
     @PostMapping
@@ -43,13 +39,13 @@ public class QuizController {
 
 
     @PutMapping("/{id}")
-   // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<QuizResponse>> update(@PathVariable Long id,@Valid @RequestBody QuizRequest req) {
         return ResponseEntity.ok(ApiResponse.success(quizService.update(id, req)));
     }
 
     @DeleteMapping("/{id}")
-   // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
         quizService.delete(id);
         return ResponseEntity.ok(ApiResponse.successMessage("Deleted successfully"));
