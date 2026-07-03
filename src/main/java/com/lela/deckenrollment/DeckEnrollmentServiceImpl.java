@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class DeckEnrollmentServiceImpl implements DeckEnrollmentService {
 
     private final DeckEnrollmentRepository repository;
@@ -52,10 +53,8 @@ public class DeckEnrollmentServiceImpl implements DeckEnrollmentService {
         DeckEnrollment enrollment = repository.findByUserIdAndDeckId(userId, request.getDeckId())
                 .orElse(null);
 
-        boolean isNewEnrollment = (enrollment == null);
-
         // 2. Nếu mới thì tạo, nếu cũ mà bị DROPPED/PAUSED thì kích hoạt lại
-        if (isNewEnrollment) {
+        if (enrollment == null) {
             enrollment = new DeckEnrollment();
             enrollment.setUser(entityManager.getReference(Users.class, userId));
             enrollment.setDeck(entityManager.getReference(Deck.class, request.getDeckId()));
@@ -85,6 +84,7 @@ public class DeckEnrollmentServiceImpl implements DeckEnrollmentService {
                 case PAUSED -> enrollment.setPausedAt(LocalDateTime.now());
                 case COMPLETED -> enrollment.setCompletedAt(LocalDateTime.now());
                 case DROPPED -> enrollment.setDroppedAt(LocalDateTime.now());
+                case ACTIVE -> {}
             }
         }
         return mapToResponse(repository.save(enrollment));

@@ -27,6 +27,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class SrsReviewServiceImpl implements SrsReviewService {
 
     private final SrsReviewRepository srsReviewRepository;

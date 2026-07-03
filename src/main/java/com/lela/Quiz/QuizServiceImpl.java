@@ -15,11 +15,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@SuppressWarnings("null")
 public class QuizServiceImpl implements QuizService {
     private final QuizRepository quizRepository;
     private final DeckRepository deckRepository;

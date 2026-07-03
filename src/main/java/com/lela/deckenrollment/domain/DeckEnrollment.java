@@ -3,7 +3,6 @@ package com.lela.deckenrollment.domain;
 import com.lela.domain.AuditableEntity;
 import com.lela.deck.domain.Deck;
 import com.lela.users.domain.Users;
-import com.lela.deckenrollment.domain.DeckEnrollmentStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

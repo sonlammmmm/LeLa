@@ -2,8 +2,6 @@ package com.lela.QuizQuestion;
 
 import com.lela.QuizQuestion.dto.QuizQuestionRequest;
 import com.lela.QuizQuestion.dto.QuizQuestionResponse;
-import java.util.List;
-import com.lela.QuizQuestion.domain.QuizQuestion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
