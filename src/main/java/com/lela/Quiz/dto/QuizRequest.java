@@ -35,6 +35,11 @@ public class QuizRequest {
     @Min(value = 1, message = "Thời gian tối thiểu 1 giây")
     private Integer timeLimitSeconds;
 
+    @Min(value = 0, message = "Điểm tối thiểu 0")
+    @Max(value = 100, message = "Điểm tối đa 100")
+    @Builder.Default
+    private java.math.BigDecimal passScore = new java.math.BigDecimal("80.00");
+
     @Min(value = 1, message = "Số lần làm bài tối thiểu 1")
     @Builder.Default
     private Integer maxAttempts = 3;

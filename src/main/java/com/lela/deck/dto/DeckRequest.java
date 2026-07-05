@@ -16,6 +16,11 @@ public class DeckRequest {
     private DeckVisibility visibility = DeckVisibility.PUBLIC; // Phạm vi hiển thị deck.
     private DeckDisplayMode displayMode; // Lựa chọn chế độ hiển thị (FRONT, BACK, RANDOM)
     
+    // Các trường Admin có thể thao tác
+    private Boolean isFeatured; // Bộ thẻ nổi bật
+    private com.lela.deck.domain.DeckStatus status; // Trạng thái kiểm duyệt
+    private String rejectionReason; // Lý do từ chối
+    private Boolean isActive; // Trạng thái hoạt động (xoá mềm)
     
     // Tạm thời nhận ownerId từ request để test vì chưa có logic đăng nhập
     private Long ownerId; 

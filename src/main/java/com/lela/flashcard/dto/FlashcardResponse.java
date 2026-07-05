@@ -51,7 +51,7 @@ public class FlashcardResponse {
         response.setBackAudioUrl(flashcard.getBackAudioUrl());
         response.setCardOrder(flashcard.getCardOrder());
         response.setCardColor(flashcard.getCardColor());
-        response.setIsActive(flashcard.getDeck().isActive());
+        response.setIsActive(flashcard.isActive());
         
         if (flashcard.getCreatedBy() != null) {
             response.setCreatedById(flashcard.getCreatedBy().getId());

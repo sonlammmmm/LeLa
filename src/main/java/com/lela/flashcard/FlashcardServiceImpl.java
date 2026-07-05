@@ -104,6 +104,7 @@ public class FlashcardServiceImpl implements FlashcardService {
         if (request.getBackAudioUrl() != null) flashcard.setBackAudioUrl(request.getBackAudioUrl());
         if (request.getCardOrder() != null) flashcard.setCardOrder(request.getCardOrder());
         if (request.getCardColor() != null) flashcard.setCardColor(request.getCardColor());
+        if (request.getIsActive() != null) flashcard.setActive(request.getIsActive());
 
         if (request.getCreatedById() != null) {
             Users updater = entityManager.getReference(Users.class, request.getCreatedById());

@@ -37,6 +37,12 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<NotificationResponse> getAllAdmin(Pageable pageable) {
+        return repository.findAll(pageable).map(this::mapToResponse);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Page<NotificationResponse> getUnread(Pageable pageable) {
         Long userId = getCurrentUserId();
         return repository.findUnreadByUserId(userId, pageable).map(this::mapToResponse);

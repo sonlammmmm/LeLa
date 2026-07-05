@@ -11,6 +11,8 @@ import com.lela.language.dto.LanguagePatchRequest;
 import com.lela.language.dto.LanguageResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ public class LanguageServiceImpl implements LanguageService {
     private final ModelMapper modelMapper;
 
     @Override
+    @Cacheable("languages")
     public List<LanguageResponse> findAll() {
         // Lấy toàn bộ danh sách ngôn ngữ và chuyển đổi sang DTO phản hồi
         return repository.findAll().stream()
@@ -38,6 +41,7 @@ public class LanguageServiceImpl implements LanguageService {
     }
 
     @Override
+    @CacheEvict(value = "languages", allEntries = true)
     public LanguageResponse create(LanguageCreateRequest request) {
         // Ánh xạ dữ liệu từ request tạo mới sang thực thể Language
         Language entity = modelMapper.map(request, Language.class);
@@ -46,6 +50,7 @@ public class LanguageServiceImpl implements LanguageService {
     }
 
     @Override
+    @CacheEvict(value = "languages", allEntries = true)
     public LanguageResponse patch(Long id, LanguagePatchRequest request) {
         // Tìm ngôn ngữ hiện tại theo ID, ném lỗi nếu không tồn tại
         Language entity = repository.findById(id)
@@ -69,6 +74,7 @@ public class LanguageServiceImpl implements LanguageService {
     }
 
     @Override
+    @CacheEvict(value = "languages", allEntries = true)
     public void deleteById(Long id) {
         // Xóa ngôn ngữ khỏi DB theo ID
         repository.deleteById(id);

@@ -18,7 +18,7 @@ public class FlashcardRequest {
     private String backAudioUrl; // Đường dẫn âm thanh mặt sau
     private Integer cardOrder; // Thứ tự thẻ trong deck
     private String cardColor; // Màu sắc thẻ
-    
+    private Boolean isActive; // Trạng thái hoạt động (xoá mềm)
     
     // Tạm thời nhận createdById từ request để test
     private Long createdById; 

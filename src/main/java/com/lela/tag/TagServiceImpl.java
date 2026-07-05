@@ -8,6 +8,8 @@ import com.lela.tag.dto.TagResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +27,7 @@ public class TagServiceImpl implements TagService {
 
     @Transactional
     @Override
+    @CacheEvict(value = "tags", allEntries = true)
     public TagResponse createTag(TagRequest request) {
         String slug = generateSlug(request.getName());
 
@@ -42,6 +45,7 @@ public class TagServiceImpl implements TagService {
 
     @Transactional
     @Override
+    @CacheEvict(value = "tags", allEntries = true)
     public TagResponse updateTag(Long id, TagRequest request) {
         Tag tag = tagRepository.findById(id)
                 .orElseThrow(() -> new NotFoundExeception("Không tìm thấy Tag với id: " + id));
@@ -68,12 +72,14 @@ public class TagServiceImpl implements TagService {
 
     @Transactional(readOnly = true)
     @Override
+    @Cacheable("tags")
     public Page<TagResponse> getAllTags(Pageable pageable) {
         return tagRepository.findAll(pageable).map(TagResponse::fromEntity);
     }
 
     @Transactional
     @Override
+    @CacheEvict(value = "tags", allEntries = true)
     public void deleteTag(Long id) {
         Tag tag = tagRepository.findById(id)
                 .orElseThrow(() -> new NotFoundExeception("Không tìm thấy Tag với id: " + id));

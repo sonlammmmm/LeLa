@@ -48,9 +48,11 @@ public class DeckServiceImpl implements DeckService {
         if (request.getVisibility() != null) deck.setVisibility(request.getVisibility());
         if (request.getDisplayMode() != null) deck.setDisplayMode(request.getDisplayMode());
         
-        // Mặc định trạng thái khi tạo mới
-        deck.setStatus(DeckStatus.DRAFT);
-        deck.setIsFeatured(false);
+        // Trạng thái mặc định hoặc từ request (dành cho Admin)
+        deck.setStatus(request.getStatus() != null ? request.getStatus() : DeckStatus.DRAFT);
+        deck.setIsFeatured(request.getIsFeatured() != null ? request.getIsFeatured() : false);
+        if (request.getRejectionReason() != null) deck.setRejectionReason(request.getRejectionReason());
+        if (request.getIsActive() != null) deck.isActive = request.getIsActive();
         deck.setTotalCards(0);
         deck.setViewCount(0L);
         deck.setEnrollmentCount(0L);
@@ -84,6 +86,12 @@ public class DeckServiceImpl implements DeckService {
         if (request.getDifficulty() != null) deck.setDifficulty(request.getDifficulty());
         if (request.getVisibility() != null) deck.setVisibility(request.getVisibility());
         if (request.getDisplayMode() != null) deck.setDisplayMode(request.getDisplayMode());
+
+        // Các trường dành cho Admin
+        if (request.getIsFeatured() != null) deck.setIsFeatured(request.getIsFeatured());
+        if (request.getStatus() != null) deck.setStatus(request.getStatus());
+        if (request.getRejectionReason() != null) deck.setRejectionReason(request.getRejectionReason());
+        if (request.getIsActive() != null) deck.isActive = request.getIsActive();
 
         if (request.getLanguageId() != null) {
             Language language = entityManager.getReference(Language.class, request.getLanguageId());

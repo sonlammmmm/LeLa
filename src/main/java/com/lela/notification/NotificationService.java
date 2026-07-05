@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface NotificationService {
     Page<NotificationResponse> getAll(Pageable pageable);
+    Page<NotificationResponse> getAllAdmin(Pageable pageable);
     Page<NotificationResponse> getUnread(Pageable pageable);
     void markAsRead(Long id);
     void markAllAsRead();

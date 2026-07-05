@@ -28,6 +28,13 @@ public class NotificationController {
         return ResponseEntity.ok(ApiResponse.success(data, MSG_FETCH_ALL_SUCCESS));
     }
 
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Page<NotificationResponse>>> getAllAdmin(Pageable pageable) {
+        Page<NotificationResponse> data = notificationService.getAllAdmin(pageable);
+        return ResponseEntity.ok(ApiResponse.success(data, MSG_FETCH_ALL_SUCCESS));
+    }
+
     @GetMapping("/unread")
     public ResponseEntity<ApiResponse<Page<NotificationResponse>>> getUnread(Pageable pageable) {
         Page<NotificationResponse> data = notificationService.getUnread(pageable);
