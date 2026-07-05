@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -65,7 +65,7 @@ public class UserSubscriptionControllerTest {
         
         Mockito.when(userSubscriptionService.getAll(any(Pageable.class))).thenReturn(page);
 
-        mockMvc.perform(get("/usersubscriptions")
+        mockMvc.perform(get("/user-subscriptions")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.content[0].id").value(1L))
@@ -76,7 +76,7 @@ public class UserSubscriptionControllerTest {
     void getById_Success() throws Exception {
         Mockito.when(userSubscriptionService.getById(1L)).thenReturn(userSubscriptionResponse);
 
-        mockMvc.perform(get("/usersubscriptions/1")
+        mockMvc.perform(get("/user-subscriptions/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.id").value(1L));
@@ -97,7 +97,7 @@ public class UserSubscriptionControllerTest {
 
         Mockito.when(userSubscriptionService.create(any(UserSubscriptionRequest.class))).thenReturn(createdResponse);
 
-        mockMvc.perform(post("/usersubscriptions")
+        mockMvc.perform(post("/user-subscriptions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk()) // Controller doesn't use ResponseEntity to set 201
@@ -119,7 +119,7 @@ public class UserSubscriptionControllerTest {
 
         Mockito.when(userSubscriptionService.update(eq(1L), any(UserSubscriptionRequest.class))).thenReturn(updatedResponse);
 
-        mockMvc.perform(put("/usersubscriptions/1")
+        mockMvc.perform(patch("/user-subscriptions/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -131,7 +131,7 @@ public class UserSubscriptionControllerTest {
     void delete_Success() throws Exception {
         Mockito.doNothing().when(userSubscriptionService).delete(1L);
 
-        mockMvc.perform(delete("/usersubscriptions/1")
+        mockMvc.perform(delete("/user-subscriptions/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Deleted"));

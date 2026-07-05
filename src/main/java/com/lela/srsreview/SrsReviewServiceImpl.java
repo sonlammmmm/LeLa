@@ -27,7 +27,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -124,10 +123,14 @@ public class SrsReviewServiceImpl implements SrsReviewService {
             }
         }
 
-        if (request.getEaseAfter() != null) progress.setEaseFactor(request.getEaseAfter());
-        if (request.getIntervalAfter() != null) progress.setIntervalDays(request.getIntervalAfter());
-        if (request.getDueAfter() != null) progress.setDueAt(request.getDueAfter());
-        if (request.getAlgorithmVersion() != null) progress.setAlgorithmVersion(request.getAlgorithmVersion());
+        if (request.getEaseAfter() != null)
+            progress.setEaseFactor(request.getEaseAfter());
+        if (request.getIntervalAfter() != null)
+            progress.setIntervalDays(request.getIntervalAfter());
+        if (request.getDueAfter() != null)
+            progress.setDueAt(request.getDueAfter());
+        if (request.getAlgorithmVersion() != null)
+            progress.setAlgorithmVersion(request.getAlgorithmVersion());
 
         progress.setLastReviewedAt(now);
         progress.setLastRating(request.getRating());
@@ -136,8 +139,14 @@ public class SrsReviewServiceImpl implements SrsReviewService {
         switch (request.getRating()) {
             case 1 -> progress.setAgainCount(progress.getAgainCount() + 1);
             case 2 -> progress.setHardCount(progress.getHardCount() + 1);
-            case 3 -> { progress.setGoodCount(progress.getGoodCount() + 1); progress.setCorrectCount(progress.getCorrectCount() + 1); }
-            case 4 -> { progress.setEasyCount(progress.getEasyCount() + 1); progress.setCorrectCount(progress.getCorrectCount() + 1); }
+            case 3 -> {
+                progress.setGoodCount(progress.getGoodCount() + 1);
+                progress.setCorrectCount(progress.getCorrectCount() + 1);
+            }
+            case 4 -> {
+                progress.setEasyCount(progress.getEasyCount() + 1);
+                progress.setCorrectCount(progress.getCorrectCount() + 1);
+            }
         }
 
         cardProgressRepository.save(progress);
@@ -150,9 +159,12 @@ public class SrsReviewServiceImpl implements SrsReviewService {
 
         return srsReviewRepository.findAllByUserId(targetUserId, pageable).map(r -> {
             SrsReviewResponse resp = modelMapper.map(r, SrsReviewResponse.class);
-            if (r.getReviewSession() != null) resp.setReviewSessionId(r.getReviewSession().getId());
-            if (r.getUser() != null) resp.setUserId(r.getUser().getId());
-            if (r.getCard() != null) resp.setCardId(r.getCard().getId());
+            if (r.getReviewSession() != null)
+                resp.setReviewSessionId(r.getReviewSession().getId());
+            if (r.getUser() != null)
+                resp.setUserId(r.getUser().getId());
+            if (r.getCard() != null)
+                resp.setCardId(r.getCard().getId());
             return resp;
         });
     }

@@ -14,7 +14,7 @@ import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/quizs")
+@RequestMapping("/quizzes")
 
 public class QuizController {
     private final QuizService quizService;
@@ -37,7 +37,7 @@ public class QuizController {
 
 
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<QuizResponse>> update(@PathVariable Long id,@Valid @RequestBody QuizRequest req) {
         return ResponseEntity.ok(ApiResponse.success(quizService.update(id, req)));

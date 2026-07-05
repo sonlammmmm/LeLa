@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -64,7 +64,7 @@ public class QuizControllerTest {
 
         Mockito.when(quizService.findAll(any(Pageable.class))).thenReturn(page);
 
-        mockMvc.perform(get("/quizs")
+        mockMvc.perform(get("/quizzes")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.content[0].id").value(1L));
@@ -74,7 +74,7 @@ public class QuizControllerTest {
     void findById_Success() throws Exception {
         Mockito.when(quizService.findById(1L)).thenReturn(quizResponse);
 
-        mockMvc.perform(get("/quizs/1")
+        mockMvc.perform(get("/quizzes/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.id").value(1L));
@@ -90,7 +90,7 @@ public class QuizControllerTest {
 
         Mockito.when(quizService.create(any(QuizRequest.class))).thenReturn(quizResponse);
 
-        mockMvc.perform(post("/quizs")
+        mockMvc.perform(post("/quizzes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -111,7 +111,7 @@ public class QuizControllerTest {
 
         Mockito.when(quizService.update(eq(1L), any(QuizRequest.class))).thenReturn(updatedResponse);
 
-        mockMvc.perform(put("/quizs/1")
+        mockMvc.perform(patch("/quizzes/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -122,7 +122,7 @@ public class QuizControllerTest {
     void delete_Success() throws Exception {
         Mockito.doNothing().when(quizService).delete(1L);
 
-        mockMvc.perform(delete("/quizs/1")
+        mockMvc.perform(delete("/quizzes/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Deleted successfully"));

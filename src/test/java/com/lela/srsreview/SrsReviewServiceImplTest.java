@@ -28,7 +28,6 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -79,6 +78,16 @@ public class SrsReviewServiceImplTest {
         entity.setUser(user);
         entity.setCard(card);
         entity.setReviewSession(session);
+
+        org.springframework.security.core.context.SecurityContext securityContext = org.mockito.Mockito
+                .mock(org.springframework.security.core.context.SecurityContext.class);
+        org.springframework.security.core.Authentication authentication = org.mockito.Mockito
+                .mock(org.springframework.security.core.Authentication.class);
+        org.mockito.Mockito.lenient().when(securityContext.getAuthentication()).thenReturn(authentication);
+        org.mockito.Mockito.lenient().when(authentication.getName()).thenReturn("testuser");
+        org.springframework.security.core.context.SecurityContextHolder.setContext(securityContext);
+        org.mockito.Mockito.lenient().when(usersRepository.findByUsername(org.mockito.ArgumentMatchers.anyString()))
+                .thenReturn(Optional.of(user));
     }
 
     @Test
@@ -102,17 +111,16 @@ public class SrsReviewServiceImplTest {
 
         when(srsReviewRepository.existsByClientEventId("evt123")).thenReturn(false);
         when(reviewSessionRepository.findById(1L)).thenReturn(Optional.of(session));
-        when(usersRepository.findById(1L)).thenReturn(Optional.of(user));
         when(flashcardRepository.findById(1L)).thenReturn(Optional.of(card));
 
         CardProgress progress = new CardProgress();
         progress.setTotalReviews(0);
         progress.setEasyCount(0);
         progress.setCorrectCount(0);
-        
+
         when(cardProgressRepository.findByUserIdAndCardId(1L, 1L)).thenReturn(Optional.of(progress));
         when(srsReviewRepository.save(any(SrsReview.class))).thenReturn(entity);
-        
+
         SrsReviewResponse response = new SrsReviewResponse();
         when(modelMapper.map(any(SrsReview.class), eq(SrsReviewResponse.class))).thenReturn(response);
 
@@ -130,8 +138,8 @@ public class SrsReviewServiceImplTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<SrsReview> page = new PageImpl<>(Arrays.asList(entity));
 
-        when(srsReviewRepository.findAll(pageable)).thenReturn(page);
-        
+        when(srsReviewRepository.findAllByUserId(1L, pageable)).thenReturn(page);
+
         SrsReviewResponse response = new SrsReviewResponse();
         when(modelMapper.map(entity, SrsReviewResponse.class)).thenReturn(response);
 
@@ -141,12 +149,12 @@ public class SrsReviewServiceImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void getReviewStatistics_Success() {
-        when(srsReviewRepository.countReviewsInPeriod(eq(1L), any(LocalDateTime.class), any(LocalDateTime.class))).thenReturn(5L).thenReturn(20L);
-        
-        Map<String, Long> result = (Map<String, Long>) service.getReviewStatistics(1L);
-        
-        assertEquals(5L, result.get("todayReviews"));
+        when(srsReviewRepository.countReviewsInPeriod(eq(1L), any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(5L).thenReturn(20L);
+
+        com.lela.srsreview.dto.ReviewStatsResponse result = service.getReviewStatistics(1L);
+
+        assertEquals(5L, result.getTodayReviews());
     }
 }

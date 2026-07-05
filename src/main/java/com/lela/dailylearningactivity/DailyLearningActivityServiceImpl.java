@@ -80,6 +80,16 @@ public class DailyLearningActivityServiceImpl implements DailyLearningActivitySe
                 });
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public java.util.List<DailyLearningActivityResponse> getHistory(LocalDate startDate, LocalDate endDate) {
+        Long userId = getCurrentUserId();
+        return repository.findByUserIdAndActivityDateBetween(userId, startDate, endDate)
+                .stream()
+                .map(this::mapToResponse)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
     private DailyLearningActivityResponse mapToResponse(DailyLearningActivity entity) {
         DailyLearningActivityResponse response = modelMapper.map(entity, DailyLearningActivityResponse.class);
         if (entity.getUser() != null) {

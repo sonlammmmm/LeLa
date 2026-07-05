@@ -24,21 +24,21 @@ public class TagController {
     public ResponseEntity<ApiResponse<TagResponse>> createTag(@Valid @RequestBody TagRequest request) {
         TagResponse response = tagService.createTag(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(response, "Tạo Tag thành công"));
+                .body(ApiResponse.success(response, "Táº¡o Tag thÃ nh cÃ´ng"));
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<TagResponse>> updateTag(
             @PathVariable Long id,
             @Valid @RequestBody TagRequest request) {
         TagResponse response = tagService.updateTag(id, request);
-        return ResponseEntity.ok(ApiResponse.success(response, "Cập nhật Tag thành công"));
+        return ResponseEntity.ok(ApiResponse.success(response, "Cáº­p nháº­t Tag thÃ nh cÃ´ng"));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<TagResponse>> getTagById(@PathVariable Long id) {
         TagResponse response = tagService.getTagById(id);
-        return ResponseEntity.ok(ApiResponse.success(response, "Lấy thông tin Tag thành công"));
+        return ResponseEntity.ok(ApiResponse.success(response, "Láº¥y thÃ´ng tin Tag thÃ nh cÃ´ng"));
     }
 
     @GetMapping
@@ -52,12 +52,12 @@ public class TagController {
         Pageable pageable = PageRequest.of(page, size, sort);
         
         Page<TagResponse> response = tagService.getAllTags(pageable);
-        return ResponseEntity.ok(ApiResponse.success(response, "Lấy danh sách Tag thành công"));
+        return ResponseEntity.ok(ApiResponse.success(response, "Láº¥y danh sÃ¡ch Tag thÃ nh cÃ´ng"));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteTag(@PathVariable Long id) {
         tagService.deleteTag(id);
-        return ResponseEntity.ok(ApiResponse.success(null, "Xóa Tag thành công"));
+        return ResponseEntity.ok(ApiResponse.success(null, "XÃ³a Tag thÃ nh cÃ´ng"));
     }
 }

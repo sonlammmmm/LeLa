@@ -38,7 +38,7 @@ public class QuizAnswerController {
         return ResponseEntity.ok(ApiResponse.success(service.create(req)));
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<QuizAnswerResponse>> update(@PathVariable Long id, @Valid @RequestBody QuizAnswerRequest req) {
         return ResponseEntity.ok(ApiResponse.success(service.update(id, req)));

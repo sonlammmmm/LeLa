@@ -28,4 +28,12 @@ public class DailyLearningActivityController {
         DailyLearningActivityResponse response = service.getTodayActivity();
         return ResponseEntity.ok(ApiResponse.success(response, MSG_FETCH_SUCCESS));
     }
+
+    @GetMapping("/history")
+    public ResponseEntity<ApiResponse<java.util.List<DailyLearningActivityResponse>>> getHistory(
+            @RequestParam("startDate") @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate startDate,
+            @RequestParam("endDate") @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate endDate) {
+        java.util.List<DailyLearningActivityResponse> data = service.getHistory(startDate, endDate);
+        return ResponseEntity.ok(ApiResponse.success(data, "Tải lịch sử học tập thành công."));
+    }
 }

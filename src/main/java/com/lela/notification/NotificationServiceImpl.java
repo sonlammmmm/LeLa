@@ -60,6 +60,22 @@ public class NotificationServiceImpl implements NotificationService {
         repository.markAllAllAsReadByUserId(userId, LocalDateTime.now());
     }
 
+    @Override
+    @Transactional
+    public void deleteNotification(Long id) {
+        Long userId = getCurrentUserId();
+        Notification notification = repository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new NotFoundExeception("Không tìm thấy thông tin thông báo hoặc bạn không có quyền sở hữu."));
+        repository.delete(notification);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllNotifications() {
+        Long userId = getCurrentUserId();
+        repository.deleteAllByUserId(userId);
+    }
+
     private NotificationResponse mapToResponse(Notification entity) {
         if (entity == null) return null;
 

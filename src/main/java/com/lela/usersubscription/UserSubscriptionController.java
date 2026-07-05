@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/usersubscriptions")
+@RequestMapping("/user-subscriptions")
 @RequiredArgsConstructor
 public class UserSubscriptionController {
 
@@ -30,7 +30,7 @@ public class UserSubscriptionController {
         return ApiResponse.success(service.create(request), "Created");
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ApiResponse<UserSubscriptionResponse> update(@PathVariable Long id, @RequestBody UserSubscriptionRequest request) {
         return ApiResponse.success(service.update(id, request), "Updated");
     }

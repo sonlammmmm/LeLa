@@ -13,5 +13,8 @@ import java.util.Optional;
 public interface DailyLearningActivityRepository extends JpaRepository<DailyLearningActivity, Long> {
     @Query("SELECT dla FROM DailyLearningActivity dla WHERE dla.user.id = :userId AND dla.activityDate = :activityDate")
     Optional<DailyLearningActivity> findByUserIdAndActivityDate(@Param("userId") Long userId, @Param("activityDate") LocalDate activityDate);
+
+    @Query("SELECT dla FROM DailyLearningActivity dla WHERE dla.user.id = :userId AND dla.activityDate >= :startDate AND dla.activityDate <= :endDate ORDER BY dla.activityDate ASC")
+    java.util.List<DailyLearningActivity> findByUserIdAndActivityDateBetween(@Param("userId") Long userId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }
 

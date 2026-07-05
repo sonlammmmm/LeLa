@@ -9,4 +9,6 @@ public interface NotificationService {
     Page<NotificationResponse> getUnread(Pageable pageable);
     void markAsRead(Long id);
     void markAllAsRead();
+    void deleteNotification(Long id);
+    void deleteAllNotifications();
 }

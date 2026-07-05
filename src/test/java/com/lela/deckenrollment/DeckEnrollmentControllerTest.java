@@ -65,7 +65,7 @@ public class DeckEnrollmentControllerTest {
 
         Mockito.when(deckEnrollmentService.enrollDeck(any(DeckEnrollmentRequest.class))).thenReturn(deckEnrollmentResponse);
 
-        mockMvc.perform(post("/enrollments/enroll")
+        mockMvc.perform(post("/enrollments/decks/1/enroll")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -84,7 +84,7 @@ public class DeckEnrollmentControllerTest {
 
         Mockito.when(deckEnrollmentService.updateStatus(any(DeckEnrollmentRequest.class))).thenReturn(updatedResponse);
 
-        mockMvc.perform(patch("/enrollments/status")
+        mockMvc.perform(patch("/enrollments/decks/1/status")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())

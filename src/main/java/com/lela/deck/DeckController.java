@@ -22,7 +22,7 @@ public class DeckController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<DeckResponse> updateDeck(@PathVariable Long id, @RequestBody DeckRequest request) {
         DeckResponse response = deckService.updateDeck(id, request);
         return ResponseEntity.ok(response);

@@ -46,6 +46,9 @@ public class ReviewSessionServiceImplTest {
     private ReviewSessionRepository sessionRepository;
 
     @Mock
+    private com.lela.users.UsersRepository usersRepository;
+
+    @Mock
     private SrsReviewRepository srsReviewRepository;
 
     @Mock
@@ -67,11 +70,12 @@ public class ReviewSessionServiceImplTest {
         SecurityContext securityContext = mock(SecurityContext.class);
         Authentication authentication = mock(Authentication.class);
         Mockito.lenient().when(securityContext.getAuthentication()).thenReturn(authentication);
-        Mockito.lenient().when(authentication.getName()).thenReturn("1");
+        Mockito.lenient().when(authentication.getName()).thenReturn("testuser");
         SecurityContextHolder.setContext(securityContext);
 
         Users user = new Users();
         user.setId(1L);
+        Mockito.lenient().when(usersRepository.findByUsername(org.mockito.ArgumentMatchers.anyString())).thenReturn(Optional.of(user));
 
         session = new ReviewSession();
         session.setId(1L);
@@ -111,6 +115,9 @@ public class ReviewSessionServiceImplTest {
         event.setClientReviewedAt(LocalDateTime.now());
         
         request.setEvents(Collections.singletonList(event));
+        
+        com.lela.srsreview.dto.SrsReviewRequest srsRequest = new com.lela.srsreview.dto.SrsReviewRequest();
+        when(modelMapper.map(any(ReviewEventDto.class), eq(com.lela.srsreview.dto.SrsReviewRequest.class))).thenReturn(srsRequest);
         
         when(sessionRepository.findByPublicId("session-123")).thenReturn(Optional.of(session));
         when(srsReviewRepository.existsByClientEventId("evt123")).thenReturn(false);

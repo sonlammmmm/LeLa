@@ -38,6 +38,9 @@ public class DailyLearningActivityServiceImplTest {
     private EntityManager entityManager;
 
     @Mock
+    private com.lela.users.UsersRepository usersRepository;
+
+    @Mock
     private ModelMapper modelMapper;
 
     @InjectMocks
@@ -50,12 +53,13 @@ public class DailyLearningActivityServiceImplTest {
     void setUp() {
         SecurityContext securityContext = mock(SecurityContext.class);
         Authentication authentication = mock(Authentication.class);
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        Mockito.lenient().when(authentication.getName()).thenReturn("1");
+        Mockito.lenient().when(securityContext.getAuthentication()).thenReturn(authentication);
+        Mockito.lenient().when(authentication.getName()).thenReturn("testuser");
         SecurityContextHolder.setContext(securityContext);
 
         Users user = new Users();
         user.setId(1L);
+        Mockito.lenient().when(usersRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
 
         entity = new DailyLearningActivity();
         entity.setId(1L);

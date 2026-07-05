@@ -21,14 +21,17 @@ public class DeckEnrollmentController {
     private static final String MSG_FETCH_LIST_SUCCESS = "Tải danh sách đăng ký học thành công.";
     private static final String MSG_FETCH_REVIEW_SUCCESS = "Tải danh sách lịch hẹn ôn tập hôm nay thành công.";
 
-    @PostMapping(value = "/enroll")
-    public ResponseEntity<ApiResponse<DeckEnrollmentResponse>> enrollDeck(@RequestBody DeckEnrollmentRequest request) {
+    @PostMapping(value = "/decks/{deckId}/enroll")
+    public ResponseEntity<ApiResponse<DeckEnrollmentResponse>> enrollDeck(@PathVariable Long deckId, @RequestBody(required = false) DeckEnrollmentRequest request) {
+        if (request == null) request = new DeckEnrollmentRequest();
+        request.setDeckId(deckId);
         DeckEnrollmentResponse response = deckEnrollmentService.enrollDeck(request);
         return ResponseEntity.ok(ApiResponse.success(response, MSG_ENROLL_SUCCESS));
     }
 
-    @PatchMapping("/status")
-    public ResponseEntity<ApiResponse<DeckEnrollmentResponse>> updateStatus(@RequestBody DeckEnrollmentRequest request) {
+    @PatchMapping("/decks/{deckId}/status")
+    public ResponseEntity<ApiResponse<DeckEnrollmentResponse>> updateStatus(@PathVariable Long deckId, @RequestBody DeckEnrollmentRequest request) {
+        request.setDeckId(deckId);
         DeckEnrollmentResponse response = deckEnrollmentService.updateStatus(request);
         return ResponseEntity.ok(ApiResponse.success(response, MSG_UPDATE_SUCCESS));
     }

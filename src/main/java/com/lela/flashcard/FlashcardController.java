@@ -22,7 +22,7 @@ public class FlashcardController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<FlashcardResponse> updateFlashcard(@PathVariable Long id, @RequestBody FlashcardRequest request) {
         FlashcardResponse response = flashcardService.updateFlashcard(id, request);
         return ResponseEntity.ok(response);
