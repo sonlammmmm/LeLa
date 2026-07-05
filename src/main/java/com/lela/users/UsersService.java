@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface UsersService {
     // Lấy danh sách toàn bộ người dùng có phân trang.
-    Page<UsersResponse> findAll(Pageable pageable);
+    Page<UsersResponse> findAll(String search, String role, Pageable pageable);
 
     // Tìm kiếm người dùng theo ID.
     Optional<UsersResponse> findById(Long id);

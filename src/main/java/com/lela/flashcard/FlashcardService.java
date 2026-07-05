@@ -4,6 +4,7 @@ import com.lela.flashcard.dto.FlashcardRequest;
 import com.lela.flashcard.dto.FlashcardResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import java.util.List;
 
 public interface FlashcardService {
     
@@ -18,4 +19,6 @@ public interface FlashcardService {
     Page<FlashcardResponse> getFlashcardsByTag(Long tagId, Pageable pageable);
     
     void deleteFlashcard(Long id);
+    
+    List<FlashcardResponse> bulkCreateFlashcards(List<FlashcardRequest> requests);
 }

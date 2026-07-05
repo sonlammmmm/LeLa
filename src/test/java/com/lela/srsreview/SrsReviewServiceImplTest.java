@@ -56,6 +56,9 @@ public class SrsReviewServiceImplTest {
     @Mock
     private ModelMapper modelMapper;
 
+    @Mock
+    private com.lela.dailylearningactivity.DailyLearningActivityService dailyLearningActivityService;
+
     @InjectMocks
     private SrsReviewServiceImpl service;
 
@@ -110,6 +113,7 @@ public class SrsReviewServiceImplTest {
 
         when(srsReviewRepository.existsByClientEventId("evt123")).thenReturn(false);
         when(reviewSessionRepository.findById(1L)).thenReturn(Optional.of(session));
+        when(usersRepository.findById(1L)).thenReturn(Optional.of(user));
         when(flashcardRepository.findById(1L)).thenReturn(Optional.of(card));
 
         CardProgress progress = new CardProgress();
@@ -118,6 +122,7 @@ public class SrsReviewServiceImplTest {
         progress.setCorrectCount(0);
 
         when(cardProgressRepository.findByUserIdAndCardId(1L, 1L)).thenReturn(Optional.of(progress));
+        when(cardProgressRepository.save(any(CardProgress.class))).thenReturn(progress);
         when(srsReviewRepository.save(any(SrsReview.class))).thenReturn(entity);
 
         SrsReviewResponse response = new SrsReviewResponse();

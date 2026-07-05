@@ -1,6 +1,7 @@
 package com.lela.deck.dto;
 
 import com.lela.deck.domain.DeckDifficulty;
+import com.lela.deck.domain.DeckDisplayMode;
 import com.lela.deck.domain.DeckVisibility;
 import lombok.Data;
 
@@ -13,6 +14,8 @@ public class DeckRequest {
     private String category; // Nhóm chủ đề của deck.
     private DeckDifficulty difficulty = DeckDifficulty.BEGINNER; // Độ khó của deck.
     private DeckVisibility visibility = DeckVisibility.PUBLIC; // Phạm vi hiển thị deck.
+    private DeckDisplayMode displayMode; // Lựa chọn chế độ hiển thị (FRONT, BACK, RANDOM)
+    
     
     // Tạm thời nhận ownerId từ request để test vì chưa có logic đăng nhập
     private Long ownerId; 

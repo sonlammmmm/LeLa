@@ -70,6 +70,10 @@ public class Deck extends AuditableEntity {
     @Column(name = "total_cards", nullable = false)
     private Integer totalCards = 0; // Tổng số flashcard trong deck.
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "display_mode", nullable = false, length = 20)
+    private DeckDisplayMode displayMode = DeckDisplayMode.RANDOM; // Chế độ hiển thị thẻ (FRONT, BACK, RANDOM)
+
     @Column(name = "view_count", nullable = false)
     private Long viewCount = 0L; // Tổng số lượt xem deck.
 

@@ -7,7 +7,6 @@ import com.lela.users.dto.UsersCreateRequest;
 import com.lela.users.dto.UsersPatchRequest;
 import com.lela.users.dto.UsersResponse;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,13 +31,16 @@ public class UsersController {
 
     // API lấy danh sách toàn bộ người dùng.
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<UsersResponse>>> findAll(Pageable pageable) {
-        return ResponseEntity.ok(ApiResponse.success(service.findAll(pageable), "Lấy danh sách thành công"));
+    public ResponseEntity<ApiResponse<Page<UsersResponse>>> findAll(
+            @org.springframework.web.bind.annotation.RequestParam(value = "search", required = false) String search,
+            @org.springframework.web.bind.annotation.RequestParam(value = "role", required = false) String role,
+            Pageable pageable) {
+        return ResponseEntity.ok(ApiResponse.success(service.findAll(search, role, pageable), "Lấy danh sách thành công"));
     }
 
     // API tìm kiếm người dùng theo ID.
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<UsersResponse>> findById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<UsersResponse>> findById(@PathVariable("id") Long id) {
         return service.findById(id)
                 .map(response -> ResponseEntity.ok(ApiResponse.success(response, "Tìm thấy người dùng")))
                 .orElse(ResponseEntity.notFound().build());
@@ -53,13 +55,13 @@ public class UsersController {
 
     // API cập nhật một phần thông tin người dùng (PATCH).
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResponse<UsersResponse>> patch(@PathVariable Long id, @Valid @RequestBody UsersPatchRequest request) {
+    public ResponseEntity<ApiResponse<UsersResponse>> patch(@PathVariable("id") Long id, @Valid @RequestBody UsersPatchRequest request) {
         return ResponseEntity.ok(ApiResponse.success(service.patch(id, request), "Cập nhật thành công"));
     }
 
     // API xóa người dùng theo ID.
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteById(@PathVariable("id") Long id) {
         service.deleteById(id);
         return ResponseEntity.ok(ApiResponse.successMessage("Xóa thành công"));
     }

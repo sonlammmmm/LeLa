@@ -17,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -63,7 +62,7 @@ public class UsersControllerTest {
     @Test
     void findAll_Success() throws Exception {
         Page<UsersResponse> page = new PageImpl<>(Arrays.asList(usersResponse));
-        Mockito.when(usersService.findAll(any(Pageable.class))).thenReturn(page);
+        Mockito.when(usersService.findAll(any(), any(), any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/users")
                 .contentType(MediaType.APPLICATION_JSON))

@@ -18,7 +18,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -68,16 +67,16 @@ public class UsersServiceImplTest {
     void findAll_Success() {
         // Arrange
         Page<Users> page = new PageImpl<>(Arrays.asList(userEntity));
-        when(repository.findAll(any(Pageable.class))).thenReturn(page);
+        when(repository.searchUsers(any(), any(), any(Pageable.class))).thenReturn(page);
         when(modelMapper.map(userEntity, UsersResponse.class)).thenReturn(userResponse);
 
         // Act
-        Page<UsersResponse> result = usersService.findAll(PageRequest.of(0, 10));
+        Page<UsersResponse> result = usersService.findAll(null, null, PageRequest.of(0, 10));
 
         // Assert
         assertEquals(1, result.getContent().size());
         assertEquals(1L, result.getContent().get(0).getId());
-        verify(repository).findAll(any(Pageable.class));
+        verify(repository).searchUsers(any(), any(), any(Pageable.class));
     }
 
     @Test

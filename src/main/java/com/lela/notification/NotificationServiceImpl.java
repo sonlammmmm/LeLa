@@ -22,7 +22,10 @@ public class NotificationServiceImpl implements NotificationService {
     private final ModelMapper modelMapper;
 
     private Long getCurrentUserId() {
-        return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return usersRepository.findByUsername(username)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.UNAUTHORIZED, "User không tồn tại"))
+                .getId();
     }
 
     @Override

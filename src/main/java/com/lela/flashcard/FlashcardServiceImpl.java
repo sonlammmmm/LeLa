@@ -43,6 +43,7 @@ public class FlashcardServiceImpl implements FlashcardService {
         flashcard.setBackImageUrl(request.getBackImageUrl());
         flashcard.setFrontAudioUrl(request.getFrontAudioUrl());
         flashcard.setBackAudioUrl(request.getBackAudioUrl());
+        flashcard.setCardColor(request.getCardColor());
         
         if (request.getCardOrder() != null) {
             flashcard.setCardOrder(request.getCardOrder());
@@ -102,6 +103,7 @@ public class FlashcardServiceImpl implements FlashcardService {
         if (request.getFrontAudioUrl() != null) flashcard.setFrontAudioUrl(request.getFrontAudioUrl());
         if (request.getBackAudioUrl() != null) flashcard.setBackAudioUrl(request.getBackAudioUrl());
         if (request.getCardOrder() != null) flashcard.setCardOrder(request.getCardOrder());
+        if (request.getCardColor() != null) flashcard.setCardColor(request.getCardColor());
 
         if (request.getCreatedById() != null) {
             Users updater = entityManager.getReference(Users.class, request.getCreatedById());
@@ -184,5 +186,15 @@ public class FlashcardServiceImpl implements FlashcardService {
         flashcard.setActive(false);
         flashcard.setDeletedAt(LocalDateTime.now());
         flashcardRepository.save(flashcard);
+    }
+
+    @Transactional
+    @Override
+    public List<FlashcardResponse> bulkCreateFlashcards(List<FlashcardRequest> requests) {
+        List<FlashcardResponse> responses = new ArrayList<>();
+        for (FlashcardRequest request : requests) {
+            responses.add(createFlashcard(request));
+        }
+        return responses;
     }
 }

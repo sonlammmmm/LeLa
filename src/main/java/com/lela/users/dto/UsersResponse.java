@@ -13,6 +13,7 @@ public class UsersResponse {
     private String email;
     private String fullName;
     private String avatarUrl;
+    private java.util.Set<String> roles;
     private LanguageResponse nativeLanguage;
     private LanguageResponse targetLanguage;
     private UserStatus status;

@@ -22,6 +22,12 @@ public class FlashcardController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @PostMapping("/bulk")
+    public ResponseEntity<java.util.List<FlashcardResponse>> bulkCreateFlashcards(@RequestBody java.util.List<FlashcardRequest> requests) {
+        java.util.List<FlashcardResponse> responses = flashcardService.bulkCreateFlashcards(requests);
+        return new ResponseEntity<>(responses, HttpStatus.CREATED);
+    }
+
     @PatchMapping("/{id}")
     public ResponseEntity<FlashcardResponse> updateFlashcard(@PathVariable Long id, @RequestBody FlashcardRequest request) {
         FlashcardResponse response = flashcardService.updateFlashcard(id, request);

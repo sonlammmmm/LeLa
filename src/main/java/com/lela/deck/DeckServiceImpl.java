@@ -46,6 +46,7 @@ public class DeckServiceImpl implements DeckService {
         
         if (request.getDifficulty() != null) deck.setDifficulty(request.getDifficulty());
         if (request.getVisibility() != null) deck.setVisibility(request.getVisibility());
+        if (request.getDisplayMode() != null) deck.setDisplayMode(request.getDisplayMode());
         
         // Mặc định trạng thái khi tạo mới
         deck.setStatus(DeckStatus.DRAFT);
@@ -82,6 +83,7 @@ public class DeckServiceImpl implements DeckService {
         if (request.getCategory() != null) deck.setCategory(request.getCategory());
         if (request.getDifficulty() != null) deck.setDifficulty(request.getDifficulty());
         if (request.getVisibility() != null) deck.setVisibility(request.getVisibility());
+        if (request.getDisplayMode() != null) deck.setDisplayMode(request.getDisplayMode());
 
         if (request.getLanguageId() != null) {
             Language language = entityManager.getReference(Language.class, request.getLanguageId());

@@ -5,7 +5,6 @@ import com.lela.flashcard.FlashcardRepository;
 import com.lela.payment.PaymentRepository;
 import com.lela.users.UsersRepository;
 import com.lela.usersubscription.UserSubscriptionRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

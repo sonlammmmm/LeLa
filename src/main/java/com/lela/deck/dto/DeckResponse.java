@@ -2,6 +2,7 @@ package com.lela.deck.dto;
 
 import com.lela.deck.domain.Deck;
 import com.lela.deck.domain.DeckDifficulty;
+import com.lela.deck.domain.DeckDisplayMode;
 import com.lela.deck.domain.DeckStatus;
 import com.lela.deck.domain.DeckVisibility;
 import lombok.Data;
@@ -23,6 +24,7 @@ public class DeckResponse {
     private DeckVisibility visibility; // Phạm vi hiển thị deck.
     private DeckStatus status; // Trạng thái kiểm duyệt deck.
     private Boolean isFeatured; // Deck có được gắn nổi bật hay không.
+    private DeckDisplayMode displayMode; // Lựa chọn hiển thị (FRONT, BACK, RANDOM)
     private Integer totalCards; // Tổng số flashcard trong deck.
     private Long viewCount; // Tổng số lượt xem deck.
     private Long enrollmentCount; // Tổng số lượt đăng ký học deck.
@@ -58,6 +60,7 @@ public class DeckResponse {
         response.setVisibility(deck.getVisibility());
         response.setStatus(deck.getStatus());
         response.setIsFeatured(deck.getIsFeatured());
+        response.setDisplayMode(deck.getDisplayMode());
         response.setTotalCards(deck.getTotalCards());
         response.setViewCount(deck.getViewCount());
         response.setEnrollmentCount(deck.getEnrollmentCount());

@@ -26,19 +26,25 @@ public class UsersServiceImpl implements UsersService {
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 
+    private UsersResponse mapToResponse(Users entity) {
+        if (entity == null) return null;
+        UsersResponse response = modelMapper.map(entity, UsersResponse.class);
+        response.setRoles(entity.getRoleCodes());
+        return response;
+    }
+
+
     @Override
-    public Page<UsersResponse> findAll(Pageable pageable) {
-        // Lấy danh sách tất cả các thực thể người dùng từ DB và ánh xạ (map) sang danh
-        // sách DTO phản hồi
-        return repository.findAll(pageable)
-                .map(e -> modelMapper.map(e, UsersResponse.class));
+    public Page<UsersResponse> findAll(String search, String role, Pageable pageable) {
+        return repository.searchUsers(search, role, pageable)
+                .map(this::mapToResponse);
     }
 
     @Override
     public Optional<UsersResponse> findById(Long id) {
         // Tìm thực thể người dùng theo ID, nếu tồn tại thì ánh xạ sang DTO phản hồi
         return repository.findById(id)
-                .map(entity -> modelMapper.map(entity, UsersResponse.class));
+                .map(this::mapToResponse);
     }
 
     @Override
@@ -75,7 +81,7 @@ public class UsersServiceImpl implements UsersService {
         // Lưu thông tin người dùng mới vào cơ sở dữ liệu
         entity = repository.save(entity);
         // Trả về thông tin chi tiết người dùng dưới dạng DTO phản hồi
-        return modelMapper.map(entity, UsersResponse.class);
+        return mapToResponse(entity);
     }
 
     @Override
@@ -123,7 +129,7 @@ public class UsersServiceImpl implements UsersService {
         // Lưu thông tin cập nhật vào DB
         entity = repository.save(entity);
         // Trả về thông tin chi tiết của người dùng sau khi cập nhật
-        return modelMapper.map(entity, UsersResponse.class);
+        return mapToResponse(entity);
     }
 
     @Override

@@ -36,6 +36,9 @@ public class UserSubscriptionServiceImplTest {
     private UserSubscriptionRepository repository;
 
     @Mock
+    private com.lela.users.UsersRepository usersRepository;
+
+    @Mock
     private EntityManager entityManager;
 
     @Mock
@@ -52,11 +55,12 @@ public class UserSubscriptionServiceImplTest {
         SecurityContext securityContext = mock(SecurityContext.class);
         Authentication authentication = mock(Authentication.class);
         Mockito.lenient().when(securityContext.getAuthentication()).thenReturn(authentication);
-        Mockito.lenient().when(authentication.getName()).thenReturn("1");
+        Mockito.lenient().when(authentication.getName()).thenReturn("testuser");
         SecurityContextHolder.setContext(securityContext);
 
         Users user = new Users();
         user.setId(1L);
+        Mockito.lenient().when(usersRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
 
         SubscriptionPlan plan = new SubscriptionPlan();
         plan.setId(2L);

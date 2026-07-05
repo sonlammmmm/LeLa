@@ -10,6 +10,7 @@ import com.lela.flashcard.domain.Flashcard;
 import com.lela.reviewsession.ReviewSessionRepository;
 import com.lela.reviewsession.domain.ReviewSession;
 import com.lela.srsreview.domain.SrsReview;
+import com.lela.cardprogress.domain.ReviewableCardState;
 import com.lela.srsreview.dto.ReviewStatsResponse;
 import com.lela.srsreview.dto.SrsReviewRequest;
 import com.lela.srsreview.dto.SrsReviewResponse;
@@ -25,6 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -73,21 +76,23 @@ public class SrsReviewServiceImpl implements SrsReviewService {
         review.setClientEventId(request.getClientEventId());
         review.setRating(request.getRating());
         review.setResponseMs(request.getResponseMs());
+        
+        // Calculate new SRS metrics using SM-2
+        CardProgress progress = updateCardProgress(user, card, request, now);
+
         review.setPreviousState(request.getPreviousState());
-        review.setNewState(request.getNewState());
+        review.setNewState(progress.getState() == CardProgressState.NEW || progress.getState() == CardProgressState.LEARNING ? ReviewableCardState.LEARNING : ReviewableCardState.REVIEW);
         review.setEaseBefore(request.getEaseBefore());
-        review.setEaseAfter(request.getEaseAfter());
+        review.setEaseAfter(progress.getEaseFactor());
         review.setIntervalBefore(request.getIntervalBefore());
-        review.setIntervalAfter(request.getIntervalAfter());
+        review.setIntervalAfter(progress.getIntervalDays());
         review.setDueBefore(request.getDueBefore());
-        review.setDueAfter(request.getDueAfter());
-        review.setAlgorithmVersion(request.getAlgorithmVersion());
-        review.setXpAwarded(request.getXpAwarded() != null ? request.getXpAwarded() : 0);
+        review.setDueAfter(progress.getDueAt());
+        review.setAlgorithmVersion("SM2_V1");
+        review.setXpAwarded(request.getXpAwarded() != null ? request.getXpAwarded() : calculateXp(request.getRating()));
         review.setClientReviewedAt(request.getClientReviewedAt());
         review.setServerReceivedAt(now);
         review.setReviewedAt(now);
-
-        updateCardProgress(user, card, request, now);
 
         SrsReview saved = srsReviewRepository.save(review);
 
@@ -104,38 +109,72 @@ public class SrsReviewServiceImpl implements SrsReviewService {
         return response;
     }
 
-    private void updateCardProgress(Users user, Flashcard card, SrsReviewRequest request, LocalDateTime now) {
+    private int calculateXp(Integer rating) {
+        if (rating == null || rating == 1) return 2;
+        if (rating == 2) return 5;
+        if (rating == 3) return 10;
+        return 15; // EASY
+    }
+
+    private CardProgress updateCardProgress(Users user, Flashcard card, SrsReviewRequest request, LocalDateTime now) {
         CardProgress progress = cardProgressRepository
                 .findByUserIdAndCardId(user.getId(), card.getId())
                 .orElseGet(() -> {
                     CardProgress cp = new CardProgress();
                     cp.setUser(user);
                     cp.setCard(card);
+                    cp.setEaseFactor(new BigDecimal("2.50"));
+                    cp.setIntervalDays(0);
+                    cp.setRepetitions(0);
                     return cp;
                 });
 
-        if (request.getNewState() != null) {
-            try {
-                progress.setState(CardProgressState.valueOf(request.getNewState().name()));
-            } catch (IllegalArgumentException e) {
-                progress.setState(CardProgressState.REVIEW);
+        int rating = request.getRating() != null ? request.getRating() : 1; // 1: AGAIN, 2: HARD, 3: GOOD, 4: EASY
+        
+        // Map rating 1-4 to SM-2 quality 0-5
+        int q = 0;
+        if (rating == 1) q = 0;
+        else if (rating == 2) q = 2;
+        else if (rating == 3) q = 4;
+        else if (rating == 4) q = 5;
+
+        int repetitions = progress.getRepetitions() != null ? progress.getRepetitions() : 0;
+        int intervalDays = progress.getIntervalDays() != null ? progress.getIntervalDays() : 0;
+        BigDecimal easeFactor = progress.getEaseFactor() != null ? progress.getEaseFactor() : new BigDecimal("2.50");
+
+        if (q < 3) {
+            // Failed
+            repetitions = 0;
+            intervalDays = 1;
+        } else {
+            // Success
+            if (repetitions == 0) {
+                intervalDays = 1;
+            } else if (repetitions == 1) {
+                intervalDays = 6;
+            } else {
+                intervalDays = Math.round(intervalDays * easeFactor.floatValue());
             }
+            repetitions++;
         }
 
-        if (request.getEaseAfter() != null)
-            progress.setEaseFactor(request.getEaseAfter());
-        if (request.getIntervalAfter() != null)
-            progress.setIntervalDays(request.getIntervalAfter());
-        if (request.getDueAfter() != null)
-            progress.setDueAt(request.getDueAfter());
-        if (request.getAlgorithmVersion() != null)
-            progress.setAlgorithmVersion(request.getAlgorithmVersion());
+        // Calculate new Ease Factor: EF' = EF + (0.1 - (5-q)*(0.08+(5-q)*0.02))
+        float newEase = easeFactor.floatValue() + (0.1f - (5 - q) * (0.08f + (5 - q) * 0.02f));
+        if (newEase < 1.3f) newEase = 1.3f;
+        easeFactor = new BigDecimal(String.valueOf(newEase)).setScale(2, RoundingMode.HALF_UP);
+
+        progress.setEaseFactor(easeFactor);
+        progress.setIntervalDays(intervalDays);
+        progress.setRepetitions(repetitions);
+        progress.setDueAt(now.plusDays(intervalDays));
+        progress.setAlgorithmVersion("SM2_V1");
+        progress.setState(repetitions == 0 ? CardProgressState.LEARNING : CardProgressState.REVIEW);
 
         progress.setLastReviewedAt(now);
-        progress.setLastRating(request.getRating());
-        progress.setTotalReviews(progress.getTotalReviews() + 1);
+        progress.setLastRating(rating);
+        progress.setTotalReviews((progress.getTotalReviews() != null ? progress.getTotalReviews() : 0) + 1);
 
-        switch (request.getRating()) {
+        switch (rating) {
             case 1 -> progress.setAgainCount(progress.getAgainCount() + 1);
             case 2 -> progress.setHardCount(progress.getHardCount() + 1);
             case 3 -> {
@@ -148,7 +187,7 @@ public class SrsReviewServiceImpl implements SrsReviewService {
             }
         }
 
-        cardProgressRepository.save(progress);
+        return cardProgressRepository.save(progress);
     }
 
     @Override

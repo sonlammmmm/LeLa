@@ -60,6 +60,9 @@ public class Flashcard extends AuditableEntity {
     @Column(name = "card_order", nullable = false)
     private Integer cardOrder = 0; // Thứ tự thẻ trong deck.
 
+    @Column(name = "card_color", length = 50)
+    private String cardColor; // Màu sắc của thẻ (hex code hoặc tailwind class).
+
     @Column(name = "is_active", nullable = false)
     public boolean isActive = true; // Thẻ còn được sử dụng hay không.
 

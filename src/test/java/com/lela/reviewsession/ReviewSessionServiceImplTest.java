@@ -1,8 +1,6 @@
 package com.lela.reviewsession;
 
 import com.lela.cardprogress.CardProgressRepository;
-import com.lela.cardprogress.domain.CardProgress;
-import com.lela.cardprogress.domain.CardProgressState;
 import com.lela.deck.domain.Deck;
 import com.lela.reviewsession.domain.ReviewSession;
 import com.lela.reviewsession.domain.ReviewSessionStatus;
@@ -10,7 +8,6 @@ import com.lela.reviewsession.domain.ReviewSessionType;
 import com.lela.reviewsession.dto.ReviewSessionRequest;
 import com.lela.reviewsession.dto.ReviewSessionResponse;
 import com.lela.srsreview.SrsReviewRepository;
-import com.lela.srsreview.domain.SrsReview;
 import com.lela.srsreview.dto.ReviewEventDto;
 import com.lela.srsreview.dto.SyncReviewRequest;
 import com.lela.users.domain.Users;
@@ -27,7 +24,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Map;
@@ -58,6 +54,9 @@ public class ReviewSessionServiceImplTest {
 
     @Mock
     private ModelMapper modelMapper;
+
+    @Mock
+    private com.lela.srsreview.SrsReviewService srsReviewService;
 
     @InjectMocks
     private ReviewSessionServiceImpl service;
@@ -119,26 +118,15 @@ public class ReviewSessionServiceImplTest {
         when(modelMapper.map(any(ReviewEventDto.class), eq(com.lela.srsreview.dto.SrsReviewRequest.class))).thenReturn(srsRequest);
         
         when(sessionRepository.findByPublicId("session-123")).thenReturn(Optional.of(session));
-        when(srsReviewRepository.existsByClientEventId("evt123")).thenReturn(false);
         
-        CardProgress progress = new CardProgress();
-        progress.setState(CardProgressState.NEW);
-        progress.setEaseFactor(new BigDecimal("2.50"));
-        progress.setRepetitions(0);
-        progress.setTotalReviews(0);
-        progress.setAgainCount(0);
-        progress.setCorrectCount(0);
-        progress.setIntervalDays(0);
-        
-        when(cardProgressRepository.findByUserIdAndCardId(1L, 1L)).thenReturn(Optional.of(progress));
+        com.lela.srsreview.dto.SrsReviewResponse srsResponse = new com.lela.srsreview.dto.SrsReviewResponse();
+        when(srsReviewService.reviewCard(any(com.lela.srsreview.dto.SrsReviewRequest.class))).thenReturn(srsResponse);
         
         service.syncOfflineReviews(request);
         
-        verify(srsReviewRepository).save(any(SrsReview.class));
-        verify(cardProgressRepository).save(progress);
+        verify(srsReviewService).reviewCard(any(com.lela.srsreview.dto.SrsReviewRequest.class));
         verify(sessionRepository).save(session);
         assertEquals(ReviewSessionStatus.COMPLETED, session.getStatus());
-        assertEquals(1, progress.getTotalReviews());
     }
 
     @Test
