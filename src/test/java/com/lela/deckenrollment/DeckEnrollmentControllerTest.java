@@ -30,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(DeckEnrollmentController.class)
 @AutoConfigureMockMvc(addFilters = false)
-@SuppressWarnings("null")
 public class DeckEnrollmentControllerTest {
 
     @Autowired

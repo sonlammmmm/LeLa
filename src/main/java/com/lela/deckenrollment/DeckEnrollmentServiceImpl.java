@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-@SuppressWarnings("null")
 public class DeckEnrollmentServiceImpl implements DeckEnrollmentService {
 
     private final DeckEnrollmentRepository repository;

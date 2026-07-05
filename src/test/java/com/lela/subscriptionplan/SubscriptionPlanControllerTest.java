@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(SubscriptionPlanController.class)
 @AutoConfigureMockMvc(addFilters = false)
-@SuppressWarnings("null")
 public class SubscriptionPlanControllerTest {
 
     @Autowired

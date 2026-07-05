@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(QuizController.class)
 @AutoConfigureMockMvc(addFilters = false)
-@SuppressWarnings("null")
 public class QuizControllerTest {
 
     @Autowired

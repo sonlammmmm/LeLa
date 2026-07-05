@@ -34,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(AuthController.class)
 @AutoConfigureMockMvc(addFilters = false) // Disable security filters for basic unit testing
-@SuppressWarnings("null")
 public class AuthControllerTest {
 
     @Autowired

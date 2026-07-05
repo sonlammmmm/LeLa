@@ -30,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(LanguageController.class)
 @AutoConfigureMockMvc(addFilters = false)
-@SuppressWarnings("null")
 public class LanguageControllerTest {
 
     @Autowired

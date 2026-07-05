@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-@SuppressWarnings("null")
 public class UsersServiceImpl implements UsersService {
     private final UsersRepository repository;
     private final LanguageRepository languageRepository;

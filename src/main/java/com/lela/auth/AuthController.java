@@ -48,7 +48,6 @@ import java.util.UUID;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 @Tag(name = "Authentication", description = "Các API xác thực: đăng ký, đăng nhập, đăng xuất, và làm mới token")
-@SuppressWarnings("null")
 public class AuthController {
 
         private final AuthenticationManager authenticationManager;

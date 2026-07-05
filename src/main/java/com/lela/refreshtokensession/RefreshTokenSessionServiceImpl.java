@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-@SuppressWarnings("null")
 public class RefreshTokenSessionServiceImpl implements RefreshTokenSessionService {
     private final RefreshTokenSessionRepository repository;
     private final UsersRepository usersRepository;

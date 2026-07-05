@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-@SuppressWarnings("null")
 public class UserRoleAssignmentServiceImpl implements UserRoleAssignmentService {
     private final UserRoleAssignmentRepository repository;
     private final UsersRepository usersRepository;

@@ -32,7 +32,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@SuppressWarnings("null")
 public class Users extends AuditableEntity {
     // Tên đăng nhập của người dùng
     private String username;

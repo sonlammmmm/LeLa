@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-@SuppressWarnings("null")
 public class QuizServiceImpl implements QuizService {
     private final QuizRepository quizRepository;
     private final DeckRepository deckRepository;

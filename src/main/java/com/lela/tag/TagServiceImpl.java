@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
-@SuppressWarnings("null")
 public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;

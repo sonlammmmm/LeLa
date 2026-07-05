@@ -24,7 +24,7 @@ public class TagController {
     public ResponseEntity<ApiResponse<TagResponse>> createTag(@Valid @RequestBody TagRequest request) {
         TagResponse response = tagService.createTag(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(response, "Táº¡o Tag thÃ nh cÃ´ng"));
+                .body(ApiResponse.success(response, "Tạo Tag thành công"));
     }
 
     @PatchMapping("/{id}")
@@ -32,13 +32,13 @@ public class TagController {
             @PathVariable Long id,
             @Valid @RequestBody TagRequest request) {
         TagResponse response = tagService.updateTag(id, request);
-        return ResponseEntity.ok(ApiResponse.success(response, "Cáº­p nháº­t Tag thÃ nh cÃ´ng"));
+        return ResponseEntity.ok(ApiResponse.success(response, "Cập nhật Tag thành công"));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<TagResponse>> getTagById(@PathVariable Long id) {
         TagResponse response = tagService.getTagById(id);
-        return ResponseEntity.ok(ApiResponse.success(response, "Láº¥y thÃ´ng tin Tag thÃ nh cÃ´ng"));
+        return ResponseEntity.ok(ApiResponse.success(response, "Lấy thông tin Tag thành công"));
     }
 
     @GetMapping
@@ -52,12 +52,12 @@ public class TagController {
         Pageable pageable = PageRequest.of(page, size, sort);
         
         Page<TagResponse> response = tagService.getAllTags(pageable);
-        return ResponseEntity.ok(ApiResponse.success(response, "Láº¥y danh sÃ¡ch Tag thÃ nh cÃ´ng"));
+        return ResponseEntity.ok(ApiResponse.success(response, "Lấy danh sách Tag thành công"));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteTag(@PathVariable Long id) {
         tagService.deleteTag(id);
-        return ResponseEntity.ok(ApiResponse.success(null, "XÃ³a Tag thÃ nh cÃ´ng"));
+        return ResponseEntity.ok(ApiResponse.success(null, "Xóa Tag thành công"));
     }
 }
