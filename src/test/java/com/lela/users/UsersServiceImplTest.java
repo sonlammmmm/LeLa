@@ -20,6 +20,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -63,16 +67,17 @@ public class UsersServiceImplTest {
     @Test
     void findAll_Success() {
         // Arrange
-        when(repository.findAll()).thenReturn(Arrays.asList(userEntity));
+        Page<Users> page = new PageImpl<>(Arrays.asList(userEntity));
+        when(repository.findAll(any(Pageable.class))).thenReturn(page);
         when(modelMapper.map(userEntity, UsersResponse.class)).thenReturn(userResponse);
 
         // Act
-        List<UsersResponse> result = usersService.findAll();
+        Page<UsersResponse> result = usersService.findAll(PageRequest.of(0, 10));
 
         // Assert
-        assertEquals(1, result.size());
-        assertEquals(1L, result.get(0).getId());
-        verify(repository).findAll();
+        assertEquals(1, result.getContent().size());
+        assertEquals(1L, result.getContent().get(0).getId());
+        verify(repository).findAll(any(Pageable.class));
     }
 
     @Test

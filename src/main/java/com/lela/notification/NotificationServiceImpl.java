@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationRepository repository;
+    private final com.lela.users.UsersRepository usersRepository;
     private final ModelMapper modelMapper;
 
     private Long getCurrentUserId() {
@@ -74,6 +75,26 @@ public class NotificationServiceImpl implements NotificationService {
     public void deleteAllNotifications() {
         Long userId = getCurrentUserId();
         repository.deleteAllByUserId(userId);
+    }
+
+    @Override
+    @Transactional
+    public void broadcast(com.lela.notification.dto.NotificationRequest request) {
+        java.util.List<com.lela.users.domain.Users> allUsers = usersRepository.findAll();
+        java.util.List<Notification> notifications = allUsers.stream().map(user -> {
+            Notification notif = new Notification();
+            notif.setUser(user);
+            notif.setType(request.getType() != null ? request.getType() : com.lela.notification.domain.NotificationType.SYSTEM);
+            notif.setChannel(com.lela.notification.domain.NotificationChannel.IN_APP);
+            notif.setStatus(com.lela.notification.domain.NotificationStatus.SENT);
+            notif.setTitle(request.getTitle());
+            notif.setMessage(request.getMessage());
+            notif.setActionUrl(request.getActionUrl());
+            notif.setDeliveredAt(LocalDateTime.now());
+            notif.setIsRead(false);
+            return notif;
+        }).collect(java.util.stream.Collectors.toList());
+        repository.saveAll(notifications);
     }
 
     private NotificationResponse mapToResponse(Notification entity) {

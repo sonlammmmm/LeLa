@@ -3,10 +3,9 @@ package com.lela.users;
 import com.lela.common.exception.NotFoundExeception;
 import com.lela.language.domain.Language;
 import com.lela.language.LanguageRepository;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 import com.lela.users.domain.Users;
 import com.lela.users.dto.UsersCreateRequest;
 import com.lela.users.dto.UsersPatchRequest;
@@ -28,12 +27,11 @@ public class UsersServiceImpl implements UsersService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public List<UsersResponse> findAll() {
+    public Page<UsersResponse> findAll(Pageable pageable) {
         // Lấy danh sách tất cả các thực thể người dùng từ DB và ánh xạ (map) sang danh
         // sách DTO phản hồi
-        return repository.findAll().stream()
-                .map(e -> modelMapper.map(e, UsersResponse.class))
-                .collect(Collectors.toList());
+        return repository.findAll(pageable)
+                .map(e -> modelMapper.map(e, UsersResponse.class));
     }
 
     @Override

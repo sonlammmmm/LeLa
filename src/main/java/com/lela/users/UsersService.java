@@ -4,12 +4,13 @@ import com.lela.users.dto.UsersCreateRequest;
 import com.lela.users.dto.UsersPatchRequest;
 import com.lela.users.dto.UsersResponse;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public interface UsersService {
-    // Lấy danh sách toàn bộ người dùng.
-    List<UsersResponse> findAll();
+    // Lấy danh sách toàn bộ người dùng có phân trang.
+    Page<UsersResponse> findAll(Pageable pageable);
 
     // Tìm kiếm người dùng theo ID.
     Optional<UsersResponse> findById(Long id);

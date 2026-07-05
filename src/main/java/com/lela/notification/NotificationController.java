@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import com.lela.notification.dto.NotificationRequest;
 
 @RestController
 @RequestMapping("/notifications")
@@ -54,5 +56,12 @@ public class NotificationController {
     public ResponseEntity<ApiResponse<Void>> deleteAllNotifications() {
         notificationService.deleteAllNotifications();
         return ResponseEntity.ok(ApiResponse.successMessage("Xóa tất cả thông báo thành công."));
+    }
+
+    @PostMapping("/broadcast")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> broadcast(@RequestBody NotificationRequest request) {
+        notificationService.broadcast(request);
+        return ResponseEntity.ok(ApiResponse.successMessage("Gửi thông báo toàn hệ thống thành công."));
     }
 }

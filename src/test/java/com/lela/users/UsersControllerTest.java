@@ -19,6 +19,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -59,15 +62,15 @@ public class UsersControllerTest {
 
     @Test
     void findAll_Success() throws Exception {
-        List<UsersResponse> list = Arrays.asList(usersResponse);
-        Mockito.when(usersService.findAll()).thenReturn(list);
+        Page<UsersResponse> page = new PageImpl<>(Arrays.asList(usersResponse));
+        Mockito.when(usersService.findAll(any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/users")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Lấy danh sách thành công"))
-                .andExpect(jsonPath("$.data[0].id").value(1L))
-                .andExpect(jsonPath("$.data[0].username").value("testuser"));
+                .andExpect(jsonPath("$.data.content[0].id").value(1L))
+                .andExpect(jsonPath("$.data.content[0].username").value("testuser"));
     }
 
     @Test

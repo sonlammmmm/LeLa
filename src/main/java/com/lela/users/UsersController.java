@@ -1,5 +1,8 @@
 package com.lela.users;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.lela.users.dto.UsersCreateRequest;
 import com.lela.users.dto.UsersPatchRequest;
 import com.lela.users.dto.UsersResponse;
@@ -29,8 +32,8 @@ public class UsersController {
 
     // API lấy danh sách toàn bộ người dùng.
     @GetMapping
-    public ResponseEntity<ApiResponse<List<UsersResponse>>> findAll() {
-        return ResponseEntity.ok(ApiResponse.success(service.findAll(), "Lấy danh sách thành công"));
+    public ResponseEntity<ApiResponse<Page<UsersResponse>>> findAll(Pageable pageable) {
+        return ResponseEntity.ok(ApiResponse.success(service.findAll(pageable), "Lấy danh sách thành công"));
     }
 
     // API tìm kiếm người dùng theo ID.

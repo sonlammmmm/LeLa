@@ -11,4 +11,5 @@ public interface NotificationService {
     void markAllAsRead();
     void deleteNotification(Long id);
     void deleteAllNotifications();
+    void broadcast(com.lela.notification.dto.NotificationRequest request);
 }

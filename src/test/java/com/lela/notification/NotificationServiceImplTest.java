@@ -22,6 +22,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.List;
+import com.lela.notification.domain.NotificationType;
+import com.lela.notification.domain.NotificationChannel;
+import com.lela.notification.domain.NotificationStatus;
+import com.lela.notification.dto.NotificationRequest;
+import com.lela.users.UsersRepository;
+import org.mockito.ArgumentCaptor;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,6 +40,9 @@ public class NotificationServiceImplTest {
 
     @Mock
     private NotificationRepository repository;
+
+    @Mock
+    private UsersRepository usersRepository;
 
     @Mock
     private ModelMapper modelMapper;
@@ -104,5 +114,32 @@ public class NotificationServiceImplTest {
     void markAllAsRead_Success() {
         service.markAllAsRead();
         verify(repository).markAllAllAsReadByUserId(eq(1L), any(LocalDateTime.class));
+    }
+
+    @Test
+    void broadcast_Success() {
+        Users user1 = new Users();
+        user1.setId(1L);
+        Users user2 = new Users();
+        user2.setId(2L);
+        when(usersRepository.findAll()).thenReturn(Arrays.asList(user1, user2));
+
+        NotificationRequest request = new NotificationRequest();
+        request.setTitle("System Update");
+        request.setMessage("Backend is working perfectly.");
+        request.setType(NotificationType.SYSTEM);
+
+        service.broadcast(request);
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<Notification>> captor = ArgumentCaptor.forClass(List.class);
+        verify(repository).saveAll(captor.capture());
+
+        List<Notification> savedNotifications = captor.getValue();
+        assertEquals(2, savedNotifications.size());
+        assertEquals("System Update", savedNotifications.get(0).getTitle());
+        assertEquals(NotificationType.SYSTEM, savedNotifications.get(0).getType());
+        assertEquals(NotificationChannel.IN_APP, savedNotifications.get(0).getChannel());
+        assertEquals(NotificationStatus.SENT, savedNotifications.get(0).getStatus());
     }
 }
