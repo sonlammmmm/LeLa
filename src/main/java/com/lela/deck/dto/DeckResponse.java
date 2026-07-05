@@ -23,6 +23,7 @@ public class DeckResponse {
     private DeckDifficulty difficulty; // Độ khó của deck.
     private DeckVisibility visibility; // Phạm vi hiển thị deck.
     private DeckStatus status; // Trạng thái kiểm duyệt deck.
+    private Boolean isActive; // Trạng thái hoạt động (xoá mềm).
     private Boolean isFeatured; // Deck có được gắn nổi bật hay không.
     private DeckDisplayMode displayMode; // Lựa chọn hiển thị (FRONT, BACK, RANDOM)
     private Integer totalCards; // Tổng số flashcard trong deck.
@@ -59,6 +60,7 @@ public class DeckResponse {
         response.setDifficulty(deck.getDifficulty());
         response.setVisibility(deck.getVisibility());
         response.setStatus(deck.getStatus());
+        response.setIsActive(deck.isActive);
         response.setIsFeatured(deck.getIsFeatured());
         response.setDisplayMode(deck.getDisplayMode());
         response.setTotalCards(deck.getTotalCards());

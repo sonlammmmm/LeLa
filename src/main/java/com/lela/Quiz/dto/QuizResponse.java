@@ -2,7 +2,9 @@ package com.lela.Quiz.dto;
 
 
 import com.lela.Quiz.domain.QuizType;
+import com.lela.QuizQuestion.dto.QuizQuestionResponse;
 import lombok.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,4 +28,5 @@ public class QuizResponse {
     private String createdAt;
     private String updatedAt;
     private Long version;
+    private List<QuizQuestionResponse> questions;
 }

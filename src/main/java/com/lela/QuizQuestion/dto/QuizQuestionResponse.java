@@ -2,6 +2,8 @@ package com.lela.QuizQuestion.dto;
 
 import com.lela.QuizQuestion.domain.QuestionType;
 import lombok.Data;
+import java.util.List;
+import com.lela.QuizQuestionOption.dto.QuizQuestionOptionResponse;
 
 
 @Data
@@ -16,5 +18,6 @@ public class QuizQuestionResponse {
     private Integer displayOrder;
     private Boolean isActive;
     private Long version;
+    private List<QuizQuestionOptionResponse> options;
 
 }

@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 
 @Service
@@ -43,6 +44,7 @@ public class QuizServiceImpl implements QuizService {
 
 
 
+    @Transactional
     @Override
     public QuizResponse create(QuizRequest req) {
         Deck deck = deckRepository.findById(req.getDeckId())
@@ -52,6 +54,16 @@ public class QuizServiceImpl implements QuizService {
         Quiz quiz = mapper.map(req, Quiz.class);
         quiz.setDeck(deck);
         quiz.setCreatedBy(createdBy);
+        
+        if (quiz.getQuestions() != null) {
+            quiz.getQuestions().forEach(q -> {
+                q.setQuiz(quiz);
+                if (q.getOptions() != null) {
+                    q.getOptions().forEach(opt -> opt.setQuestion(q));
+                }
+            });
+        }
+        
         return mapper.map(quizRepository.save(quiz), QuizResponse.class);
     }
 
@@ -63,7 +75,15 @@ public class QuizServiceImpl implements QuizService {
                 .orElseThrow(() -> new NotFoundExeception("Quiz not found: " + id));
         Deck deck = deckRepository.findById(req.getDeckId())
                 .orElseThrow(() -> new NotFoundExeception("Deck not found: " + req.getDeckId()));
+        // Do not let ModelMapper wipe out existing questions array if we don't want to orphan them, 
+        // but for now, Quiz update might not send questions.
+        // Wait, if req.getQuestions() is empty, we don't want to wipe existing questions.
+        // We should ignore questions during normal Quiz update unless we implement full sync.
+        List<com.lela.QuizQuestion.domain.QuizQuestion> oldQuestions = existing.getQuestions();
+        req.setQuestions(null);
         mapper.map(req, existing);
+        existing.setQuestions(oldQuestions);
+        
         existing.setDeck(deck);//luu update by
         if (req.getUpdatedById() != null) {
             Users updatedBy = usersRepository.findById(req.getUpdatedById())

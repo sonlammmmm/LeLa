@@ -1,8 +1,10 @@
 package com.lela.QuizQuestion.dto;
 
 import com.lela.QuizQuestion.domain.QuestionType;
+import com.lela.QuizQuestionOption.dto.QuizQuestionOptionRequest;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import java.util.List;
 
 @Data
 public class QuizQuestionRequest {
@@ -38,4 +40,6 @@ public class QuizQuestionRequest {
     private Boolean isActive;
 
     private Long version;
+    
+    private List<QuizQuestionOptionRequest> options;
 }

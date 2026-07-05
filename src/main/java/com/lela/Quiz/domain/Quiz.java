@@ -17,6 +17,11 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import com.lela.QuizQuestion.domain.QuizQuestion;
 
 @Getter
 @Setter
@@ -77,4 +82,7 @@ public class Quiz extends AuditableEntity {
     @Version
     @Column(nullable = false)
     private Long version = 0L; // Phiên bản dùng cho optimistic locking.
+
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuizQuestion> questions = new ArrayList<>();
 }

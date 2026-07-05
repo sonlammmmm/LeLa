@@ -1,8 +1,10 @@
 package com.lela.Quiz.dto;
 
 import com.lela.Quiz.domain.QuizType;
+import com.lela.QuizQuestion.dto.QuizQuestionRequest;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -52,4 +54,6 @@ public class QuizRequest {
 
     @Builder.Default
     private Boolean isActive = true;
+
+    private List<QuizQuestionRequest> questions;
 }
