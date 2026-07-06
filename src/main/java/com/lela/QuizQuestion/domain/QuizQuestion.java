@@ -63,7 +63,7 @@ public class QuizQuestion extends AuditableEntity {
 
     @Version
     @Column(nullable = false)
-    private Long version = 0L; // Phiên bản dùng cho optimistic locking.
+    private Long version; // Phiên bản dùng cho optimistic locking.
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuizQuestionOption> options = new ArrayList<>();

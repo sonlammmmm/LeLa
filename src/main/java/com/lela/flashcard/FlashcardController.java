@@ -57,4 +57,21 @@ public class FlashcardController {
         flashcardService.deleteFlashcard(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/deck/{deckId}/reorder")
+    public ResponseEntity<?> reorderFlashcards(@PathVariable Long deckId, @RequestBody java.util.List<Long> flashcardIds) {
+        try {
+            flashcardService.reorderFlashcards(deckId, flashcardIds);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            try {
+                java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter("error.log", true));
+                pw.println("--- ERROR LOG ---");
+                e.printStackTrace(pw);
+                pw.close();
+            } catch (Exception ignored) {}
+            return ResponseEntity.status(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(java.util.Map.of("message", e.getMessage() != null ? e.getMessage() : e.toString(), "trace", java.util.Arrays.toString(e.getStackTrace())));
+        }
+    }
 }

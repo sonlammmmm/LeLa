@@ -54,8 +54,14 @@ public class GlobalException {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleUnknown(Exception ex) {
+        try {
+            java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter("global_error.log", true));
+            pw.println("--- GLOBAL ERROR ---");
+            ex.printStackTrace(pw);
+            pw.close();
+        } catch (Exception ignored) {}
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error("Internal server error" + ex.getMessage()));
+                .body(ApiResponse.error("Internal server error: " + ex.getMessage()));
     }
 
 }

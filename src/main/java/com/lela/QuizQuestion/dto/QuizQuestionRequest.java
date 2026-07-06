@@ -4,10 +4,13 @@ import com.lela.QuizQuestion.domain.QuestionType;
 import com.lela.QuizQuestionOption.dto.QuizQuestionOptionRequest;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class QuizQuestionRequest {
+    private Long id;
     @NotNull(message = "Quiz ID is required")
     private Long quizId;
 

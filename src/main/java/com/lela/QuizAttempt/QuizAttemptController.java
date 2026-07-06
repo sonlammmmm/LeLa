@@ -50,4 +50,10 @@ public class QuizAttemptController {
         quizAttemptService.delete(id);
         return ResponseEntity.ok(ApiResponse.successMessage("Deleted successfully"));
     }
+
+    @PostMapping("/{id}/submit")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<ApiResponse<QuizAttemptReponse>> submit(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(quizAttemptService.submit(id)));
+    }
 }

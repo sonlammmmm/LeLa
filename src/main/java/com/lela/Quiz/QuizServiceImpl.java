@@ -30,16 +30,22 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public Page<QuizResponse> findAll(Pageable pageable) {
         return quizRepository.findAll(pageable)
-                .map(q -> mapper.map(q, QuizResponse.class));
+                .map(q -> {
+                    QuizResponse res = mapper.map(q, QuizResponse.class);
+                    if (q.getDeck() != null) res.setDeckId(q.getDeck().getId());
+                    return res;
+                });
     }
-
 
     @Override
     public QuizResponse findById(Long id) {
         return quizRepository.findById(id)
-                .map(q-> mapper.map(q, QuizResponse.class))
+                .map(q -> {
+                    QuizResponse res = mapper.map(q, QuizResponse.class);
+                    if (q.getDeck() != null) res.setDeckId(q.getDeck().getId());
+                    return res;
+                })
                 .orElseThrow(()-> new NotFoundExeception("Quiz not found: " + id));
-
     }
 
 
@@ -64,7 +70,9 @@ public class QuizServiceImpl implements QuizService {
             });
         }
         
-        return mapper.map(quizRepository.save(quiz), QuizResponse.class);
+        QuizResponse res = mapper.map(quizRepository.save(quiz), QuizResponse.class);
+        if (quiz.getDeck() != null) res.setDeckId(quiz.getDeck().getId());
+        return res;
     }
 
 
@@ -75,14 +83,80 @@ public class QuizServiceImpl implements QuizService {
                 .orElseThrow(() -> new NotFoundExeception("Quiz not found: " + id));
         Deck deck = deckRepository.findById(req.getDeckId())
                 .orElseThrow(() -> new NotFoundExeception("Deck not found: " + req.getDeckId()));
-        // Do not let ModelMapper wipe out existing questions array if we don't want to orphan them, 
-        // but for now, Quiz update might not send questions.
-        // Wait, if req.getQuestions() is empty, we don't want to wipe existing questions.
-        // We should ignore questions during normal Quiz update unless we implement full sync.
-        List<com.lela.QuizQuestion.domain.QuizQuestion> oldQuestions = existing.getQuestions();
-        req.setQuestions(null);
-        mapper.map(req, existing);
-        existing.setQuestions(oldQuestions);
+        // Manual mapping for Questions to prevent JPA transient/detached object errors
+        if (req.getQuestions() != null) {
+            List<com.lela.QuizQuestion.dto.QuizQuestionRequest> incomingQuestions = req.getQuestions();
+            
+            // Remove questions that are not in incoming list
+            existing.getQuestions().removeIf(q -> incomingQuestions.stream()
+                    .noneMatch(inc -> inc.getId() != null && inc.getId().equals(q.getId())));
+
+            for (com.lela.QuizQuestion.dto.QuizQuestionRequest incQ : incomingQuestions) {
+                com.lela.QuizQuestion.domain.QuizQuestion matchQ = null;
+                if (incQ.getId() != null) {
+                    matchQ = existing.getQuestions().stream()
+                            .filter(q -> incQ.getId().equals(q.getId()))
+                            .findFirst().orElse(null);
+                }
+                
+                if (matchQ != null) {
+                    matchQ.setQuestionText(incQ.getQuestionText());
+                    matchQ.setQuestionImageUrl(incQ.getQuestionImageUrl());
+                    matchQ.setQuestionType(incQ.getQuestionType());
+                    matchQ.setExplanation(incQ.getExplanation());
+                    matchQ.setPoints(incQ.getPoints());
+                    matchQ.setQuestionTimeLimitSeconds(incQ.getQuestionTimeLimitSeconds());
+                    matchQ.setDisplayOrder(incQ.getDisplayOrder());
+                    matchQ.setIsActive(incQ.getIsActive());
+                    
+                    if (incQ.getOptions() != null) {
+                        matchQ.getOptions().removeIf(opt -> incQ.getOptions().stream()
+                                .noneMatch(incOpt -> incOpt.getOptionKey() != null && incOpt.getOptionKey().equals(opt.getOptionKey())));
+                        
+                        for (com.lela.QuizQuestionOption.dto.QuizQuestionOptionRequest incOpt : incQ.getOptions()) {
+                            com.lela.QuizQuestionOption.domain.QuizQuestionOption matchOpt = matchQ.getOptions().stream()
+                                    .filter(o -> incOpt.getOptionKey() != null && incOpt.getOptionKey().equals(o.getOptionKey()))
+                                    .findFirst().orElse(null);
+                                    
+                            if (matchOpt != null) {
+                                matchOpt.setOptionText(incOpt.getOptionText());
+                                matchOpt.setNormalizedText(incOpt.getNormalizedText());
+                                matchOpt.setIsCorrect(incOpt.getIsCorrect());
+                                matchOpt.setDisplayOrder(incOpt.getDisplayOrder());
+                            } else {
+                                com.lela.QuizQuestionOption.domain.QuizQuestionOption newOpt = new com.lela.QuizQuestionOption.domain.QuizQuestionOption();
+                                newOpt.setOptionKey(incOpt.getOptionKey());
+                                newOpt.setOptionText(incOpt.getOptionText());
+                                newOpt.setNormalizedText(incOpt.getNormalizedText());
+                                newOpt.setIsCorrect(incOpt.getIsCorrect());
+                                newOpt.setDisplayOrder(incOpt.getDisplayOrder());
+                                newOpt.setQuestion(matchQ);
+                                matchQ.getOptions().add(newOpt);
+                            }
+                        }
+                    }
+                } else {
+                    com.lela.QuizQuestion.domain.QuizQuestion newQ = mapper.map(incQ, com.lela.QuizQuestion.domain.QuizQuestion.class);
+                    newQ.setQuiz(existing);
+                    if (newQ.getOptions() != null) {
+                        newQ.getOptions().forEach(opt -> opt.setQuestion(newQ));
+                    }
+                    existing.getQuestions().add(newQ);
+                }
+            }
+        }
+        
+        // Manual mapping for scalar fields to avoid ModelMapper overwriting PersistentBag
+        existing.setQuizCode(req.getQuizCode());
+        existing.setTitle(req.getTitle());
+        existing.setDescription(req.getDescription());
+        existing.setQuizType(req.getQuizType());
+        existing.setTimeLimitSeconds(req.getTimeLimitSeconds());
+        existing.setPassScore(req.getPassScore());
+        existing.setMaxAttempts(req.getMaxAttempts());
+        existing.setShuffleQuestions(req.getShuffleQuestions());
+        existing.setShuffleOptions(req.getShuffleOptions());
+        existing.setIsActive(req.getIsActive());
         
         existing.setDeck(deck);//luu update by
         if (req.getUpdatedById() != null) {
@@ -90,7 +164,10 @@ public class QuizServiceImpl implements QuizService {
                     .orElseThrow(() -> new NotFoundExeception("User not found: " + req.getUpdatedById()));
             existing.setUpdatedBy(updatedBy);
         }
-        return mapper.map(quizRepository.save(existing), QuizResponse.class);
+        
+        QuizResponse res = mapper.map(quizRepository.save(existing), QuizResponse.class);
+        if (existing.getDeck() != null) res.setDeckId(existing.getDeck().getId());
+        return res;
     }
 
     @Transactional

@@ -21,4 +21,7 @@ public interface QuizAttemptService {
 
     @Transactional
     void delete(Long id);
+
+    @Transactional
+    QuizAttemptReponse submit(Long id);
 }

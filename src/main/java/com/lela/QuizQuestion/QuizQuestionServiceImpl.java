@@ -75,12 +75,19 @@ public class QuizQuestionServiceImpl implements QuizQuestionService {
             }
         }
         
-        // Map scalar fields manually or ignore options in ModelMapper (we will just let ModelMapper do its thing but manually fix the list later)
-        // Wait, ModelMapper will overwrite existing.getOptions(). Let's save a reference.
-        List<com.lela.QuizQuestionOption.domain.QuizQuestionOption> oldList = existing.getOptions();
-        request.setOptions(null); // prevent model mapper from overwriting
-        mapper.map(request, existing);
-        existing.setOptions(oldList);
+        // Map scalar fields manually to avoid ModelMapper side effects on ID and relationships
+        existing.setQuestionText(request.getQuestionText());
+        existing.setQuestionImageUrl(request.getQuestionImageUrl());
+        existing.setQuestionType(request.getQuestionType());
+        existing.setExplanation(request.getExplanation());
+        existing.setPoints(request.getPoints());
+        existing.setQuestionTimeLimitSeconds(request.getQuestionTimeLimitSeconds());
+        existing.setDisplayOrder(request.getDisplayOrder());
+        existing.setIsActive(request.getIsActive());
+        
+        if (request.getVersion() != null) {
+            existing.setVersion(request.getVersion());
+        }
         
         // Now update/add options
         if (incomingOptions != null) {
@@ -89,9 +96,18 @@ public class QuizQuestionServiceImpl implements QuizQuestionService {
                         .filter(o -> o.getOptionKey() != null && o.getOptionKey().equals(inc.getOptionKey()))
                         .findFirst().orElse(null);
                 if (match != null) {
-                    mapper.map(inc, match);
+                    match.setOptionText(inc.getOptionText());
+                    match.setNormalizedText(inc.getNormalizedText());
+                    match.setIsCorrect(inc.getIsCorrect());
+                    match.setDisplayOrder(inc.getDisplayOrder());
+                    match.setQuestion(existing);
                 } else {
-                    com.lela.QuizQuestionOption.domain.QuizQuestionOption newOpt = mapper.map(inc, com.lela.QuizQuestionOption.domain.QuizQuestionOption.class);
+                    com.lela.QuizQuestionOption.domain.QuizQuestionOption newOpt = new com.lela.QuizQuestionOption.domain.QuizQuestionOption();
+                    newOpt.setOptionKey(inc.getOptionKey());
+                    newOpt.setOptionText(inc.getOptionText());
+                    newOpt.setNormalizedText(inc.getNormalizedText());
+                    newOpt.setIsCorrect(inc.getIsCorrect());
+                    newOpt.setDisplayOrder(inc.getDisplayOrder());
                     newOpt.setQuestion(existing);
                     existing.getOptions().add(newOpt);
                 }
@@ -105,7 +121,7 @@ public class QuizQuestionServiceImpl implements QuizQuestionService {
             existing.setSourceCard(flashcardRepository.findById(request.getSourceCardId())
                     .orElseThrow(() -> new NotFoundExeception("Flashcard not found: " + request.getSourceCardId())));
         }
-        return mapper.map(repository.save(existing), QuizQuestionResponse.class);
+        return mapper.map(repository.saveAndFlush(existing), QuizQuestionResponse.class);
     }
 
     @Transactional

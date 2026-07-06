@@ -21,4 +21,6 @@ public interface FlashcardService {
     void deleteFlashcard(Long id);
     
     List<FlashcardResponse> bulkCreateFlashcards(List<FlashcardRequest> requests);
+    
+    void reorderFlashcards(Long deckId, List<Long> flashcardIds);
 }

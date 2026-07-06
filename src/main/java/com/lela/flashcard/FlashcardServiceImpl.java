@@ -198,4 +198,17 @@ public class FlashcardServiceImpl implements FlashcardService {
         }
         return responses;
     }
+
+    @Transactional
+    @Override
+    public void reorderFlashcards(Long deckId, List<Long> flashcardIds) {
+        for (int i = 0; i < flashcardIds.size(); i++) {
+            Long id = flashcardIds.get(i);
+            Flashcard flashcard = flashcardRepository.findById(id).orElse(null);
+            if (flashcard != null && flashcard.getDeck().getId().equals(deckId)) {
+                flashcard.setCardOrder(i);
+                flashcardRepository.save(flashcard);
+            }
+        }
+    }
 }
