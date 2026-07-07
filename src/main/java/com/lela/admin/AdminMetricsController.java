@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-// ponytail: Thin aggregation controller — just counts. No service layer needed until
-// we add time-series queries or caching.
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
