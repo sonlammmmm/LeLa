@@ -13,8 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.UUID;
+import java.text.Normalizer;
 
 @Service
 @RequiredArgsConstructor
@@ -32,14 +32,8 @@ public class DeckServiceImpl implements DeckService {
         // Sinh mã ngẫu nhiên cho deckCode
         deck.setDeckCode(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         
-        // Tạo slug từ title (đơn giản hóa, thực tế có thể dùng thư viện tạo slug chuẩn)
-        String baseSlug = request.getTitle() != null ? request.getTitle().toLowerCase().replaceAll("[^a-z0-9]+", "-") : "deck";
-        String slug = baseSlug;
-        int counter = 1;
-        while (deckRepository.existsBySlug(slug)) {
-            slug = baseSlug + "-" + counter++;
-        }
-        deck.setSlug(slug);
+        // Tạo slug từ title
+        deck.setSlug(generateSlug(request.getTitle(), null));
         
         deck.setTitle(request.getTitle());
         deck.setDescription(request.getDescription());
@@ -85,7 +79,10 @@ public class DeckServiceImpl implements DeckService {
                 .orElseThrow(() -> new RuntimeException("Deck not found"));
 
         // Chỉ cập nhật các trường được phép
-        if (request.getTitle() != null) deck.setTitle(request.getTitle());
+        if (request.getTitle() != null) {
+            deck.setTitle(request.getTitle());
+            deck.setSlug(generateSlug(request.getTitle(), deck.getId()));
+        }
         if (request.getDescription() != null) deck.setDescription(request.getDescription());
         if (request.getCoverImageUrl() != null) deck.setCoverImageUrl(request.getCoverImageUrl());
         if (request.getTopicId() != null) {
@@ -148,5 +145,28 @@ public class DeckServiceImpl implements DeckService {
         // Soft delete
         deck.setActive(false);
         deckRepository.save(deck);
+    }
+
+    private String generateSlug(String title, Long excludeId) {
+        if (title == null || title.isEmpty()) {
+            return "deck";
+        }
+        String normalized = Normalizer.normalize(title, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                .replace("đ", "d").replace("Đ", "d");
+        String baseSlug = normalized.toLowerCase().replaceAll("[^a-z0-9]+", "-").replaceAll("^-|-$", "");
+        if (baseSlug.isEmpty()) baseSlug = "deck";
+        
+        String slug = baseSlug;
+        int counter = 1;
+        while (true) {
+            java.util.Optional<Deck> existing = deckRepository.findBySlug(slug);
+            if (existing.isPresent() && !existing.get().getId().equals(excludeId)) {
+                slug = baseSlug + "-" + counter++;
+            } else {
+                break;
+            }
+        }
+        return slug;
     }
 }

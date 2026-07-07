@@ -8,4 +8,7 @@ import lombok.Setter;
 public class ReviewStatsResponse {
     private long todayReviews;
     private long last7DaysReviews;
+    private long totalCardsLearned;
+    private long masteredCards;
+    private int masteryPercentage;
 }

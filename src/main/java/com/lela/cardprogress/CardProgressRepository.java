@@ -26,4 +26,10 @@ public interface CardProgressRepository extends JpaRepository<CardProgress, Long
 
     @Query("SELECT cp FROM CardProgress cp WHERE cp.user.id = :userId AND cp.card.deck.id = :deckId AND cp.state = :state")
     Page<CardProgress> findNewCards(@Param("userId") Long userId, @Param("deckId") Long deckId, @Param("state") CardProgressState state, Pageable pageable);
+
+    @Query("SELECT COUNT(cp) FROM CardProgress cp WHERE cp.user.id = :userId")
+    long countByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT COUNT(cp) FROM CardProgress cp WHERE cp.user.id = :userId AND cp.state = :state")
+    long countByUserIdAndState(@Param("userId") Long userId, @Param("state") CardProgressState state);
 }

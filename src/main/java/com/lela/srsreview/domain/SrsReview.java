@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 public class SrsReview extends BaseEnity {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_session_id", nullable = false)
+    @JoinColumn(name = "review_session_id")
     private ReviewSession reviewSession; // Phiên review chứa sự kiện này.
 
     @ManyToOne(fetch = FetchType.LAZY)

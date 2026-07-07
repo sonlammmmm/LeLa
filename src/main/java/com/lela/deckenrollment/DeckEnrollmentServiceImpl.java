@@ -61,6 +61,11 @@ public class DeckEnrollmentServiceImpl implements DeckEnrollmentService {
             enrollment.setEnrolledAt(LocalDateTime.now());
             enrollment.setStatus(DeckEnrollmentStatus.ACTIVE);
 
+            // Tăng số lượng người học (enrollmentCount)
+            entityManager.createQuery("UPDATE Deck d SET d.enrollmentCount = d.enrollmentCount + 1 WHERE d.id = :deckId")
+                    .setParameter("deckId", request.getDeckId())
+                    .executeUpdate();
+
             // Khởi tạo tiến độ cho lần học đầu tiên
             initializeCardProgressForEnrolledDeck(userId, request.getDeckId());
         } else if (!DeckEnrollmentStatus.ACTIVE.equals(enrollment.getStatus())) {

@@ -61,11 +61,16 @@ public class DailyLearningActivityServiceImpl implements DailyLearningActivitySe
 
         DailyLearningActivity saved = repository.save(activity);
         
-        // Emit SSE for real-time gamification
+        // Emit SSE for real-time gamification and update user total XP
         if (request.getXpEarned() != null && request.getXpEarned() > 0) {
+            Users userToUpdate = usersRepository.findById(userId).orElseThrow();
+            Long currentXp = userToUpdate.getXpTotal() != null ? userToUpdate.getXpTotal() : 0L;
+            userToUpdate.setXpTotal(currentXp + request.getXpEarned());
+            usersRepository.save(userToUpdate);
+
             java.util.Map<String, Object> payload = new java.util.HashMap<>();
             payload.put("gainedXp", request.getXpEarned());
-            payload.put("totalXp", saved.getXpEarned());
+            payload.put("totalXp", userToUpdate.getXpTotal());
             payload.put("cardsReviewed", saved.getReviewCount());
             sseService.emitToUser(userId, "xp_update", payload);
             

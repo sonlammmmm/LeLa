@@ -181,9 +181,21 @@ public class SrsReviewServiceImpl implements SrsReviewService {
         long todayCount = srsReviewRepository.countReviewsInPeriod(targetId, now.toLocalDate().atStartOfDay(), now);
         long weekCount = srsReviewRepository.countReviewsInPeriod(targetId, now.minusDays(7), now);
 
+        long totalCardsLearned = cardProgressRepository.countByUserId(targetId);
+        long masteredCards = cardProgressRepository.countByUserIdAndState(targetId, CardProgressState.REVIEW);
+
         ReviewStatsResponse stats = new ReviewStatsResponse();
         stats.setTodayReviews(todayCount);
         stats.setLast7DaysReviews(weekCount);
+        stats.setTotalCardsLearned(totalCardsLearned);
+        stats.setMasteredCards(masteredCards);
+        
+        int percentage = 0;
+        if (totalCardsLearned > 0) {
+            percentage = (int) Math.round((double) masteredCards / totalCardsLearned * 100);
+        }
+        stats.setMasteryPercentage(percentage);
+
         return stats;
     }
 }
