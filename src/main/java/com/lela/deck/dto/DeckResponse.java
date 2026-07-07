@@ -19,7 +19,7 @@ public class DeckResponse {
     private String coverImageUrl; // Đường dẫn ảnh bìa deck.
     private Long ownerId; // ID Người sở hữu hoặc tạo deck.
     private Long languageId; // ID Ngôn ngữ chính của deck.
-    private String category; // Nhóm chủ đề của deck.
+    private TopicDTO topic; // Nhóm chủ đề của deck.
     private DeckDifficulty difficulty; // Độ khó của deck.
     private DeckVisibility visibility; // Phạm vi hiển thị deck.
     private DeckStatus status; // Trạng thái kiểm duyệt deck.
@@ -56,7 +56,14 @@ public class DeckResponse {
             response.setLanguageId(deck.getLanguage().getId());
         }
         
-        response.setCategory(deck.getCategory());
+        if (deck.getTopic() != null) {
+            TopicDTO topicDTO = new TopicDTO();
+            topicDTO.setId(deck.getTopic().getId());
+            topicDTO.setName(deck.getTopic().getName());
+            topicDTO.setSlug(deck.getTopic().getSlug());
+            topicDTO.setIconUrl(deck.getTopic().getIconUrl());
+            response.setTopic(topicDTO);
+        }
         response.setDifficulty(deck.getDifficulty());
         response.setVisibility(deck.getVisibility());
         response.setStatus(deck.getStatus());

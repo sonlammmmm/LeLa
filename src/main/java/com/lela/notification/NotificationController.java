@@ -10,12 +10,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import com.lela.notification.dto.NotificationRequest;
 
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
 @RestController
 @RequestMapping("/notifications")
 @RequiredArgsConstructor
 public class NotificationController {
 
     private final NotificationService notificationService;
+    private final SseService sseService;
+    private final com.lela.users.UsersRepository usersRepository;
 
     private static final String MSG_FETCH_ALL_SUCCESS = "Tải danh sách tất cả thông báo thành công.";
     private static final String MSG_FETCH_UNREAD_SUCCESS = "Tải danh sách thông báo chưa đọc thành công.";
@@ -26,6 +30,15 @@ public class NotificationController {
     public ResponseEntity<ApiResponse<Page<NotificationResponse>>> getAll(Pageable pageable) {
         Page<NotificationResponse> data = notificationService.getAll(pageable);
         return ResponseEntity.ok(ApiResponse.success(data, MSG_FETCH_ALL_SUCCESS));
+    }
+
+    @GetMapping("/stream")
+    public SseEmitter stream() {
+        String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = usersRepository.findByUsername(username)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.UNAUTHORIZED, "User không tồn tại"))
+                .getId();
+        return sseService.subscribe(userId);
     }
 
     @GetMapping("/admin")

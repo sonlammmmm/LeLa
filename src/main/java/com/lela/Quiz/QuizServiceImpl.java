@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 
 
@@ -26,6 +28,16 @@ public class QuizServiceImpl implements QuizService {
     private final UsersRepository usersRepository;
     private final ModelMapper mapper;
 
+    private Long getCurrentUserId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+            throw new org.springframework.security.access.AccessDeniedException("User is not authenticated");
+        }
+        String username = auth.getName();
+        return usersRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundExeception("User not found: " + username))
+                .getId();
+    }
 
     @Override
     public Page<QuizResponse> findAll(Pageable pageable) {
@@ -55,8 +67,9 @@ public class QuizServiceImpl implements QuizService {
     public QuizResponse create(QuizRequest req) {
         Deck deck = deckRepository.findById(req.getDeckId())
                 .orElseThrow(() -> new NotFoundExeception("Deck not found: " + req.getDeckId()));
-        Users createdBy = usersRepository.findById(req.getCreatedById())
-                .orElseThrow(() -> new NotFoundExeception("User not found: " + req.getCreatedById()));
+        Long currentUserId = getCurrentUserId();
+        Users createdBy = usersRepository.findById(currentUserId)
+                .orElseThrow(() -> new NotFoundExeception("User not found: " + currentUserId));
         Quiz quiz = mapper.map(req, Quiz.class);
         quiz.setDeck(deck);
         quiz.setCreatedBy(createdBy);
@@ -159,11 +172,11 @@ public class QuizServiceImpl implements QuizService {
         existing.setIsActive(req.getIsActive());
         
         existing.setDeck(deck);//luu update by
-        if (req.getUpdatedById() != null) {
-            Users updatedBy = usersRepository.findById(req.getUpdatedById())
-                    .orElseThrow(() -> new NotFoundExeception("User not found: " + req.getUpdatedById()));
-            existing.setUpdatedBy(updatedBy);
-        }
+        
+        Long currentUserId = getCurrentUserId();
+        Users updatedBy = usersRepository.findById(currentUserId)
+                .orElseThrow(() -> new NotFoundExeception("User not found: " + currentUserId));
+        existing.setUpdatedBy(updatedBy);
         
         QuizResponse res = mapper.map(quizRepository.save(existing), QuizResponse.class);
         if (existing.getDeck() != null) res.setDeckId(existing.getDeck().getId());

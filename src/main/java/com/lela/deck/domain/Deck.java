@@ -49,8 +49,9 @@ public class Deck extends AuditableEntity {
     @JoinColumn(name = "language_id", nullable = false)
     private Language language; // Ngôn ngữ chính của deck.
 
-    @Column(length = 100)
-    private String category; // Nhóm chủ đề của deck.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "topic_id")
+    private Topic topic; // Nhóm chủ đề của deck.
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)

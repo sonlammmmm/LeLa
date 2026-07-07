@@ -37,6 +37,12 @@ public class NotificationControllerTest {
     @MockitoBean
     private JwtService jwtService;
 
+    @MockitoBean
+    private com.lela.notification.SseService sseService;
+
+    @MockitoBean
+    private com.lela.users.UsersRepository usersRepository;
+
     private NotificationResponse notificationResponse;
 
     @BeforeEach

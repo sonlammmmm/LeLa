@@ -60,6 +60,12 @@ public class DeckEnrollment extends AuditableEntity {
     @Column(length = 500)
     private String note; // Ghi chú cá nhân cho enrollment.
 
+    @Column(name = "max_new_cards_per_day", nullable = false)
+    private Integer maxNewCardsPerDay = 20; // Giới hạn số thẻ mới học mỗi ngày.
+
+    @Column(name = "max_reviews_per_day", nullable = false)
+    private Integer maxReviewsPerDay = 100; // Giới hạn số thẻ ôn tập mỗi ngày.
+
     @Version
     @Column(nullable = false)
     private Long version = 0L; // Phiên bản dùng cho optimistic locking.

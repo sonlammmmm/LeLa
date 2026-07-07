@@ -42,6 +42,12 @@ public class DailyLearningActivityServiceImplTest {
     @Mock
     private ModelMapper modelMapper;
 
+    @Mock
+    private com.lela.notification.SseService sseService;
+
+    @Mock
+    private com.lela.achievement.AchievementService achievementService;
+
     @InjectMocks
     private DailyLearningActivityServiceImpl service;
 

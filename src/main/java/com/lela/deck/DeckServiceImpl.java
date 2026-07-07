@@ -1,5 +1,6 @@
 package com.lela.deck;
 
+import com.lela.deck.domain.Topic;
 import com.lela.deck.dto.DeckRequest;
 import com.lela.deck.dto.DeckResponse;
 import com.lela.deck.domain.Deck;
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class DeckServiceImpl implements DeckService {
 
     private final DeckRepository deckRepository;
+    private final TopicRepository topicRepository;
     private final EntityManager entityManager;
 
     @Transactional
@@ -42,7 +44,11 @@ public class DeckServiceImpl implements DeckService {
         deck.setTitle(request.getTitle());
         deck.setDescription(request.getDescription());
         deck.setCoverImageUrl(request.getCoverImageUrl());
-        deck.setCategory(request.getCategory());
+        if (request.getTopicId() != null) {
+            Topic topic = topicRepository.findById(request.getTopicId())
+                .orElseThrow(() -> new IllegalArgumentException("Topic not found"));
+            deck.setTopic(topic);
+        }
         
         if (request.getDifficulty() != null) deck.setDifficulty(request.getDifficulty());
         if (request.getVisibility() != null) deck.setVisibility(request.getVisibility());
@@ -82,7 +88,11 @@ public class DeckServiceImpl implements DeckService {
         if (request.getTitle() != null) deck.setTitle(request.getTitle());
         if (request.getDescription() != null) deck.setDescription(request.getDescription());
         if (request.getCoverImageUrl() != null) deck.setCoverImageUrl(request.getCoverImageUrl());
-        if (request.getCategory() != null) deck.setCategory(request.getCategory());
+        if (request.getTopicId() != null) {
+            Topic topic = topicRepository.findById(request.getTopicId())
+                .orElseThrow(() -> new IllegalArgumentException("Topic not found"));
+            deck.setTopic(topic);
+        }
         if (request.getDifficulty() != null) deck.setDifficulty(request.getDifficulty());
         if (request.getVisibility() != null) deck.setVisibility(request.getVisibility());
         if (request.getDisplayMode() != null) deck.setDisplayMode(request.getDisplayMode());
@@ -106,7 +116,12 @@ public class DeckServiceImpl implements DeckService {
     @Override
     public DeckResponse getDeckById(Long id) {
         Deck deck = deckRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Deck not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Deck not found"));
+
+        if (deck.getTopic() != null && Boolean.FALSE.equals(deck.getTopic().getIsActive())) {
+            throw new IllegalArgumentException("This deck belongs to an inactive topic.");
+        }
+
         return DeckResponse.fromEntity(deck);
     }
 

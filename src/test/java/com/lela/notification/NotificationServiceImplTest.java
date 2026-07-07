@@ -47,6 +47,9 @@ public class NotificationServiceImplTest {
     @Mock
     private ModelMapper modelMapper;
 
+    @Mock
+    private SseService sseService;
+
     @InjectMocks
     private NotificationServiceImpl service;
 
@@ -129,6 +132,9 @@ public class NotificationServiceImplTest {
         request.setTitle("System Update");
         request.setMessage("Backend is working perfectly.");
         request.setType(NotificationType.SYSTEM);
+
+        when(modelMapper.map(any(Notification.class), eq(NotificationResponse.class)))
+                .thenReturn(new NotificationResponse());
 
         service.broadcast(request);
 

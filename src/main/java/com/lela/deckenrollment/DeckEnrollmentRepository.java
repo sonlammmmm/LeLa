@@ -22,4 +22,6 @@ public interface DeckEnrollmentRepository extends JpaRepository<DeckEnrollment, 
 
     @Query("SELECT de FROM DeckEnrollment de WHERE de.user.id = :userId AND de.nextReviewAt <= :nextReviewAt")
     Page<DeckEnrollment> findByUserIdAndNextReviewAtLessThanEqual(@Param("userId") Long userId, @Param("nextReviewAt") LocalDateTime nextReviewAt, Pageable pageable);
+
+    long countByUserId(Long userId);
 }

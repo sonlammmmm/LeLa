@@ -10,13 +10,15 @@ import com.lela.users.UsersRepository;
 import com.lela.users.domain.Users;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.scheduling.annotation.Async;
+import com.lela.cardprogress.event.CardProgressEvent;
 
 import java.time.LocalDateTime;
 
@@ -27,7 +29,6 @@ public class DeckEnrollmentServiceImpl implements DeckEnrollmentService {
     private final DeckEnrollmentRepository repository;
     private final UsersRepository usersRepository; // Inject để tự lấy ID từ Username
     private final EntityManager entityManager;
-    private final ModelMapper modelMapper;
 
 
     private Long getCurrentUserId() {
@@ -115,9 +116,42 @@ public class DeckEnrollmentServiceImpl implements DeckEnrollmentService {
     }
 
     private DeckEnrollmentResponse mapToResponse(DeckEnrollment entity) {
-        DeckEnrollmentResponse response = modelMapper.map(entity, DeckEnrollmentResponse.class);
-        if (entity.getUser() != null) response.setUserId(entity.getUser().getId());
-        if (entity.getDeck() != null) response.setDeckId(entity.getDeck().getId());
+        DeckEnrollmentResponse response = new DeckEnrollmentResponse();
+        response.setId(entity.getId());
+        response.setStatus(entity.getStatus());
+        response.setEnrolledAt(entity.getEnrolledAt());
+        response.setPausedAt(entity.getPausedAt());
+        response.setCompletedAt(entity.getCompletedAt());
+        response.setDroppedAt(entity.getDroppedAt());
+        response.setLastStudiedAt(entity.getLastStudiedAt());
+        response.setNextReviewAt(entity.getNextReviewAt());
+        response.setMasteredCards(entity.getMasteredCards());
+        response.setNote(entity.getNote());
+        response.setCreatedAt(entity.getCreatedAt());
+        response.setUpdatedAt(entity.getUpdatedAt());
+
+        if (entity.getUser() != null) {
+            response.setUserId(entity.getUser().getId());
+        }
+        if (entity.getDeck() != null) {
+            response.setDeckId(entity.getDeck().getId());
+        }
         return response;
+    }
+
+    @Async
+    @EventListener
+    @Transactional
+    public void handleCardProgressEvent(CardProgressEvent event) {
+        repository.findByUserIdAndDeckId(event.getUserId(), event.getDeckId()).ifPresent(enrollment -> {
+            if (!event.isWasMastered() && event.isMastered()) {
+                enrollment.setMasteredCards((enrollment.getMasteredCards() != null ? enrollment.getMasteredCards() : 0) + 1);
+                repository.save(enrollment);
+            } else if (event.isWasMastered() && !event.isMastered()) {
+                int current = enrollment.getMasteredCards() != null ? enrollment.getMasteredCards() : 0;
+                enrollment.setMasteredCards(Math.max(0, current - 1));
+                repository.save(enrollment);
+            }
+        });
     }
 }

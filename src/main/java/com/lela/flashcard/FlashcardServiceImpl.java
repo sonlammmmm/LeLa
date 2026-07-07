@@ -1,6 +1,7 @@
 package com.lela.flashcard;
 
 import com.lela.deck.domain.Deck;
+import com.lela.deck.DeckRepository;
 import com.lela.flashcard.domain.Flashcard;
 import com.lela.flashcard.domain.FlashcardTag;
 import com.lela.flashcard.domain.FlashcardTagId;
@@ -26,6 +27,7 @@ public class FlashcardServiceImpl implements FlashcardService {
 
     private final FlashcardRepository flashcardRepository;
     private final FlashcardTagRepository flashcardTagRepository;
+    private final DeckRepository deckRepository;
     private final EntityManager entityManager;
 
     @Transactional
@@ -52,8 +54,11 @@ public class FlashcardServiceImpl implements FlashcardService {
         flashcard.setActive(true);
 
         if (request.getDeckId() != null) {
-            Deck deck = entityManager.getReference(Deck.class, request.getDeckId());
+            Deck deck = deckRepository.findById(request.getDeckId())
+                    .orElseThrow(() -> new RuntimeException("Deck not found"));
             flashcard.setDeck(deck);
+            deck.setTotalCards((deck.getTotalCards() != null ? deck.getTotalCards() : 0) + 1);
+            deckRepository.save(deck);
         }
 
         if (request.getCreatedById() != null) {
@@ -187,6 +192,13 @@ public class FlashcardServiceImpl implements FlashcardService {
         flashcard.setActive(false);
         flashcard.setDeletedAt(LocalDateTime.now());
         flashcardRepository.save(flashcard);
+
+        if (flashcard.getDeck() != null) {
+            Deck deck = flashcard.getDeck();
+            int current = deck.getTotalCards() != null ? deck.getTotalCards() : 0;
+            deck.setTotalCards(Math.max(0, current - 1));
+            deckRepository.save(deck);
+        }
     }
 
     @Transactional

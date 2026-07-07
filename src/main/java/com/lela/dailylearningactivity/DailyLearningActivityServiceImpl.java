@@ -24,6 +24,8 @@ public class DailyLearningActivityServiceImpl implements DailyLearningActivitySe
     private final EntityManager entityManager;
     private final ModelMapper modelMapper;
     private final UsersRepository usersRepository;
+    private final com.lela.notification.SseService sseService;
+    private final com.lela.achievement.AchievementService achievementService;
 
     private Long getCurrentUserId() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -57,7 +59,21 @@ public class DailyLearningActivityServiceImpl implements DailyLearningActivitySe
             activity.setGoalMet(request.getGoalMet());
         }
 
-        return mapToResponse(repository.save(activity));
+        DailyLearningActivity saved = repository.save(activity);
+        
+        // Emit SSE for real-time gamification
+        if (request.getXpEarned() != null && request.getXpEarned() > 0) {
+            java.util.Map<String, Object> payload = new java.util.HashMap<>();
+            payload.put("gainedXp", request.getXpEarned());
+            payload.put("totalXp", saved.getXpEarned());
+            payload.put("cardsReviewed", saved.getReviewCount());
+            sseService.emitToUser(userId, "xp_update", payload);
+            
+            // Evaluate achievements
+            achievementService.evaluateAchievements(userId);
+        }
+
+        return mapToResponse(saved);
     }
 
     @Override

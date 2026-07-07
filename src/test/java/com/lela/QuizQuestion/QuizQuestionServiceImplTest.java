@@ -116,13 +116,13 @@ public class QuizQuestionServiceImplTest {
 
         when(repository.findById(1L)).thenReturn(Optional.of(entity));
         when(quizRepository.findById(2L)).thenReturn(Optional.of(quiz));
-        when(repository.save(entity)).thenReturn(entity);
+        when(repository.saveAndFlush(entity)).thenReturn(entity);
         Mockito.lenient().when(mapper.map(entity, QuizQuestionResponse.class)).thenReturn(response);
 
         QuizQuestionResponse result = service.update(1L, request);
 
         assertNotNull(result);
-        verify(repository).save(entity);
+        verify(repository).saveAndFlush(entity);
     }
 
     @Test

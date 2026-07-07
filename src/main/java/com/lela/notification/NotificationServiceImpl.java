@@ -20,6 +20,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository repository;
     private final com.lela.users.UsersRepository usersRepository;
     private final ModelMapper modelMapper;
+    private final SseService sseService;
 
     private Long getCurrentUserId() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -101,6 +102,10 @@ public class NotificationServiceImpl implements NotificationService {
             notif.setActionUrl(request.getActionUrl());
             notif.setDeliveredAt(LocalDateTime.now());
             notif.setIsRead(false);
+            
+            // Emit SSE for real-time notification
+            sseService.emitToUser(user.getId(), "notification", mapToResponse(notif));
+            
             return notif;
         }).collect(java.util.stream.Collectors.toList());
         repository.saveAll(notifications);
