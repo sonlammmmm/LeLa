@@ -3,6 +3,9 @@ package com.lela.QuizAttempt;
 import com.lela.common.ApiResponse;
 import com.lela.QuizAttempt.dto.QuizAttemptReponse;
 import com.lela.QuizAttempt.dto.QuizAttemptRequest;
+import com.lela.QuizAttempt.dto.QuizAttemptDetailResponse;
+import com.lela.QuizAttempt.dto.QuizSubmitRequest;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -51,9 +54,27 @@ public class QuizAttemptController {
         return ResponseEntity.ok(ApiResponse.successMessage("Deleted successfully"));
     }
 
+    @GetMapping("/my")
+    @PreAuthorize("hasAnyRole('LEARNER', 'ADMIN')")
+    public ResponseEntity<ApiResponse<Page<QuizAttemptReponse>>> getMyAttempts(Pageable pageable) {
+        return ResponseEntity.ok(ApiResponse.success(quizAttemptService.findMyAttempts(pageable)));
+    }
+
+    @GetMapping("/{publicId}/detail")
+    @PreAuthorize("hasAnyRole('LEARNER', 'ADMIN')")
+    public ResponseEntity<ApiResponse<QuizAttemptDetailResponse>> getAttemptDetail(@PathVariable String publicId) {
+        return ResponseEntity.ok(ApiResponse.success(quizAttemptService.getAttemptDetailByPublicId(publicId)));
+    }
+
+    @PostMapping("/start/{quizId}")
+    @PreAuthorize("hasAnyRole('LEARNER', 'ADMIN')")
+    public ResponseEntity<ApiResponse<QuizAttemptDetailResponse>> startAttempt(@PathVariable Long quizId) {
+        return ResponseEntity.ok(ApiResponse.success(quizAttemptService.startAttempt(quizId)));
+    }
+
     @PostMapping("/{id}/submit")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<ApiResponse<QuizAttemptReponse>> submit(@PathVariable Long id) {
-        return ResponseEntity.ok(ApiResponse.success(quizAttemptService.submit(id)));
+    @PreAuthorize("hasAnyRole('LEARNER', 'ADMIN')")
+    public ResponseEntity<ApiResponse<QuizAttemptDetailResponse>> submit(@PathVariable Long id, @Valid @RequestBody QuizSubmitRequest request) {
+        return ResponseEntity.ok(ApiResponse.success(quizAttemptService.submit(id, request)));
     }
 }

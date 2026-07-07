@@ -192,4 +192,14 @@ public class QuizServiceImpl implements QuizService {
         quizRepository.deleteById(id);
     }
 
+    @Override
+    public List<QuizResponse> findByDeckId(Long deckId) {
+        return quizRepository.findByDeckIdAndIsActiveTrue(deckId).stream()
+                .map(q -> {
+                    QuizResponse res = mapper.map(q, QuizResponse.class);
+                    if (q.getDeck() != null) res.setDeckId(q.getDeck().getId());
+                    return res;
+                })
+                .toList();
+    }
 }

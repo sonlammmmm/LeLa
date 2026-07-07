@@ -16,16 +16,28 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalException {
+    private void logError(Exception ex) {
+        try {
+            java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter("global_error.log", true));
+            pw.println("--- GLOBAL ERROR: " + ex.getClass().getName() + " ---");
+            ex.printStackTrace(pw);
+            pw.close();
+        } catch (Exception ignored) {}
+    }
+
     @ExceptionHandler(NotFoundExeception.class)
     public ResponseEntity<ApiResponse<Void>> handleNotFound(NotFoundExeception e){
+        logError(e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(e.getMessage()));
     }
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ApiResponse<Void>> handleBadRequest(BadRequestException e){
+        logError(e);
         return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
+        logError(ex);
         Map<String, String> errors = new LinkedHashMap<>();
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
             errors.put(fieldError.getField(), fieldError.getDefaultMessage());
@@ -49,17 +61,13 @@ public class GlobalException {
 // kiểm tra tính hợp lệ của dữ liệu
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiResponse<Void>> handleDataIntegrity(DataIntegrityViolationException ex) {
+        logError(ex);
         return ResponseEntity.badRequest().body(ApiResponse.error("Data integrity violation. Please check duplicate or foreign key values."));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleUnknown(Exception ex) {
-        try {
-            java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter("global_error.log", true));
-            pw.println("--- GLOBAL ERROR ---");
-            ex.printStackTrace(pw);
-            pw.close();
-        } catch (Exception ignored) {}
+        logError(ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.error("Internal server error: " + ex.getMessage()));
     }

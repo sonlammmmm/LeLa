@@ -24,6 +24,11 @@ public class QuizController {
         return ResponseEntity.ok(ApiResponse.success(quizService.findAll(pageable)));
     }
 
+    @GetMapping("/deck/{deckId}")
+    public ResponseEntity<ApiResponse<java.util.List<QuizResponse>>> findByDeckId(@PathVariable Long deckId) {
+        return ResponseEntity.ok(ApiResponse.success(quizService.findByDeckId(deckId)));
+    }
+
     @GetMapping("/{id}")
    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<ApiResponse<QuizResponse>> findById(@PathVariable Long id) {

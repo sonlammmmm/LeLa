@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface QuizAttemptOptionRepository extends JpaRepository<QuizAttemptOption, Long> {
     List<QuizAttemptOption> findByAttemptQuestionId(Long attemptQuestionId);
+    List<QuizAttemptOption> findByAttemptQuestionIdIn(List<Long> attemptQuestionIds);
 }
