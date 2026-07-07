@@ -72,6 +72,9 @@ public class Users extends AuditableEntity {
     // Mục tiêu học số thẻ từ vựng mỗi ngày
     private Integer dailyGoalCards;
 
+    // Cờ bật tắt hiển thị hỏi mục tiêu học mỗi ngày
+    private Boolean promptDailyGoal;
+
     // Tổng số điểm kinh nghiệm (XP) tích lũy
     private Long xpTotal;
 

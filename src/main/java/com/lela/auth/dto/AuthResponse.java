@@ -24,6 +24,12 @@ public class AuthResponse {
         private String username;
         private String email;
         private String fullName;
+        private String avatarUrl;
         private Set<String> roles;
+        private String timezone;
+        private Integer dailyGoalCards;
+        private Long nativeLanguageId;
+        private Long targetLanguageId;
+        private Boolean promptDailyGoal;
     }
 }

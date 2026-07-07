@@ -52,3 +52,4 @@ QODER.md
 .qoder/
 .github/code-review-graph.instruction.md
 .code-review-graphignore
+global-error.log

@@ -27,12 +27,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
-                                    @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        // ponytail: skip JWT check on auth endpoints so expired tokens don't block login/refresh
         String path = request.getRequestURI();
-        if (path.startsWith("/api/v1/auth/")) {
+        if (path.equals("/api/v1/auth/login") ||
+                path.equals("/api/v1/auth/register") ||
+                path.equals("/api/v1/auth/refresh") ||
+                path.equals("/api/v1/auth/refresh-token") ||
+                path.equals("/api/v1/auth/logout") ||
+                path.equals("/api/v1/auth/check-username") ||
+                path.equals("/api/v1/auth/check-email")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -64,8 +69,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                     .toList();
 
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(username, null, authorities);
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null,
+                    authorities);
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -79,14 +84,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void writeUnauthorizedResponse(HttpServletResponse response,
-                                           String message) throws IOException {
+            String message) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(
                 "{\"success\":false,\"message\":\"" + escapeJson(message)
-                + "\",\"data\":null,\"timestamp\":null}"
-        );
+                        + "\",\"data\":null,\"timestamp\":null}");
     }
 
     private String escapeJson(String value) {

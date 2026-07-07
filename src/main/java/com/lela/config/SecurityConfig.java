@@ -61,6 +61,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/subscription-plans").permitAll()
                         .requestMatchers(HttpMethod.GET, "/decks").permitAll()
                         .requestMatchers(HttpMethod.GET, "/decks/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/flashcards/deck/{deckId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/quizzes/deck/{deckId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/leaderboard/**").permitAll()
 
                         // ── Swagger / error ───────────────────────────────

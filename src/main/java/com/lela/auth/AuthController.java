@@ -17,6 +17,10 @@ import com.lela.users.UsersRepository;
 import com.lela.users.domain.UserStatus;
 import com.lela.refreshtokensession.domain.RefreshTokenSession;
 import com.lela.refreshtokensession.RefreshTokenSessionRepository;
+import com.lela.language.domain.Language;
+import com.lela.language.LanguageRepository;
+import com.lela.auth.dto.ProfileUpdateRequest;
+import org.springframework.web.bind.annotation.PatchMapping;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -57,6 +61,21 @@ public class AuthController {
         private final UserRoleAssignmentRepository userRoleAssignmentRepository;
         private final RefreshTokenSessionRepository refreshTokenSessionRepository;
         private final PasswordEncoder passwordEncoder;
+        private final LanguageRepository languageRepository;
+
+        @GetMapping("/check-username")
+        @Operation(summary = "Kiểm tra tồn tại Tên đăng nhập", description = "Trả về true nếu tên đăng nhập đã được sử dụng.")
+        public ResponseEntity<ApiResponse<Boolean>> checkUsername(@org.springframework.web.bind.annotation.RequestParam String username) {
+                boolean exists = usersRepository.existsByUsername(username);
+                return ResponseEntity.ok(ApiResponse.success(exists, "Kiểm tra thành công"));
+        }
+
+        @GetMapping("/check-email")
+        @Operation(summary = "Kiểm tra tồn tại Email", description = "Trả về true nếu email đã được sử dụng.")
+        public ResponseEntity<ApiResponse<Boolean>> checkEmail(@org.springframework.web.bind.annotation.RequestParam String email) {
+                boolean exists = usersRepository.existsByEmail(email);
+                return ResponseEntity.ok(ApiResponse.success(exists, "Kiểm tra thành công"));
+        }
 
         @PostMapping("/register")
         @Transactional
@@ -73,14 +92,27 @@ public class AuthController {
                         throw new BadRequestException("Email đã được đăng ký");
                 }
 
+                Language nativeLang = null;
+                if (request.getNativeLanguageId() != null) {
+                        nativeLang = languageRepository.findById(request.getNativeLanguageId()).orElse(null);
+                }
+
+                Language targetLang = null;
+                if (request.getTargetLanguageId() != null) {
+                        targetLang = languageRepository.findById(request.getTargetLanguageId()).orElse(null);
+                }
+
                 Users user = Users.builder()
                                 .username(request.getUsername())
                                 .email(request.getEmail())
                                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                                 .fullName(request.getFullName())
                                 .status(UserStatus.ACTIVE)
-                                .timezone("Asia/Ho_Chi_Minh")
-                                .dailyGoalCards(10)
+                                .timezone(request.getTimezone() != null ? request.getTimezone() : "UTC")
+                                .dailyGoalCards(request.getDailyGoalCards() != null ? request.getDailyGoalCards() : 20)
+                                .promptDailyGoal(true)
+                                .nativeLanguage(nativeLang)
+                                .targetLanguage(targetLang)
                                 .xpTotal(0L)
                                 .streakCurrent(0)
                                 .streakLongest(0)
@@ -152,7 +184,13 @@ public class AuthController {
                                 .username(user.getUsername())
                                 .email(user.getEmail())
                                 .fullName(user.getFullName())
+                                .avatarUrl(user.getAvatarUrl())
                                 .roles(user.getRoleCodes())
+                                .timezone(user.getTimezone())
+                                .dailyGoalCards(user.getDailyGoalCards())
+                                .promptDailyGoal(user.getPromptDailyGoal() != null ? user.getPromptDailyGoal() : true)
+                                .nativeLanguageId(user.getNativeLanguage() != null ? user.getNativeLanguage().getId() : null)
+                                .targetLanguageId(user.getTargetLanguage() != null ? user.getTargetLanguage().getId() : null)
                                 .build();
 
                 AuthResponse authResponse = AuthResponse.builder()
@@ -201,7 +239,13 @@ public class AuthController {
                                 .username(user.getUsername())
                                 .email(user.getEmail())
                                 .fullName(user.getFullName())
+                                .avatarUrl(user.getAvatarUrl())
                                 .roles(user.getRoleCodes())
+                                .timezone(user.getTimezone())
+                                .dailyGoalCards(user.getDailyGoalCards())
+                                .promptDailyGoal(user.getPromptDailyGoal() != null ? user.getPromptDailyGoal() : true)
+                                .nativeLanguageId(user.getNativeLanguage() != null ? user.getNativeLanguage().getId() : null)
+                                .targetLanguageId(user.getTargetLanguage() != null ? user.getTargetLanguage().getId() : null)
                                 .build();
 
                 AuthResponse authResponse = AuthResponse.builder()
@@ -253,9 +297,63 @@ public class AuthController {
                                 .username(user.getUsername())
                                 .email(user.getEmail())
                                 .fullName(user.getFullName())
+                                .avatarUrl(user.getAvatarUrl())
                                 .roles(user.getRoleCodes())
+                                .timezone(user.getTimezone())
+                                .dailyGoalCards(user.getDailyGoalCards())
+                                .promptDailyGoal(user.getPromptDailyGoal() != null ? user.getPromptDailyGoal() : true)
+                                .nativeLanguageId(user.getNativeLanguage() != null ? user.getNativeLanguage().getId() : null)
+                                .targetLanguageId(user.getTargetLanguage() != null ? user.getTargetLanguage().getId() : null)
                                 .build();
                 return ResponseEntity.ok(ApiResponse.success(userInfo, "Lấy thông tin cá nhân thành công"));
+        }
+
+        @PatchMapping("/profile")
+        @Transactional
+        @Operation(summary = "Cập nhật thông tin cá nhân", description = "Cập nhật các thông tin của tài khoản đang đăng nhập.")
+        @ApiResponses({
+                        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Cập nhật thông tin cá nhân thành công"),
+                        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Chưa xác thực - access token không hợp lệ hoặc bị thiếu")
+        })
+        public ResponseEntity<ApiResponse<AuthResponse.UserInfo>> updateProfile(Authentication authentication, @RequestBody @Valid ProfileUpdateRequest request) {
+                if (authentication == null) {
+                        return ResponseEntity.status(401).build();
+                }
+                String username = authentication.getName();
+                Users user = usersRepository.findByUsername(username)
+                                .orElseThrow(() -> new NotFoundExeception("Không tìm thấy người dùng"));
+                
+                if (request.getFullName() != null) user.setFullName(request.getFullName());
+                if (request.getAvatarUrl() != null) user.setAvatarUrl(request.getAvatarUrl());
+                if (request.getTimezone() != null) user.setTimezone(request.getTimezone());
+                if (request.getDailyGoalCards() != null) user.setDailyGoalCards(request.getDailyGoalCards());
+                
+                if (request.getNativeLanguageId() != null) {
+                        user.setNativeLanguage(languageRepository.findById(request.getNativeLanguageId()).orElse(null));
+                }
+                if (request.getTargetLanguageId() != null) {
+                        user.setTargetLanguage(languageRepository.findById(request.getTargetLanguageId()).orElse(null));
+                }
+                if (request.getPromptDailyGoal() != null) {
+                        user.setPromptDailyGoal(request.getPromptDailyGoal());
+                }
+
+                usersRepository.save(user);
+
+                AuthResponse.UserInfo userInfo = AuthResponse.UserInfo.builder()
+                                .id(user.getId())
+                                .username(user.getUsername())
+                                .email(user.getEmail())
+                                .fullName(user.getFullName())
+                                .avatarUrl(user.getAvatarUrl())
+                                .roles(user.getRoleCodes())
+                                .timezone(user.getTimezone())
+                                .dailyGoalCards(user.getDailyGoalCards())
+                                .promptDailyGoal(user.getPromptDailyGoal() != null ? user.getPromptDailyGoal() : true)
+                                .nativeLanguageId(user.getNativeLanguage() != null ? user.getNativeLanguage().getId() : null)
+                                .targetLanguageId(user.getTargetLanguage() != null ? user.getTargetLanguage().getId() : null)
+                                .build();
+                return ResponseEntity.ok(ApiResponse.success(userInfo, "Cập nhật thông tin cá nhân thành công"));
         }
 
         private String hashToken(String token) {

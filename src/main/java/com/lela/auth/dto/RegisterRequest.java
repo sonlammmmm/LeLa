@@ -29,4 +29,9 @@ public class RegisterRequest {
     @NotBlank(message = "Họ và tên không được để trống")
     @Size(max = 150, message = "Họ và tên phải ít hơn 150 ký tự")
     private String fullName;
+
+    private String timezone;
+    private Long nativeLanguageId;
+    private Long targetLanguageId;
+    private Integer dailyGoalCards;
 }
