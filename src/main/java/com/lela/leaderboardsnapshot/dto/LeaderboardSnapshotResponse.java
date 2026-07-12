@@ -11,6 +11,9 @@ import java.time.LocalDate;
 @Setter
 public class LeaderboardSnapshotResponse {
     private Long userId;
+    private String fullName;
+    private String username;
+    private String avatarUrl;
     private LeaderboardPeriodType periodType;
     private LocalDate periodStart;
     private LocalDate periodEnd;

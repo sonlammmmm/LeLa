@@ -14,10 +14,10 @@ import java.util.Optional;
 @Repository
 public interface LeaderboardSnapshotRepository extends JpaRepository<LeaderboardSnapshot, Long> {
 
-    @Query("SELECT dla.user.id, SUM(dla.xpEarned) as totalXp, SUM(dla.quizCount) as totalQuiz, SUM(dla.cardsLearned) as totalCards " +
+    @Query("SELECT dla.user.id, dla.user.fullName, dla.user.username, dla.user.avatarUrl, SUM(dla.xpEarned) as totalXp, SUM(dla.quizCount) as totalQuiz, SUM(dla.cardsLearned) as totalCards " +
             "FROM DailyLearningActivity dla " +
             "WHERE dla.activityDate BETWEEN :start AND :end " +
-            "GROUP BY dla.user.id " +
+            "GROUP BY dla.user.id, dla.user.fullName, dla.user.username, dla.user.avatarUrl " +
             "ORDER BY SUM(dla.xpEarned) DESC")
     Page<Object[]> findRealTimeRankings(@Param("start") LocalDate start, @Param("end") LocalDate end, Pageable pageable);
 

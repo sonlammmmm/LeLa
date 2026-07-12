@@ -36,7 +36,7 @@ public class LeaderboardSnapshotServiceImpl implements LeaderboardSnapshotServic
     @Override
     @Transactional(readOnly = true)
     public Page<LeaderboardSnapshotResponse> getTopRanking(Pageable pageable) {
-        return getWeeklyRanking(pageable);
+        return getRealTimePage(LocalDate.of(2000, 1, 1), LocalDate.now(), pageable);
     }
 
     @Override
@@ -89,10 +89,13 @@ public class LeaderboardSnapshotServiceImpl implements LeaderboardSnapshotServic
         List<LeaderboardSnapshotResponse> dtoList = rawData.getContent().stream().map(row -> {
             LeaderboardSnapshotResponse res = new LeaderboardSnapshotResponse();
             res.setUserId((Long) row[0]);
-            res.setXpScore((Long) row[1]);
-            res.setTotalScore((Long) row[1]);
-            res.setQuizScore((Long) row[2]);
-            res.setCardsMastered(((Long) row[3]).intValue());
+            res.setFullName((String) row[1]);
+            res.setUsername((String) row[2]);
+            res.setAvatarUrl((String) row[3]);
+            res.setXpScore((Long) row[4]);
+            res.setTotalScore((Long) row[4]);
+            res.setQuizScore((Long) row[5]);
+            res.setCardsMastered(((Long) row[6]).intValue());
             res.setPeriodStart(start);
             res.setPeriodEnd(end);
             return res;
