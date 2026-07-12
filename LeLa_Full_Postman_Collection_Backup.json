@@ -1,15 +1,15 @@
 {
   "info": {
-    "name": "LeLa API (Vietnamese)",
+    "name": "LeLa Complete API Collection",
     "description": "Auto-generated collection for all controllers in the project",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Quản lý Xác thực",
+      "name": "AuthController",
       "item": [
         {
-          "name": "Đăng ký tài khoản",
+          "name": "register",
           "request": {
             "method": "GET",
             "header": [
@@ -46,7 +46,7 @@
           ]
         },
         {
-          "name": "Đăng nhập",
+          "name": "login",
           "request": {
             "method": "POST",
             "header": [
@@ -87,7 +87,7 @@
           ]
         },
         {
-          "name": "Làm mới Token",
+          "name": "refreshToken",
           "request": {
             "method": "POST",
             "header": [
@@ -128,7 +128,7 @@
           ]
         },
         {
-          "name": "Đăng xuất",
+          "name": "logout",
           "request": {
             "method": "POST",
             "header": [
@@ -169,7 +169,7 @@
           ]
         },
         {
-          "name": "Lấy thông tin cá nhân (Profile)",
+          "name": "adminOnly",
           "request": {
             "method": "GET",
             "header": [
@@ -208,10 +208,10 @@
       ]
     },
     {
-      "name": "Quản lý Tiến độ Thẻ",
+      "name": "CardProgressController",
       "item": [
         {
-          "name": "Xem tiến độ theo bộ thẻ",
+          "name": "getProgressByDeck",
           "request": {
             "method": "GET",
             "header": [
@@ -252,7 +252,7 @@
           ]
         },
         {
-          "name": "Lấy thẻ cần ôn tập",
+          "name": "getReviewCards",
           "request": {
             "method": "GET",
             "header": [
@@ -293,7 +293,7 @@
           ]
         },
         {
-          "name": "Lấy thẻ mới",
+          "name": "getNewCards",
           "request": {
             "method": "GET",
             "header": [
@@ -334,7 +334,7 @@
           ]
         },
         {
-          "name": "Tạm ngưng thẻ",
+          "name": "suspendCards",
           "request": {
             "method": "POST",
             "header": [
@@ -377,7 +377,7 @@
           ]
         },
         {
-          "name": "Đặt lại tiến độ",
+          "name": "resetProgress",
           "request": {
             "method": "POST",
             "header": [
@@ -422,10 +422,10 @@
       ]
     },
     {
-      "name": "Quản lý Hoạt động Học tập",
+      "name": "DailyLearningActivityController",
       "item": [
         {
-          "name": "Ghi nhận hoạt động",
+          "name": "logActivity",
           "request": {
             "method": "GET",
             "header": [
@@ -462,7 +462,7 @@
           ]
         },
         {
-          "name": "Lấy hoạt động hôm nay",
+          "name": "getTodayActivity",
           "request": {
             "method": "GET",
             "header": [
@@ -501,10 +501,10 @@
       ]
     },
     {
-      "name": "Quản lý Bộ thẻ",
+      "name": "DeckController",
       "item": [
         {
-          "name": "Tạo bộ thẻ mới",
+          "name": "createDeck",
           "request": {
             "method": "GET",
             "header": [
@@ -541,7 +541,7 @@
           ]
         },
         {
-          "name": "Cập nhật bộ thẻ",
+          "name": "updateDeck",
           "request": {
             "method": "PUT",
             "header": [
@@ -582,7 +582,7 @@
           ]
         },
         {
-          "name": "Xem chi tiết bộ thẻ",
+          "name": "getDeckById",
           "request": {
             "method": "GET",
             "header": [
@@ -619,7 +619,7 @@
           ]
         },
         {
-          "name": "Lấy danh sách tất cả bộ thẻ",
+          "name": "getAllDecks",
           "request": {
             "method": "GET",
             "header": [
@@ -655,7 +655,7 @@
           ]
         },
         {
-          "name": "Lấy bộ thẻ theo người tạo",
+          "name": "getDecksByOwner",
           "request": {
             "method": "GET",
             "header": [
@@ -693,7 +693,7 @@
           ]
         },
         {
-          "name": "Xóa bộ thẻ",
+          "name": "deleteDeck",
           "request": {
             "method": "DELETE",
             "header": [
@@ -732,10 +732,10 @@
       ]
     },
     {
-      "name": "Quản lý Đăng ký Học",
+      "name": "DeckEnrollmentController",
       "item": [
         {
-          "name": "Đăng ký học bộ thẻ",
+          "name": "enrollDeck",
           "request": {
             "method": "GET",
             "header": [
@@ -772,7 +772,7 @@
           ]
         },
         {
-          "name": "Cập nhật trạng thái đăng ký",
+          "name": "updateStatus",
           "request": {
             "method": "PUT",
             "header": [
@@ -813,7 +813,7 @@
           ]
         },
         {
-          "name": "Lấy danh sách bộ thẻ đã đăng ký",
+          "name": "getUserEnrollList",
           "request": {
             "method": "GET",
             "header": [
@@ -850,7 +850,7 @@
           ]
         },
         {
-          "name": "Lấy danh sách cần ôn tập hôm nay",
+          "name": "getReviewToday",
           "request": {
             "method": "GET",
             "header": [
@@ -889,10 +889,10 @@
       ]
     },
     {
-      "name": "Quản lý Thẻ ghi nhớ",
+      "name": "FlashcardController",
       "item": [
         {
-          "name": "Tạo thẻ ghi nhớ",
+          "name": "createFlashcard",
           "request": {
             "method": "GET",
             "header": [
@@ -929,7 +929,7 @@
           ]
         },
         {
-          "name": "Cập nhật thẻ ghi nhớ",
+          "name": "updateFlashcard",
           "request": {
             "method": "PUT",
             "header": [
@@ -970,7 +970,7 @@
           ]
         },
         {
-          "name": "Xem chi tiết thẻ ghi nhớ",
+          "name": "getFlashcardById",
           "request": {
             "method": "GET",
             "header": [
@@ -1007,7 +1007,7 @@
           ]
         },
         {
-          "name": "Lấy thẻ ghi nhớ theo bộ thẻ",
+          "name": "getFlashcardsByDeck",
           "request": {
             "method": "GET",
             "header": [
@@ -1045,7 +1045,7 @@
           ]
         },
         {
-          "name": "Lấy thẻ ghi nhớ theo Tag",
+          "name": "getFlashcardsByTag",
           "request": {
             "method": "GET",
             "header": [
@@ -1083,7 +1083,7 @@
           ]
         },
         {
-          "name": "Xóa thẻ ghi nhớ",
+          "name": "deleteFlashcard",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1122,10 +1122,10 @@
       ]
     },
     {
-      "name": "Quản lý Ngôn ngữ",
+      "name": "LanguageController",
       "item": [
         {
-          "name": "Lấy danh sách tất cả",
+          "name": "findAll",
           "request": {
             "method": "GET",
             "header": [
@@ -1162,7 +1162,7 @@
           ]
         },
         {
-          "name": "Lấy thông tin theo ID",
+          "name": "findById",
           "request": {
             "method": "GET",
             "header": [
@@ -1199,7 +1199,7 @@
           ]
         },
         {
-          "name": "Tạo mới",
+          "name": "create",
           "request": {
             "method": "POST",
             "header": [
@@ -1239,7 +1239,7 @@
           ]
         },
         {
-          "name": "Cập nhật thông tin",
+          "name": "patch",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1280,7 +1280,7 @@
           ]
         },
         {
-          "name": "Xóa theo ID",
+          "name": "deleteById",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1319,10 +1319,10 @@
       ]
     },
     {
-      "name": "Quản lý Bảng xếp hạng",
+      "name": "LeaderboardSnapshotController",
       "item": [
         {
-          "name": "Xếp hạng chung (Top)",
+          "name": "getTopRanking",
           "request": {
             "method": "GET",
             "header": [
@@ -1359,7 +1359,7 @@
           ]
         },
         {
-          "name": "Xếp hạng ngày",
+          "name": "getDailyRanking",
           "request": {
             "method": "GET",
             "header": [
@@ -1396,7 +1396,7 @@
           ]
         },
         {
-          "name": "Xếp hạng tuần",
+          "name": "getWeeklyRanking",
           "request": {
             "method": "GET",
             "header": [
@@ -1433,7 +1433,7 @@
           ]
         },
         {
-          "name": "Xếp hạng tháng",
+          "name": "getMonthlyRanking",
           "request": {
             "method": "GET",
             "header": [
@@ -1470,7 +1470,7 @@
           ]
         },
         {
-          "name": "Hạng của tôi",
+          "name": "getMyRanking",
           "request": {
             "method": "GET",
             "header": [
@@ -1509,10 +1509,10 @@
       ]
     },
     {
-      "name": "Quản lý Thông báo",
+      "name": "NotificationController",
       "item": [
         {
-          "name": "Lấy danh sách tất cả",
+          "name": "getAll",
           "request": {
             "method": "GET",
             "header": [
@@ -1549,7 +1549,7 @@
           ]
         },
         {
-          "name": "Lấy thông báo chưa đọc",
+          "name": "getUnread",
           "request": {
             "method": "GET",
             "header": [
@@ -1586,7 +1586,7 @@
           ]
         },
         {
-          "name": "Đánh dấu đã đọc",
+          "name": "markAsRead",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1628,7 +1628,7 @@
           ]
         },
         {
-          "name": "Đánh dấu tất cả đã đọc",
+          "name": "markAllAsRead",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1671,10 +1671,10 @@
       ]
     },
     {
-      "name": "Quản lý Thanh toán",
+      "name": "PaymentController",
       "item": [
         {
-          "name": "Lấy danh sách tất cả",
+          "name": "getAll",
           "request": {
             "method": "GET",
             "header": [
@@ -1711,7 +1711,7 @@
           ]
         },
         {
-          "name": "Lấy thông tin theo ID",
+          "name": "getById",
           "request": {
             "method": "GET",
             "header": [
@@ -1748,7 +1748,7 @@
           ]
         },
         {
-          "name": "Tạo mới",
+          "name": "create",
           "request": {
             "method": "POST",
             "header": [
@@ -1788,7 +1788,7 @@
           ]
         },
         {
-          "name": "Cập nhật thông tin",
+          "name": "update",
           "request": {
             "method": "PUT",
             "header": [
@@ -1829,7 +1829,7 @@
           ]
         },
         {
-          "name": "Xóa theo ID",
+          "name": "delete",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1868,10 +1868,10 @@
       ]
     },
     {
-      "name": "Quản lý Bài kiểm tra",
+      "name": "QuizController",
       "item": [
         {
-          "name": "Lấy danh sách tất cả",
+          "name": "findAll",
           "request": {
             "method": "GET",
             "header": [
@@ -1908,7 +1908,7 @@
           ]
         },
         {
-          "name": "Lấy thông tin theo ID",
+          "name": "findById",
           "request": {
             "method": "GET",
             "header": [
@@ -1945,7 +1945,7 @@
           ]
         },
         {
-          "name": "Tạo mới",
+          "name": "create",
           "request": {
             "method": "POST",
             "header": [
@@ -1985,7 +1985,7 @@
           ]
         },
         {
-          "name": "Cập nhật thông tin",
+          "name": "update",
           "request": {
             "method": "PUT",
             "header": [
@@ -2026,7 +2026,7 @@
           ]
         },
         {
-          "name": "Xóa theo ID",
+          "name": "delete",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2065,10 +2065,10 @@
       ]
     },
     {
-      "name": "Quản lý Câu trả lời bài kiểm tra",
+      "name": "QuizAnswerController",
       "item": [
         {
-          "name": "Lấy danh sách tất cả",
+          "name": "getAll",
           "request": {
             "method": "GET",
             "header": [
@@ -2105,7 +2105,7 @@
           ]
         },
         {
-          "name": "Lấy thông tin theo ID",
+          "name": "getById",
           "request": {
             "method": "GET",
             "header": [
@@ -2142,7 +2142,7 @@
           ]
         },
         {
-          "name": "Tạo mới",
+          "name": "create",
           "request": {
             "method": "POST",
             "header": [
@@ -2182,7 +2182,7 @@
           ]
         },
         {
-          "name": "Cập nhật thông tin",
+          "name": "update",
           "request": {
             "method": "PUT",
             "header": [
@@ -2223,7 +2223,7 @@
           ]
         },
         {
-          "name": "Xóa theo ID",
+          "name": "delete",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2262,10 +2262,10 @@
       ]
     },
     {
-      "name": "Quản lý Lượt làm bài kiểm tra",
+      "name": "QuizAttemptController",
       "item": [
         {
-          "name": "Lấy danh sách tất cả",
+          "name": "getAll",
           "request": {
             "method": "GET",
             "header": [
@@ -2302,7 +2302,7 @@
           ]
         },
         {
-          "name": "Lấy thông tin theo ID",
+          "name": "getById",
           "request": {
             "method": "GET",
             "header": [
@@ -2339,7 +2339,7 @@
           ]
         },
         {
-          "name": "Tạo mới",
+          "name": "create",
           "request": {
             "method": "POST",
             "header": [
@@ -2379,7 +2379,7 @@
           ]
         },
         {
-          "name": "Cập nhật thông tin",
+          "name": "update",
           "request": {
             "method": "PUT",
             "header": [
@@ -2420,7 +2420,7 @@
           ]
         },
         {
-          "name": "Xóa theo ID",
+          "name": "delete",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2459,10 +2459,10 @@
       ]
     },
     {
-      "name": "Quản lý Lựa chọn trong Lượt làm bài",
+      "name": "QuizAttemptOptionController",
       "item": [
         {
-          "name": "Lấy danh sách tất cả",
+          "name": "getAll",
           "request": {
             "method": "GET",
             "header": [
@@ -2499,7 +2499,7 @@
           ]
         },
         {
-          "name": "Lấy thông tin theo ID",
+          "name": "getById",
           "request": {
             "method": "GET",
             "header": [
@@ -2536,7 +2536,7 @@
           ]
         },
         {
-          "name": "Tạo mới",
+          "name": "create",
           "request": {
             "method": "POST",
             "header": [
@@ -2576,7 +2576,7 @@
           ]
         },
         {
-          "name": "Cập nhật thông tin",
+          "name": "update",
           "request": {
             "method": "PUT",
             "header": [
@@ -2617,7 +2617,7 @@
           ]
         },
         {
-          "name": "Xóa theo ID",
+          "name": "delete",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2656,10 +2656,10 @@
       ]
     },
     {
-      "name": "Quản lý Câu hỏi trong Lượt làm bài",
+      "name": "QuizAttemptQuestionController",
       "item": [
         {
-          "name": "Lấy danh sách tất cả",
+          "name": "getAll",
           "request": {
             "method": "GET",
             "header": [
@@ -2696,7 +2696,7 @@
           ]
         },
         {
-          "name": "Lấy thông tin theo ID",
+          "name": "getById",
           "request": {
             "method": "GET",
             "header": [
@@ -2733,7 +2733,7 @@
           ]
         },
         {
-          "name": "Tạo mới",
+          "name": "create",
           "request": {
             "method": "POST",
             "header": [
@@ -2773,7 +2773,7 @@
           ]
         },
         {
-          "name": "Cập nhật thông tin",
+          "name": "update",
           "request": {
             "method": "PUT",
             "header": [
@@ -2814,7 +2814,7 @@
           ]
         },
         {
-          "name": "Xóa theo ID",
+          "name": "delete",
           "request": {
             "method": "DELETE",
             "header": [
@@ -2853,10 +2853,10 @@
       ]
     },
     {
-      "name": "Quản lý Câu hỏi bài kiểm tra",
+      "name": "QuizQuestionController",
       "item": [
         {
-          "name": "Lấy danh sách tất cả",
+          "name": "getAll",
           "request": {
             "method": "GET",
             "header": [
@@ -2893,7 +2893,7 @@
           ]
         },
         {
-          "name": "Lấy thông tin theo ID",
+          "name": "getById",
           "request": {
             "method": "GET",
             "header": [
@@ -2930,7 +2930,7 @@
           ]
         },
         {
-          "name": "Tạo mới",
+          "name": "create",
           "request": {
             "method": "POST",
             "header": [
@@ -2970,7 +2970,7 @@
           ]
         },
         {
-          "name": "Cập nhật thông tin",
+          "name": "update",
           "request": {
             "method": "PUT",
             "header": [
@@ -3011,7 +3011,7 @@
           ]
         },
         {
-          "name": "Xóa theo ID",
+          "name": "delete",
           "request": {
             "method": "DELETE",
             "header": [
@@ -3050,10 +3050,10 @@
       ]
     },
     {
-      "name": "Quản lý Lựa chọn Câu hỏi bài kiểm tra",
+      "name": "QuizQuestionOptionController",
       "item": [
         {
-          "name": "Lấy danh sách tất cả",
+          "name": "getAll",
           "request": {
             "method": "GET",
             "header": [
@@ -3090,7 +3090,7 @@
           ]
         },
         {
-          "name": "Lấy thông tin theo ID",
+          "name": "getById",
           "request": {
             "method": "GET",
             "header": [
@@ -3127,7 +3127,7 @@
           ]
         },
         {
-          "name": "Tạo mới",
+          "name": "create",
           "request": {
             "method": "POST",
             "header": [
@@ -3167,7 +3167,7 @@
           ]
         },
         {
-          "name": "Cập nhật thông tin",
+          "name": "update",
           "request": {
             "method": "PUT",
             "header": [
@@ -3208,7 +3208,7 @@
           ]
         },
         {
-          "name": "Xóa theo ID",
+          "name": "delete",
           "request": {
             "method": "DELETE",
             "header": [
@@ -3247,10 +3247,10 @@
       ]
     },
     {
-      "name": "Quản lý Phiên đăng nhập (Refresh Token)",
+      "name": "RefreshTokenSessionController",
       "item": [
         {
-          "name": "Lấy danh sách tất cả",
+          "name": "findAll",
           "request": {
             "method": "GET",
             "header": [
@@ -3287,7 +3287,7 @@
           ]
         },
         {
-          "name": "Lấy thông tin theo ID",
+          "name": "findById",
           "request": {
             "method": "GET",
             "header": [
@@ -3324,7 +3324,7 @@
           ]
         },
         {
-          "name": "Tạo mới",
+          "name": "create",
           "request": {
             "method": "POST",
             "header": [
@@ -3364,7 +3364,7 @@
           ]
         },
         {
-          "name": "Cập nhật thông tin",
+          "name": "patch",
           "request": {
             "method": "PATCH",
             "header": [
@@ -3405,7 +3405,7 @@
           ]
         },
         {
-          "name": "Xóa theo ID",
+          "name": "deleteById",
           "request": {
             "method": "DELETE",
             "header": [
@@ -3444,10 +3444,10 @@
       ]
     },
     {
-      "name": "Quản lý Phiên ôn tập",
+      "name": "ReviewSessionController",
       "item": [
         {
-          "name": "Bắt đầu phiên ôn tập",
+          "name": "startSession",
           "request": {
             "method": "GET",
             "header": [
@@ -3484,7 +3484,7 @@
           ]
         },
         {
-          "name": "Đồng bộ dữ liệu offline",
+          "name": "syncOfflineReviews",
           "request": {
             "method": "POST",
             "header": [
@@ -3525,7 +3525,7 @@
           ]
         },
         {
-          "name": "Lấy phiên ôn tập hiện tại",
+          "name": "getCurrentSession",
           "request": {
             "method": "GET",
             "header": [
@@ -3562,7 +3562,7 @@
           ]
         },
         {
-          "name": "Hủy phiên ôn tập",
+          "name": "abandonSession",
           "request": {
             "method": "POST",
             "header": [
@@ -3604,7 +3604,7 @@
           ]
         },
         {
-          "name": "Thống kê hôm nay",
+          "name": "getTodayStats",
           "request": {
             "method": "GET",
             "header": [
@@ -3642,7 +3642,7 @@
           ]
         },
         {
-          "name": "Thống kê tuần",
+          "name": "getWeeklyStats",
           "request": {
             "method": "GET",
             "header": [
@@ -3682,10 +3682,10 @@
       ]
     },
     {
-      "name": "Quản lý Phân quyền",
+      "name": "RoleController",
       "item": [
         {
-          "name": "Lấy danh sách tất cả",
+          "name": "findAll",
           "request": {
             "method": "GET",
             "header": [
@@ -3722,7 +3722,7 @@
           ]
         },
         {
-          "name": "Lấy thông tin theo ID",
+          "name": "findById",
           "request": {
             "method": "GET",
             "header": [
@@ -3759,7 +3759,7 @@
           ]
         },
         {
-          "name": "Tạo mới",
+          "name": "create",
           "request": {
             "method": "POST",
             "header": [
@@ -3799,7 +3799,7 @@
           ]
         },
         {
-          "name": "Cập nhật thông tin",
+          "name": "patch",
           "request": {
             "method": "PATCH",
             "header": [
@@ -3840,7 +3840,7 @@
           ]
         },
         {
-          "name": "Xóa theo ID",
+          "name": "deleteById",
           "request": {
             "method": "DELETE",
             "header": [
@@ -3879,10 +3879,10 @@
       ]
     },
     {
-      "name": "Quản lý Ôn tập ngắt quãng (SRS)",
+      "name": "SrsReviewController",
       "item": [
         {
-          "name": "Thực hiện ôn tập thẻ (SRS)",
+          "name": "reviewCard",
           "request": {
             "method": "GET",
             "header": [
@@ -3919,7 +3919,7 @@
           ]
         },
         {
-          "name": "Xem lịch sử ôn tập",
+          "name": "getReviewHistory",
           "request": {
             "method": "GET",
             "header": [
@@ -3956,7 +3956,7 @@
           ]
         },
         {
-          "name": "Xem thống kê ôn tập",
+          "name": "getReviewStatistics",
           "request": {
             "method": "GET",
             "header": [
@@ -3995,10 +3995,10 @@
       ]
     },
     {
-      "name": "Quản lý Gói đăng ký (Subscription)",
+      "name": "SubscriptionPlanController",
       "item": [
         {
-          "name": "Lấy danh sách tất cả",
+          "name": "findAll",
           "request": {
             "method": "GET",
             "header": [
@@ -4035,7 +4035,7 @@
           ]
         },
         {
-          "name": "Lấy thông tin theo ID",
+          "name": "findById",
           "request": {
             "method": "GET",
             "header": [
@@ -4072,7 +4072,7 @@
           ]
         },
         {
-          "name": "Tạo mới",
+          "name": "create",
           "request": {
             "method": "POST",
             "header": [
@@ -4112,7 +4112,7 @@
           ]
         },
         {
-          "name": "Cập nhật thông tin",
+          "name": "patch",
           "request": {
             "method": "PATCH",
             "header": [
@@ -4153,7 +4153,7 @@
           ]
         },
         {
-          "name": "Xóa theo ID",
+          "name": "deleteById",
           "request": {
             "method": "DELETE",
             "header": [
@@ -4192,10 +4192,10 @@
       ]
     },
     {
-      "name": "Quản lý Tag (Thẻ phân loại)",
+      "name": "TagController",
       "item": [
         {
-          "name": "Tạo Tag mới",
+          "name": "createTag",
           "request": {
             "method": "GET",
             "header": [
@@ -4232,7 +4232,7 @@
           ]
         },
         {
-          "name": "Cập nhật Tag",
+          "name": "updateTag",
           "request": {
             "method": "PUT",
             "header": [
@@ -4273,7 +4273,7 @@
           ]
         },
         {
-          "name": "Xem chi tiết Tag",
+          "name": "getTagById",
           "request": {
             "method": "GET",
             "header": [
@@ -4310,7 +4310,7 @@
           ]
         },
         {
-          "name": "Lấy tất cả Tag",
+          "name": "getAllTags",
           "request": {
             "method": "GET",
             "header": [
@@ -4346,7 +4346,7 @@
           ]
         },
         {
-          "name": "Xóa Tag",
+          "name": "deleteTag",
           "request": {
             "method": "DELETE",
             "header": [
@@ -4385,10 +4385,10 @@
       ]
     },
     {
-      "name": "Quản lý Gán quyền Người dùng",
+      "name": "UserRoleAssignmentController",
       "item": [
         {
-          "name": "Lấy quyền theo ID người dùng",
+          "name": "findByUserId",
           "request": {
             "method": "GET",
             "header": [
@@ -4425,7 +4425,7 @@
           ]
         },
         {
-          "name": "Cấp quyền cho người dùng",
+          "name": "assignRole",
           "request": {
             "method": "POST",
             "header": [
@@ -4465,7 +4465,7 @@
           ]
         },
         {
-          "name": "Gỡ quyền của người dùng",
+          "name": "unassignRole",
           "request": {
             "method": "DELETE",
             "header": [
@@ -4507,10 +4507,10 @@
       ]
     },
     {
-      "name": "Quản lý Người dùng",
+      "name": "UsersController",
       "item": [
         {
-          "name": "Lấy danh sách tất cả",
+          "name": "findAll",
           "request": {
             "method": "GET",
             "header": [
@@ -4547,7 +4547,7 @@
           ]
         },
         {
-          "name": "Lấy thông tin theo ID",
+          "name": "findById",
           "request": {
             "method": "GET",
             "header": [
@@ -4584,7 +4584,7 @@
           ]
         },
         {
-          "name": "Tạo mới",
+          "name": "create",
           "request": {
             "method": "POST",
             "header": [
@@ -4624,7 +4624,7 @@
           ]
         },
         {
-          "name": "Cập nhật thông tin",
+          "name": "patch",
           "request": {
             "method": "PATCH",
             "header": [
@@ -4665,7 +4665,7 @@
           ]
         },
         {
-          "name": "Xóa theo ID",
+          "name": "deleteById",
           "request": {
             "method": "DELETE",
             "header": [
@@ -4704,10 +4704,10 @@
       ]
     },
     {
-      "name": "Quản lý Đăng ký Gói của Người dùng",
+      "name": "UserSubscriptionController",
       "item": [
         {
-          "name": "Lấy danh sách tất cả",
+          "name": "getAll",
           "request": {
             "method": "GET",
             "header": [
@@ -4744,7 +4744,7 @@
           ]
         },
         {
-          "name": "Lấy thông tin theo ID",
+          "name": "getById",
           "request": {
             "method": "GET",
             "header": [
@@ -4781,7 +4781,7 @@
           ]
         },
         {
-          "name": "Tạo mới",
+          "name": "create",
           "request": {
             "method": "POST",
             "header": [
@@ -4821,7 +4821,7 @@
           ]
         },
         {
-          "name": "Cập nhật thông tin",
+          "name": "update",
           "request": {
             "method": "PUT",
             "header": [
@@ -4862,7 +4862,7 @@
           ]
         },
         {
-          "name": "Xóa theo ID",
+          "name": "delete",
           "request": {
             "method": "DELETE",
             "header": [
