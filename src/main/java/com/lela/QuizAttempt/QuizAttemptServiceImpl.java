@@ -82,8 +82,6 @@ public class QuizAttemptServiceImpl implements QuizAttemptService {
                     QuizAttemptReponse res = mapper.map(q, QuizAttemptReponse.class);
                     if (q.getQuiz() != null) {
                         res.setQuizId(q.getQuiz().getId());
-                    }
-                    if (q.getQuiz() != null) {
                         res.setQuizTitle(q.getQuiz().getTitle());
                     }
                     return res;
@@ -287,10 +285,11 @@ public class QuizAttemptServiceImpl implements QuizAttemptService {
                 if (question.getQuestionType() == com.lela.QuizQuestion.domain.QuestionType.FILL_BLANK) {
                     // For Fill in the blank, check text matching
                     String stuText = studentAnswerReq.getAnswerText() != null
-                            ? studentAnswerReq.getAnswerText().trim().toLowerCase()
+                            ? studentAnswerReq.getAnswerText().trim().toLowerCase(java.util.Locale.ROOT)
                             : "";
                     isCorrect = options.stream()
-                            .anyMatch(o -> o.getIsCorrect() && stuText.equals(o.getOptionText() != null ? o.getOptionText().trim().toLowerCase() : ""));
+                            .anyMatch(o -> o.getIsCorrect() && stuText.equals(
+                                    o.getOptionText() != null ? o.getOptionText().trim().toLowerCase(java.util.Locale.ROOT) : ""));
                 } else {
                     // Multiple choice or true/false
                     Set<Long> correctOptionIds = options.stream()

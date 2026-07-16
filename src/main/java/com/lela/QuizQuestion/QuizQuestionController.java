@@ -41,12 +41,7 @@ public class QuizQuestionController {
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<QuizQuestionResponse>> update(@PathVariable Long id, @Valid @RequestBody QuizQuestionRequest req) {
-        try {
-            return ResponseEntity.ok(ApiResponse.success(service.update(id, req)));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().body(ApiResponse.error(e.getMessage() != null ? e.getMessage() : e.toString(), null));
-        }
+        return ResponseEntity.ok(ApiResponse.success(service.update(id, req)));
     }
 
     @DeleteMapping("/{id}")
