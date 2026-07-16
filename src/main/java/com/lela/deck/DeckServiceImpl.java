@@ -5,12 +5,15 @@ import com.lela.deck.dto.DeckRequest;
 import com.lela.deck.dto.DeckResponse;
 import com.lela.deck.domain.Deck;
 import com.lela.language.domain.Language;
+import com.lela.users.UsersRepository;
 import com.lela.users.domain.Users;
 import com.lela.deck.domain.DeckStatus;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
@@ -23,6 +26,7 @@ public class DeckServiceImpl implements DeckService {
     private final DeckRepository deckRepository;
     private final TopicRepository topicRepository;
     private final EntityManager entityManager;
+    private final UsersRepository usersRepository;
 
     @Transactional
     @Override
@@ -57,12 +61,15 @@ public class DeckServiceImpl implements DeckService {
         deck.setViewCount(0L);
         deck.setEnrollmentCount(0L);
 
-        // Thiết lập các khóa ngoại thông qua getReference để không phải query DB
+        // Thiết lập owner: ưu tiên từ request, nếu không có thì lấy user hiện tại
+        Users owner;
         if (request.getOwnerId() != null) {
-            Users owner = entityManager.getReference(Users.class, request.getOwnerId());
-            deck.setOwner(owner);
+            owner = entityManager.getReference(Users.class, request.getOwnerId());
+        } else {
+            owner = getCurrentUser();
         }
-        
+        deck.setOwner(owner);
+
         if (request.getLanguageId() != null) {
             Language language = entityManager.getReference(Language.class, request.getLanguageId());
             deck.setLanguage(language);
@@ -147,6 +154,21 @@ public class DeckServiceImpl implements DeckService {
         deckRepository.save(deck);
     }
 
+    private Users getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new IllegalArgumentException("Bạn cần đăng nhập để tạo bộ thẻ.");
+        }
+
+        String username = authentication.getName();
+
+        return usersRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy người dùng đang đăng nhập."));
+    }
+
     private String generateSlug(String title, Long excludeId) {
         if (title == null || title.isEmpty()) {
             return "deck";
@@ -156,7 +178,7 @@ public class DeckServiceImpl implements DeckService {
                 .replace("đ", "d").replace("Đ", "d");
         String baseSlug = normalized.toLowerCase().replaceAll("[^a-z0-9]+", "-").replaceAll("^-|-$", "");
         if (baseSlug.isEmpty()) baseSlug = "deck";
-        
+
         String slug = baseSlug;
         int counter = 1;
         while (true) {
