@@ -21,7 +21,7 @@ public class QuizAnswerController {
     private final QuizAnswerService service;
 
     @GetMapping
-    //@PreAuthorize("hasAnyRole('ADMIN', 'ACADEMIC_STAFF')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<ApiResponse<Page<QuizAnswerResponse>>> findAll(Pageable pageable) {
         return ResponseEntity.ok(ApiResponse.success(service.findAll(pageable)));
     }
