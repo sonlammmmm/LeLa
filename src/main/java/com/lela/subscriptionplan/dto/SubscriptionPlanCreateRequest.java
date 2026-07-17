@@ -16,7 +16,6 @@ public class SubscriptionPlanCreateRequest {
     private String description;
     @NotNull
     private BigDecimal price;
-    @NotBlank
     private String currencyCode;
     @NotBlank
     private String billingCycle;
@@ -34,10 +33,8 @@ public class SubscriptionPlanCreateRequest {
     private Boolean leaderboardEnabled;
     @NotNull
     private Boolean offlineEnabled;
-    @NotBlank
     private String featuresJson;
     @NotNull
     private Boolean isActive;
-    @NotNull
     private Integer displayOrder;
 }

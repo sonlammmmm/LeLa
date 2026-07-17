@@ -41,6 +41,14 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService {
     public SubscriptionPlanResponse create(SubscriptionPlanCreateRequest request) {
         // Ánh xạ dữ liệu từ request tạo mới sang thực thể SubscriptionPlan
         SubscriptionPlan entity = modelMapper.map(request, SubscriptionPlan.class);
+
+        if (entity.getCurrencyCode() == null || entity.getCurrencyCode().isBlank())
+            entity.setCurrencyCode("VND");
+        if (entity.getFeaturesJson() == null || entity.getFeaturesJson().isBlank())
+            entity.setFeaturesJson("{}");
+        if (entity.getDisplayOrder() == null)
+            entity.setDisplayOrder(0);
+
         entity = repository.save(entity);
         return modelMapper.map(entity, SubscriptionPlanResponse.class);
     }
